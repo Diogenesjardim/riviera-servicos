@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102B57">
+<meta name="apple-mobile-web-app-title" content="Riviera">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Riviera Serviços — Demonstração</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#102B57; --navy-2:#1A3D78; --navy-soft:#E8EEF8;
+  --orange:#FF781F; --orange-2:#E8650E; --orange-soft:#FFF1E7;
+  --green:#17A75B; --green-2:#12884A; --green-soft:#E6F6EE;
+  --ink:#0F1C33; --muted:#5B6880; --line:#DCE3EE; --bg:#FFFFFF; --bg-2:#F5F7FB;
+  --radius:20px; --shadow:0 10px 30px -12px rgba(16,43,87,.25), 0 2px 6px rgba(16,43,87,.06);
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:inherit}
+svg{display:block}
+.container{max-width:1120px;margin:0 auto;padding:0 20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+[hidden]{display:none!important}
+
+/* ---------- Header ---------- */
+.header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line);padding-top:var(--safe-t)}
+.header-in{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--navy),var(--navy-2));display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(16,43,87,.6)}
+.logo-text{font-weight:800;font-size:21px;letter-spacing:-.02em;color:var(--navy);line-height:1}
+.logo-text span{color:var(--orange)}
+.logo-sub{display:block;font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:3px}
+.demo-chip{margin-left:auto;font-size:12px;font-weight:700;color:var(--orange-2);background:var(--orange-soft);border:1px solid #FFD4B5;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--navy-soft);padding:5px;border-radius:16px;width:100%}
+.tab{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:12px;font-weight:700;font-size:16px;color:var(--navy);transition:.2s}
+.tab[aria-selected="true"]{background:var(--navy);color:#fff;box-shadow:0 6px 16px -6px rgba(16,43,87,.7)}
+@media(max-width:520px){.tab{flex-direction:column;gap:2px;font-size:13.5px;min-height:58px;line-height:1.15;text-align:center;padding:0 4px}}
+.tab[data-view="aluguel"][aria-selected="false"],.tab[data-view="compras"][aria-selected="false"]{color:#B24A05}
+.tl-short{display:none}
+@media(max-width:520px){.tl-full{display:none}.tl-short{display:inline}}
+@media(min-width:860px){.tabs{width:auto;min-width:640px;grid-template-columns:auto auto auto auto}.tab{padding:0 16px}.header-in{flex-wrap:nowrap}.demo-chip{margin-left:auto}}
+@media(max-width:400px){.logo-sub{display:none}.demo-chip .long{display:none}}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 26px;border-radius:16px;font-weight:800;font-size:17px;text-decoration:none;transition:transform .15s,box-shadow .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97)}
+.btn-orange{background:var(--orange);color:#fff;box-shadow:0 12px 24px -10px rgba(255,120,31,.8)}
+.btn-orange:hover{background:var(--orange-2)}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 12px 24px -10px rgba(23,167,91,.7)}
+.btn-green:hover{background:var(--green-2)}
+.btn-ghost{background:var(--navy-soft);color:var(--navy)}
+.btn-line{border:2px solid var(--line);color:var(--navy);background:#fff}
+.btn-block{width:100%}
+
+/* ---------- Hero ---------- */
+.hero{background:radial-gradient(1200px 500px at 85% -10%,#2A5AA8 0%,transparent 60%),linear-gradient(160deg,#102B57 0%,#0B1F42 100%);color:#fff;padding:34px 0 0;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-120px;top:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,120,31,.35),transparent 70%)}
+.hero-grid{display:grid;gap:28px;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:7px 13px;border-radius:999px;color:#FFD6B8}
+.hero h1{font-size:clamp(34px,9vw,58px);line-height:1.04;letter-spacing:-.035em;font-weight:800;margin:16px 0 14px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero p.lead{font-size:clamp(18px,4.6vw,21px);color:#C9D6EE;max-width:520px}
+.hero-actions{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.hero-actions .btn{min-height:60px;font-size:18px}
+.hero-actions .btn-glass{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25)}
+.hero-art{position:relative;border-radius:26px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.55);aspect-ratio:16/11;border:4px solid rgba(255,255,255,.12)}
+.hero-art svg{width:100%;height:100%}
+.illus-badge{position:absolute;left:12px;bottom:12px;font-size:11.5px;font-weight:700;background:rgba(16,43,87,.78);color:#fff;padding:5px 10px;border-radius:999px;backdrop-filter:blur(6px);display:inline-flex;gap:6px;align-items:center;letter-spacing:.01em}
+.hero-float{position:absolute;right:14px;top:14px;background:#fff;color:var(--ink);border-radius:16px;padding:10px 14px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow);font-size:14px;font-weight:700}
+.hero-float i{width:34px;height:34px;border-radius:10px;background:var(--green-soft);display:grid;place-items:center}
+.hero-float small{display:block;color:var(--muted);font-weight:600;font-size:12px}
+@media(min-width:600px){.hero-actions{flex-direction:row}.hero-actions .btn{flex:0 0 auto}}
+@media(min-width:900px){.hero{padding-top:56px}.hero-grid{grid-template-columns:1.05fr 1fr;align-items:center}}
+
+/* ---------- Search ---------- */
+.search-wrap{position:relative;z-index:5;margin-top:28px;transform:translateY(34px)}
+.search{background:#fff;border-radius:22px;box-shadow:0 24px 50px -20px rgba(16,43,87,.45),0 2px 8px rgba(16,43,87,.08);padding:8px;display:flex;align-items:center;gap:6px;border:1px solid var(--line)}
+.search svg.ic{margin-left:12px;flex:0 0 auto}
+.search input{flex:1;min-width:0;border:0;outline:0;height:56px;font-size:17px;padding:0 6px;background:transparent;color:var(--ink)}
+.search input::placeholder{color:#8592A8}
+.search .btn{min-height:50px;padding:0 18px;font-size:16px;border-radius:14px}
+.results{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border-radius:18px;box-shadow:0 24px 50px -16px rgba(16,43,87,.4);border:1px solid var(--line);max-height:340px;overflow:auto;padding:6px}
+.result{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;border-radius:12px}
+.result:hover,.result:focus{background:var(--bg-2);outline:0}
+.result .ri{width:40px;height:40px;border-radius:12px;background:var(--navy-soft);display:grid;place-items:center;flex:0 0 auto}
+.result b{display:block;font-size:16px}
+.result small{color:var(--muted);font-size:13.5px}
+.result-empty{padding:16px;color:var(--muted);font-size:15px}
+.result-empty button{color:var(--orange-2);font-weight:800;text-decoration:underline;margin-top:6px}
+
+/* ---------- Sections ---------- */
+section.block{padding:72px 0 8px}
+section.block.first{padding-top:92px}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.kicker{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange-2)}
+h2{font-size:clamp(27px,6.8vw,38px);line-height:1.1;letter-spacing:-.03em;color:var(--navy);font-weight:800;margin-top:6px}
+.sec-sub{color:var(--muted);margin-top:8px;font-size:16.5px;max-width:560px}
+
+/* ---------- Categories ---------- */
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:760px){.cats{grid-template-columns:repeat(4,1fr);gap:18px}}
+.cat{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid #EDF1F7;text-align:left;display:flex;flex-direction:column;transition:transform .18s,box-shadow .2s;-webkit-tap-highlight-color:transparent;position:relative}
+.cat:hover{transform:translateY(-3px);box-shadow:0 20px 40px -18px rgba(16,43,87,.4)}
+.cat:active{transform:scale(.98)}
+.cat-art{aspect-ratio:16/11;position:relative}
+.cat-art svg{width:100%;height:100%}
+.cat-ic{position:absolute;left:12px;bottom:-20px;width:46px;height:46px;border-radius:14px;background:var(--navy);display:grid;place-items:center;border:3px solid #fff;box-shadow:0 6px 14px -6px rgba(16,43,87,.6)}
+.cat-body{padding:28px 14px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.cat-body b{font-size:18px;color:var(--navy);letter-spacing:-.01em}
+.cat-body small{font-size:13.5px;color:var(--muted);line-height:1.35}
+.cat-go{margin-top:auto;padding-top:10px;font-size:14px;font-weight:800;color:var(--orange-2);display:flex;align-items:center;gap:4px}
+.note{font-size:13px;color:var(--muted);margin-top:14px}
+
+/* ---------- Steps / benefits ---------- */
+.steps{display:grid;gap:14px}
+@media(min-width:760px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--bg-2);border-radius:var(--radius);padding:22px;display:flex;gap:16px;align-items:flex-start}
+.step-n{width:44px;height:44px;border-radius:14px;background:var(--orange);color:#fff;font-weight:800;font-size:19px;display:grid;place-items:center;flex:0 0 auto;box-shadow:0 8px 16px -8px rgba(255,120,31,.9)}
+.step b{display:block;font-size:18px;color:var(--navy)}
+.step p{font-size:15.5px;color:var(--muted);margin-top:2px}
+.perks{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.perk{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-size:14.5px;font-weight:700;color:var(--navy)}
+
+/* ---------- Gallery ---------- */
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-height:44px;padding:0 18px;border-radius:999px;border:2px solid var(--line);font-weight:700;font-size:15px;color:var(--navy);background:#fff;transition:.15s}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:760px){.gallery{grid-template-columns:repeat(3,1fr);gap:16px}}
+.g-item{border-radius:18px;overflow:hidden;background:#fff;box-shadow:var(--shadow);border:1px solid #EDF1F7}
+.g-item .g-art{aspect-ratio:4/3;position:relative}
+.g-item .g-art svg,.g-item .g-art img{width:100%;height:100%;object-fit:cover}
+.g-item figcaption{padding:12px 14px 14px}
+.g-item figcaption b{display:block;font-size:15px;line-height:1.3;color:var(--ink)}
+.g-item figcaption small{font-size:12.5px;font-weight:700;color:var(--orange-2);text-transform:uppercase;letter-spacing:.05em}
+.g-ph{border:2.5px dashed #C8D3E5;background:var(--bg-2);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:8px;border-radius:18px;min-height:200px;color:var(--muted);font-size:14px}
+.g-ph b{color:var(--navy);font-size:15.5px}
+.ba{margin-top:18px;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);background:#fff;border:1px solid #EDF1F7}
+.ba-stage{position:relative;aspect-ratio:16/10;--pos:50%;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.ba-stage svg{position:absolute;inset:0;width:100%;height:100%}
+.ba-before{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+.ba-line{position:absolute;top:0;bottom:0;left:var(--pos);width:4px;margin-left:-2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.ba-knob{position:absolute;top:50%;left:var(--pos);width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.3);display:grid;place-items:center}
+.ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.ba-tag{position:absolute;top:12px;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px;color:#fff}
+.ba-tag.l{left:12px;background:rgba(15,28,51,.75)}
+.ba-tag.r{right:12px;background:var(--green)}
+.ba-cap{padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.ba-cap b{color:var(--navy)}
+.ba-cap small{color:var(--muted);font-size:13.5px}
+
+/* ---------- Form ---------- */
+.form-card{background:#fff;border-radius:26px;box-shadow:0 30px 60px -30px rgba(16,43,87,.45);border:1px solid #E6ECF5;padding:22px;position:relative;overflow:hidden}
+.form-card:before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,var(--navy),var(--orange))}
+@media(min-width:760px){.form-card{padding:34px}}
+.form-grid{display:grid;gap:18px}
+@media(min-width:760px){.form-grid{grid-template-columns:1fr 1fr}.form-grid .full{grid-column:1/-1}}
+.field label,.field .lbl{display:block;font-weight:800;font-size:16px;margin-bottom:8px;color:var(--navy)}
+.field label small,.field .lbl small{font-weight:600;color:var(--muted);font-size:13.5px}
+.input{width:100%;min-height:58px;border:2px solid var(--line);border-radius:15px;padding:14px 16px;font-size:17px;background:#fff;transition:border .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+.input:focus{outline:0;border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,120,31,.15)}
+select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23102B57' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:46px}
+textarea.input{min-height:120px;resize:vertical}
+.field.err .input{border-color:#E5484D}
+.field .msg{display:none;color:#D0353A;font-size:14px;font-weight:700;margin-top:6px}
+.field.err .msg{display:block}
+.when{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.when label{margin:0}
+.when input{position:absolute;opacity:0;pointer-events:none}
+.when span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:54px;border:2px solid var(--line);border-radius:14px;font-weight:700;font-size:15.5px;color:var(--navy);padding:6px 8px;cursor:pointer;transition:.15s;background:#fff}
+.when input:checked+span{border-color:var(--orange);background:var(--orange-soft);color:#B24A05;box-shadow:inset 0 0 0 1px var(--orange)}
+.when input:focus-visible+span{box-shadow:0 0 0 4px rgba(255,120,31,.25)}
+.form-foot{margin-top:22px;display:grid;gap:12px}
+.form-foot .btn{min-height:62px;font-size:18.5px}
+.tiny{font-size:13.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+.tiny svg{flex:0 0 auto;margin-top:2px}
+
+/* ---------- Footer ---------- */
+footer{margin-top:72px;background:var(--navy);color:#B9C7E0;padding:40px 0 calc(110px + var(--safe-b));font-size:15px}
+footer .logo-text{color:#fff}
+footer p{margin-top:12px;max-width:520px}
+
+/* ---------- FAB ---------- */
+.fab{position:fixed;right:18px;bottom:calc(18px + var(--safe-b));z-index:35;width:62px;height:62px;border-radius:50%;background:var(--green);display:grid;place-items:center;box-shadow:0 14px 28px -10px rgba(23,167,91,.9);text-decoration:none}
+.fab:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--green);opacity:.35;animation:pulse 2.4s infinite}
+@keyframes pulse{0%{transform:scale(.9);opacity:.5}70%{transform:scale(1.15);opacity:0}100%{opacity:0}}
+
+/* ---------- Sheet / modal ---------- */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(9,20,40,.55);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:auto}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:28px 28px 0 0;transform:translateY(40px);transition:transform .3s cubic-bezier(.2,.9,.3,1);padding-bottom:calc(20px + var(--safe-b))}
+.overlay.open .sheet{transform:none}
+@media(min-width:700px){.overlay{align-items:center}.sheet{border-radius:28px;padding-bottom:24px}}
+.sheet-grab{width:44px;height:5px;border-radius:9px;background:#D4DBE6;margin:10px auto 0}
+.sheet-art{position:relative;aspect-ratio:16/7;margin:12px 16px 0;border-radius:20px;overflow:hidden}
+.sheet-art svg{width:100%;height:100%}
+.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px 6px}
+.sheet-head h3{font-size:25px;color:var(--navy);letter-spacing:-.02em;line-height:1.15}
+.sheet-head p{color:var(--muted);font-size:15px;margin-top:3px}
+.x{width:44px;height:44px;border-radius:14px;background:var(--bg-2);display:grid;place-items:center;flex:0 0 auto}
+.subs{padding:8px 16px 4px;display:grid;gap:10px}
+.sub{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:2px solid var(--line);border-radius:16px;padding:14px 16px;min-height:64px;transition:.15s;background:#fff}
+.sub:hover,.sub:focus-visible{border-color:var(--orange);background:var(--orange-soft);outline:0}
+.sub .dot{width:38px;height:38px;border-radius:12px;background:var(--navy-soft);display:grid;place-items:center;flex:0 0 auto}
+.sub b{font-size:17px;color:var(--ink);flex:1}
+.sub em{font-style:normal;font-size:13px;font-weight:800;color:var(--orange-2);display:none}
+@media(min-width:480px){.sub em{display:inline}}
+.sheet-pad{padding:16px 20px 4px}
+.success-ic{width:76px;height:76px;border-radius:50%;background:var(--green-soft);display:grid;place-items:center;margin:22px auto 10px}
+.success h3{text-align:center;font-size:26px;color:var(--navy);letter-spacing:-.02em}
+.success>p{text-align:center;color:var(--muted);padding:4px 24px 0;font-size:16px}
+.bubble{margin:18px 20px 0;background:#E7F8EC;border:1px solid #C5ECD2;border-radius:18px 18px 18px 4px;padding:14px 16px;font-size:15px;white-space:pre-wrap;line-height:1.5;max-height:260px;overflow:auto;user-select:text;-webkit-user-select:text;color:#14321F}
+.bubble-lbl{margin:16px 20px -8px;font-size:12.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.sheet-actions{display:grid;gap:10px;padding:18px 20px 0}
+.sheet-actions .btn{min-height:60px}
+.confirm p{padding:4px 20px 0;color:var(--muted)}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-b));z-index:80;transform:translate(-50%,20px);background:var(--ink);color:#fff;font-weight:700;font-size:15px;padding:13px 18px;border-radius:14px;opacity:0;transition:.25s;pointer-events:none;box-shadow:0 14px 30px -10px rgba(0,0,0,.5);max-width:calc(100% - 40px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Admin ---------- */
+.admin-hero{background:linear-gradient(160deg,#102B57,#0B1F42);color:#fff;padding:30px 0 70px}
+.admin-hero h1{font-size:clamp(30px,8vw,44px);letter-spacing:-.03em;line-height:1.05;margin-top:10px}
+.admin-hero p{color:#C9D6EE;margin-top:8px}
+.notice{margin-top:18px;background:rgba(255,120,31,.14);border:1px solid rgba(255,160,100,.45);border-radius:16px;padding:12px 14px;display:flex;gap:10px;font-size:14.5px;color:#FFE2CC;line-height:1.45}
+.notice svg{flex:0 0 auto;margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:-48px;position:relative;z-index:2}
+@media(min-width:760px){.stats{grid-template-columns:repeat(5,1fr)}}
+.stat{background:#fff;border-radius:20px;padding:16px;box-shadow:var(--shadow);border:2px solid transparent;text-align:left;display:flex;flex-direction:column;gap:6px;transition:.15s;min-height:112px}
+.stat:first-child{grid-column:1/-1}
+@media(min-width:760px){.stat:first-child{grid-column:auto}}
+.stat[aria-pressed="true"]{border-color:var(--navy)}
+.stat .s-top{display:flex;align-items:center;justify-content:space-between}
+.stat .s-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center}
+.stat strong{font-size:34px;line-height:1;letter-spacing:-.03em;color:var(--navy);font-weight:800}
+.stat span{font-size:14.5px;font-weight:700;color:var(--muted)}
+.toolbar{display:flex;gap:10px;align-items:center;margin:26px 0 14px;flex-wrap:wrap}
+.toolbar h2{font-size:24px;margin:0;flex:1}
+.mini-search{display:flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:14px;padding:0 12px;min-height:50px;background:#fff;width:100%}
+.mini-search input{border:0;outline:0;flex:1;min-width:0;font-size:16.5px;background:transparent}
+@media(min-width:760px){.mini-search{width:300px}}
+.orders{display:grid;gap:14px}
+@media(min-width:960px){.orders{grid-template-columns:1fr 1fr}}
+.order{background:#fff;border-radius:22px;box-shadow:var(--shadow);border:1px solid #EDF1F7;padding:18px;display:flex;flex-direction:column;gap:12px;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.o-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.o-id{font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.03em}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;padding:6px 11px;border-radius:999px;white-space:nowrap}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.o-name{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+.o-name .fake{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:2px 8px;vertical-align:middle;margin-left:6px;letter-spacing:0}
+.o-svc{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--navy);font-size:16px}
+.o-svc .ri{width:36px;height:36px;border-radius:11px;background:var(--navy-soft);display:grid;place-items:center;flex:0 0 auto}
+.o-meta{display:grid;gap:6px;font-size:15px;color:var(--muted)}
+.o-meta div{display:flex;gap:8px;align-items:center}
+.o-meta b{color:var(--ink);font-weight:700}
+.o-desc{background:var(--bg-2);border-radius:14px;padding:12px 14px;font-size:15px;color:#33415A;line-height:1.45}
+.o-lbl{font-size:12.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.st-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:520px){.st-btns{grid-template-columns:repeat(4,1fr)}}
+.st-btn{min-height:46px;border-radius:12px;border:2px solid var(--line);font-size:14px;font-weight:800;color:var(--navy);background:#fff;padding:0 6px;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.st-btn[aria-pressed="true"]{color:#fff;border-color:transparent}
+.o-actions{display:flex;gap:10px}
+.o-actions .btn{flex:1;min-height:52px;font-size:16px}
+.o-actions .del{flex:0 0 52px;padding:0;background:var(--bg-2);color:#C0353A}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);background:var(--bg-2);border-radius:22px;grid-column:1/-1}
+.empty b{display:block;color:var(--navy);font-size:18px;margin-bottom:4px}
+.admin-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.admin-foot .btn{min-height:50px;font-size:15.5px}
+
+/* ---------- Avaliações ---------- */
+.rv-wrap{display:grid;gap:16px}
+@media(min-width:860px){.rv-wrap{grid-template-columns:330px 1fr;align-items:start}}
+.rv-sum{background:radial-gradient(400px 200px at 100% 0,#2A5AA8,transparent 70%),var(--navy);color:#fff;border-radius:24px;padding:24px}
+.rv-sum .big{font-size:60px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.rv-count{color:#C9D6EE;margin-top:6px;font-size:15px}
+.stars{display:inline-flex;gap:2px;vertical-align:middle}
+.rv-bars{display:grid;gap:7px;margin:18px 0 20px;font-size:14px}
+.rv-bar{display:grid;grid-template-columns:26px 1fr 22px;gap:8px;align-items:center;color:#C9D6EE;font-weight:700}
+.rv-bar .t{height:8px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden}
+.rv-bar .t i{display:block;height:100%;background:#FFB020;border-radius:9px}
+.rv-list{display:grid;gap:12px}
+@media(min-width:620px){.rv-list{grid-template-columns:1fr 1fr}}
+.rv{background:#fff;border:1px solid #EDF1F7;border-radius:20px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.rv p{font-size:15.5px;color:#33415A;line-height:1.5}
+.rv-foot{display:flex;align-items:center;gap:10px;margin-top:auto}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--orange-soft);color:var(--orange-2);font-weight:800;display:grid;place-items:center;flex:0 0 auto}
+.rv-foot b{display:block;font-size:15px}.rv-foot small{color:var(--muted);font-size:13px}
+.tag-ex{font-size:11px;font-weight:800;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-left:auto;white-space:nowrap}
+.star-pick{display:flex;justify-content:center;gap:4px;padding:14px 0 4px}
+.star-pick button{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;transition:transform .12s}
+.star-pick button:active{transform:scale(.88)}
+.star-lbl{text-align:center;font-weight:800;color:var(--navy);min-height:26px;font-size:17px}
+/* ---------- Acompanhar ---------- */
+.track{background:var(--bg-2);border-radius:26px;padding:20px}
+@media(min-width:760px){.track{padding:30px}}
+.track-form{display:flex;gap:8px}
+.track-form .input{flex:1;min-width:0;text-transform:uppercase}
+.track-form .btn{min-height:58px;padding:0 20px}
+.mine{margin-top:14px;display:grid;gap:8px}
+.mine-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--muted);font-weight:600}
+.mine button{min-height:40px;padding:0 14px;border-radius:999px;background:#fff;border:2px solid var(--line);font-weight:800;color:var(--navy);font-size:14px}
+.t-card{background:#fff;border-radius:22px;padding:20px;margin-top:16px;box-shadow:var(--shadow);animation:in .35s ease}
+.timeline{margin:18px 0}
+.tl{display:grid;grid-template-columns:36px 1fr;gap:12px;position:relative;padding-bottom:18px}
+.tl:last-child{padding-bottom:0}
+.tl:not(:last-child):before{content:"";position:absolute;left:17px;top:38px;bottom:2px;width:2px;background:var(--line)}
+.tl.done:not(:last-child):before{background:var(--green)}
+.tl .b{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#fff;border:2px solid var(--line);color:var(--muted);font-weight:800;font-size:14px}
+.tl.done .b{background:var(--green);border-color:var(--green)}
+.tl.cur .b{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 0 0 6px rgba(255,120,31,.18)}
+.tl b{display:block;font-size:16.5px;color:var(--ink);padding-top:5px;line-height:1.3}
+.tl small{color:var(--muted);font-size:14px}
+.tl.todo b{color:#8592A8;font-weight:700}
+.hero-track{display:inline-block;margin-top:18px;color:#C9D6EE;font-size:15.5px;text-decoration:none}
+.hero-track b{color:#fff;text-decoration:underline;text-underline-offset:3px}
+/* ---------- Admin extras ---------- */
+.fin{display:grid;gap:10px;margin-top:12px}
+@media(min-width:760px){.fin{grid-template-columns:repeat(3,1fr);gap:12px}}
+.fin-t{background:#fff;border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;border:1px solid #EDF1F7}
+.fin-t .s-ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto}
+.fin-t strong{display:block;font-size:22px;color:var(--navy);letter-spacing:-.02em;line-height:1.15}
+.fin-t span{font-size:13.5px;font-weight:700;color:var(--muted)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--navy-soft);padding:5px;border-radius:16px;gap:4px;width:100%;margin-top:24px}
+@media(min-width:760px){.seg{width:420px}}
+.seg button{min-height:48px;padding:0 14px;border-radius:12px;font-weight:800;font-size:16px;color:var(--navy);display:flex;gap:8px;align-items:center;justify-content:center}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.seg .cnt{background:var(--orange);color:#fff;border-radius:999px;font-size:12px;padding:1px 8px}
+.o-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg-2);border-radius:14px;padding:8px 8px 8px 12px;min-height:52px}
+.o-row .l{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--muted);flex-wrap:wrap}
+.o-row .l b{color:var(--ink);font-size:16px}
+.link-btn{font-weight:800;color:var(--orange-2);font-size:14.5px;min-height:40px;padding:0 10px;border-radius:10px;background:#fff;border:1.5px solid #FFD4B5;white-space:nowrap}
+.ag-day{margin-top:20px}
+.ag-day h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.ag-day h3 .cnt{background:var(--navy);color:#fff;border-radius:999px;font-size:12px;padding:2px 8px;letter-spacing:0}
+.ag-day.late h3{color:#C0353A}.ag-day.late h3 .cnt{background:#C0353A}
+.ag-item{background:#fff;border-radius:18px;box-shadow:var(--shadow);border:1px solid #EDF1F7;padding:14px;display:grid;grid-template-columns:72px 1fr;gap:14px;margin-bottom:10px;animation:in .3s ease}
+.ag-time{background:var(--orange-soft);color:#B24A05;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:20px;line-height:1.1;align-self:start;min-height:72px}
+.ag-time small{font-size:11px;font-weight:700;color:var(--orange-2)}
+.ag-item b{font-size:17.5px}
+.ag-item .meta{font-size:14.5px;color:var(--muted)}
+.ag-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ag-acts .btn{min-height:44px;font-size:14.5px;padding:0 14px;border-radius:12px;gap:6px}
+@media(min-width:960px){#agenda{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.slots button{min-height:48px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14.5px;color:var(--navy);background:#fff}
+.slots button[aria-pressed="true"]{border-color:var(--orange);background:var(--orange-soft);color:#B24A05}
+
+/* ---------- Aluguel ---------- */
+.promo{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,#102B57 0%,#1A3D78 60%,#E8650E 140%);color:#fff;border-radius:20px;padding:16px 18px;margin-bottom:22px;text-decoration:none;box-shadow:0 16px 30px -16px rgba(16,43,87,.7)}
+.promo .pi{width:46px;height:46px;border-radius:14px;background:var(--orange);display:grid;place-items:center;flex:0 0 auto;font-size:24px}
+.promo b{display:block;font-size:16.5px;line-height:1.25}
+.promo small{color:#C9D6EE;font-size:13.5px}
+.promo .go{margin-left:auto;flex:0 0 auto}
+.rent-head{background:linear-gradient(160deg,#FFF3E8,#FFFFFF);border:1px solid #FFE0C7;border-radius:26px;padding:22px}
+@media(min-width:760px){.rent-head{padding:30px}}
+.rent-perks{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px}
+.rent-perks span{background:#fff;border:1px solid #FFD4B5;color:#B24A05;font-weight:700;font-size:14px;border-radius:999px;padding:7px 12px}
+.eq-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:760px){.eq-grid{grid-template-columns:repeat(4,1fr);gap:16px}}
+.eq{background:#fff;border-radius:20px;box-shadow:var(--shadow);border:2px solid transparent;overflow:hidden;display:flex;flex-direction:column;transition:border .15s}
+.eq.in{border-color:var(--orange)}
+.eq-art{aspect-ratio:16/11;position:relative}
+.eq-art svg{width:100%;height:100%}
+.eq-badge{position:absolute;left:10px;top:10px;background:var(--orange);color:#fff;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px}
+.eq-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px;flex:1}
+.eq-body b{font-size:16.5px;color:var(--navy);line-height:1.25}
+.eq-body small{font-size:13px;color:var(--muted);line-height:1.35}
+.price{font-size:19px;font-weight:800;color:var(--ink);margin-top:auto;padding-top:8px;letter-spacing:-.01em}
+.price span{font-size:12.5px;color:var(--muted);font-weight:700;letter-spacing:0;display:block}
+.eq-add{margin-top:10px;min-height:48px;border-radius:14px;background:var(--orange-soft);color:#B24A05;font-weight:800;font-size:15.5px;border:2px solid #FFD4B5}
+.stepper{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;margin-top:10px;background:var(--navy);border-radius:14px;color:#fff;min-height:48px}
+.stepper button{height:48px;font-size:26px;font-weight:600;color:inherit;line-height:1}
+.stepper output{text-align:center;font-weight:800;font-size:18px}
+.stepper.light{background:#fff;border:2px solid var(--line);color:var(--navy);margin-top:0}
+.stepper.sm{grid-template-columns:40px 36px 40px;min-height:42px}
+.stepper.sm button{height:40px;font-size:22px}
+.day-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.day-chips button{min-height:40px;padding:0 12px;border-radius:999px;border:2px solid var(--line);font-weight:800;font-size:14px;color:var(--navy);background:#fff}
+.day-chips button[aria-pressed="true"]{border-color:var(--orange);background:var(--orange-soft);color:#B24A05}
+.ck-items{display:grid;gap:8px}
+.ck-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:2px solid var(--line);border-radius:16px;padding:10px 10px 10px 14px}
+.ck-row b{display:block;font-size:16px;color:var(--ink)}
+.ck-row small{color:var(--muted);font-size:13px}
+.ck-sum{margin-top:18px;background:var(--bg-2);border-radius:18px;padding:14px 16px;display:grid;gap:8px}
+.ck-sum>div{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.ck-sum span{color:var(--muted)}
+.ck-sum b{text-align:right}
+.ck-sum .tot{border-top:2px dashed var(--line);padding-top:10px;margin-top:2px}
+.ck-sum .tot b{font-size:22px;color:var(--navy)}
+.cartbar{position:fixed;left:12px;right:12px;bottom:calc(12px + var(--safe-b));z-index:36;background:var(--navy);color:#fff;border-radius:20px;padding:10px 10px 10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 20px 40px -12px rgba(16,43,87,.7);max-width:560px;margin:0 auto;animation:in .3s ease}
+.cartbar .cb-ic{font-size:24px}
+.cartbar #cbInfo{flex:1;min-width:0;line-height:1.25}
+.cartbar #cbInfo b{display:block;font-size:15.5px}
+.cartbar #cbInfo small{color:#C9D6EE;font-size:13.5px}
+.cartbar .btn{min-height:50px;padding:0 18px;font-size:16px;border-radius:14px}
+body.has-cart .fab{bottom:calc(92px + var(--safe-b))}
+body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
+.it-list{display:grid;gap:4px}
+.it-list div{display:flex;justify-content:space-between;gap:10px}
+.it-list span{color:var(--muted);font-size:14px;white-space:nowrap}
+.ag-tag{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--navy-soft);color:var(--navy);margin-left:6px;vertical-align:middle}
+.ag-tag.ret{background:#FDECEC;color:#C0353A}
+.type-chips{margin:0 0 14px}
+.rent-hero{padding-bottom:40px;background:radial-gradient(600px 300px at 100% 0,rgba(255,120,31,.35),transparent 70%),linear-gradient(160deg,#102B57,#0B1F42)}
+.rent-hero h1 em{font-style:normal;color:var(--orange)}
+.rent-hero .rent-perks span{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#FFD6B8}
+.rent-list{margin-top:-20px;position:relative;z-index:2}
+.promo + .promo{margin-top:-12px}
+.promo-shop{background:linear-gradient(120deg,#102B57 0%,#1A3D78 60%,#17A75B 140%)}
+.promo-shop .pi{background:var(--green)}
+.shop-hero{background:radial-gradient(600px 300px at 100% 0,rgba(23,167,91,.4),transparent 70%),linear-gradient(160deg,#102B57,#0B1F42)}
+.shop-chips{margin-bottom:12px;padding-top:2px}
+.shop-chips .chip{background:#fff;box-shadow:0 4px 12px -6px rgba(16,43,87,.3)}
+.shop-chips .chip[aria-pressed="true"]{background:var(--navy)}
+.sp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:760px){.sp-grid{grid-template-columns:repeat(4,1fr);gap:16px}}
+.sp{background:#fff;border-radius:20px;box-shadow:var(--shadow);border:2px solid transparent;overflow:hidden;display:flex;flex-direction:column;transition:border .15s}
+.sp.in{border-color:var(--orange)}
+.sp-ic{height:100px;display:grid;place-items:center;font-size:48px;position:relative}
+.cartbar #sbInfo{flex:1;min-width:0;line-height:1.25}
+.cartbar #sbInfo b{display:block;font-size:15.5px}
+.cartbar #sbInfo small{color:#C9D6EE;font-size:13.5px}
+.sug-card{background:var(--bg-2);border-radius:26px;padding:22px}
+@media(min-width:760px){.sug-card{padding:30px}}
+.sug-form{margin-top:16px}
+.sug-title{font-size:20px;color:var(--navy);margin:26px 0 12px;letter-spacing:-.01em}
+.sug-list,#sugAdmin{display:grid;gap:10px}
+@media(min-width:760px){.sug-list,#sugAdmin{grid-template-columns:1fr 1fr}}
+.sug{background:#fff;border:1px solid #EDF1F7;border-radius:18px;padding:14px 14px 14px 16px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center}
+.sug .txt{flex:1;min-width:0}
+.sug b{font-size:16.5px;display:block;color:var(--ink);line-height:1.3}
+.sug small{color:var(--muted);font-size:13.5px;display:block;margin-top:2px}
+.sug.arch{opacity:.55}
+.vote{flex:0 0 auto;min-width:72px;min-height:62px;border-radius:14px;border:2px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;color:var(--navy);font-size:16px;line-height:1.15;padding:4px 6px}
+.vote small{font-size:11px;font-weight:700;color:var(--muted);margin:0}
+.vote[aria-pressed="true"]{border-color:var(--orange);background:var(--orange-soft);color:#B24A05}
+.vote.static{background:var(--navy-soft);border-color:transparent;font-size:22px}
+.badge-soon{display:inline-block;font-size:11px;font-weight:800;background:var(--green-soft);color:var(--green-2);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:middle}
+.sg-acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.seg{grid-template-columns:repeat(3,1fr)!important}
+@media(min-width:760px){.seg{width:560px!important}}
+@media(max-width:420px){.seg button{font-size:14px;padding:0 6px;gap:4px}.seg button svg{display:none}}
+.quick{display:grid;gap:12px;margin-top:18px}
+@media(min-width:760px){.quick{grid-template-columns:repeat(3,1fr);gap:16px}}
+.qk{display:grid;grid-template-columns:56px 1fr;grid-template-areas:"ic tx" "ic go";gap:2px 14px;align-items:center;text-decoration:none;border-radius:22px;padding:16px;color:#fff;box-shadow:0 18px 34px -18px rgba(16,43,87,.7);transition:transform .15s}
+.qk:active{transform:scale(.98)}
+.qk-sv{background:linear-gradient(135deg,#102B57,#1F4A8F)}
+.qk-cp{background:linear-gradient(135deg,#0F6B43,#17A75B)}
+.qk-al{background:linear-gradient(135deg,#C2540A,#FF781F)}
+.qk-ic{grid-area:ic;width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:28px}
+.qk-tx{grid-area:tx}
+.qk-tx b{display:block;font-size:18px;letter-spacing:-.01em}
+.qk-tx small{display:block;font-size:13.5px;opacity:.85;line-height:1.35;margin-top:2px}
+.qk-go{grid-area:go;font-weight:800;font-size:14px;margin-top:6px}
+.about{background:radial-gradient(500px 260px at 100% 0,rgba(255,120,31,.3),transparent 70%),linear-gradient(160deg,#102B57,#0B1F42);color:#C9D6EE;border-radius:28px;padding:26px 22px;position:relative;overflow:hidden}
+@media(min-width:760px){.about{padding:40px}}
+.about-ic{position:absolute;right:18px;top:16px;font-size:44px;opacity:.9}
+.about p{margin-top:10px;font-size:16.5px;max-width:620px}
+.about-grid{display:grid;gap:10px;margin-top:20px}
+@media(min-width:760px){.about-grid{grid-template-columns:repeat(3,1fr)}}
+.about-grid div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 14px}
+.about-grid b{display:block;color:#fff;font-size:15.5px}
+.about-grid span{font-size:14px}
+.faq{display:grid;gap:10px;margin-top:18px}
+.faq details{background:var(--bg-2);border-radius:18px;padding:0 18px;border:1px solid transparent;transition:.15s}
+.faq details[open]{background:#fff;border-color:var(--line);box-shadow:var(--shadow)}
+.faq summary{list-style:none;cursor:pointer;min-height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;color:var(--navy);font-size:16.5px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";font-size:26px;font-weight:600;color:var(--orange);flex:0 0 auto;line-height:1}
+.faq details[open] summary:after{content:"–"}
+.faq p{padding:0 0 16px;color:#33415A;font-size:15.5px}
+.ios-tip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 14px;font-size:14.5px;color:#C9D6EE}
+.ios-tip b{color:#fff}
+.btn-wa2{background:#fff;color:var(--green-2);border:2px solid var(--green);min-height:54px}
+.wa-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.wa-list a{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;text-decoration:none;font-weight:800;border-radius:999px;padding:10px 16px;font-size:15px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-in">
+    <a class="logo" href="#morador" aria-label="Riviera Serviços — início">
+      <span class="logo-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M10 19v-4.5a2 2 0 0 1 4 0V19" fill="#FF781F"/></svg>
+      </span>
+      <span>
+        <span class="logo-text">Riviera <span>Serviços</span></span>
+        <span class="logo-sub">Santa Cristina III</span>
+      </span>
+    </a>
+    <span class="demo-chip"><span class="long">Versão de </span>demonstração</span>
+    <nav class="tabs" role="tablist" aria-label="Escolha a área">
+      <button class="tab" role="tab" id="tab-morador" data-view="morador" aria-selected="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span class="tl-full">Sou morador</span><span class="tl-short">Morador</span>
+      </button>
+      <button class="tab" role="tab" id="tab-compras" data-view="compras" aria-selected="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        Comprar
+      </button>
+      <button class="tab" role="tab" id="tab-aluguel" data-view="aluguel" aria-selected="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18v2H3z"/><path d="M5 18v-3a7 7 0 0 1 14 0v3"/><path d="M12 8V5M9 9.5L8 7M15 9.5L16 7"/></svg>
+        Alugar
+      </button>
+      <button class="tab" role="tab" id="tab-empresa" data-view="empresa" aria-selected="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7M3 13h18"/></svg>
+        <span class="tl-full">Área da empresa</span><span class="tl-short">Empresa</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- =================== ÁREA DO MORADOR =================== -->
+<main id="view-morador">
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+            Exclusivo para moradores do Riviera de Santa Cristina III
+          </span>
+          <h1>Sua casa bem cuidada, <em>sem complicação</em>.</h1>
+          <p class="lead">Serviços para sua casa, compras rápidas e aluguel de equipamentos, tudo sem sair do condomínio. Peça em poucos toques, direto pelo WhatsApp.</p>
+          <div class="hero-actions">
+            <a href="#orcamento" class="btn btn-orange" data-scroll="orcamento">
+              Solicitar orçamento
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="#servicos" class="btn btn-glass" data-scroll="servicos">Ver serviços</a>
+          </div>
+          <a href="#acompanhar" class="hero-track" data-scroll="acompanhar">Já fez um pedido? <b>Acompanhe aqui →</b></a>
+        </div>
+        <div class="hero-art" id="heroArt">
+          <span class="hero-float"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17A75B" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><span>Orçamento sem compromisso<small>Resposta pelo WhatsApp</small></span></span>
+          <span class="illus-badge">Imagem ilustrativa</span>
+        </div>
+      </div>
+      <div class="search-wrap" id="searchWrap">
+        <form class="search" id="searchForm" role="search" autocomplete="off">
+          <svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#102B57" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <label for="q" class="sr">Pesquisar serviço</label>
+          <input id="q" type="search" placeholder="Ex.: grama, vazamento, pintura…" enterkeyhint="search">
+          <button class="btn btn-orange" type="submit">Buscar</button>
+        </form>
+        <div class="results" id="results" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block first" id="atalhos">
+    <div class="container">
+      <span class="kicker">Riviera Serviços</span>
+      <h2>Tudo que sua casa precisa, num lugar só</h2>
+      <div class="quick">
+        <a class="qk qk-sv" href="#servicos" data-scroll="servicos">
+          <span class="qk-ic">🛠️</span>
+          <span class="qk-tx"><b>Serviços</b><small>Jardim, limpeza, piscina, elétrica, pintura e reformas</small></span>
+          <span class="qk-go">Pedir orçamento →</span>
+        </a>
+        <a class="qk qk-cp" href="#compras" data-goto="compras">
+          <span class="qk-ic">🛒</span>
+          <span class="qk-tx"><b>Compras rápidas</b><small>Lâmpada, pilha, resistência de chuveiro e mais</small></span>
+          <span class="qk-go">Ver itens →</span>
+        </a>
+        <a class="qk qk-al" href="#aluguel" data-goto="aluguel">
+          <span class="qk-ic">🏗️</span>
+          <span class="qk-tx"><b>Aluguel de equipamentos</b><small>Andaime, betoneira, tapume e mais</small></span>
+          <span class="qk-go">Ver equipamentos →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="servicos">
+    <div class="container">
+      <div class="sec-head"><div>
+        <span class="kicker">Serviços</span>
+        <h2>Do que sua casa precisa hoje?</h2>
+        <p class="sec-sub">Toque em uma categoria para ver as opções.</p>
+      </div></div>
+      <div class="cats" id="cats"></div>
+      <p class="note">Desenhos meramente ilustrativos.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <span class="kicker">Como funciona</span>
+      <h2>Simples assim, em 3 passos</h2>
+      <div class="steps" style="margin-top:20px">
+        <div class="step"><span class="step-n">1</span><div><b>Escolha o serviço</b><p>Pelas categorias ou pela busca.</p></div></div>
+        <div class="step"><span class="step-n">2</span><div><b>Conte o que precisa</b><p>Preencha o formulário e confirme o envio no seu WhatsApp.</p></div></div>
+        <div class="step"><span class="step-n">3</span><div><b>Receba o orçamento</b><p>Combinamos valor, dia e horário com você.</p></div></div>
+      </div>
+      <div class="perks">
+        <span class="perk">🏡 Atendimento dentro do condomínio</span>
+        <span class="perk">💬 Tudo pelo WhatsApp</span>
+        <span class="perk">📋 Orçamento sem compromisso</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="quem-somos">
+    <div class="container">
+      <div class="about">
+        <div class="about-ic">🏡</div>
+        <span class="kicker" style="color:#FFB27A">Quem somos</span>
+        <h2 style="color:#fff">Somos vizinhos de vocês</h2>
+        <p>A Riviera Serviços nasceu aqui dentro: um dos sócios mora no condomínio. Por isso a gente chega rápido, conhece a rotina do Riviera e cuida da sua casa como cuida da nossa.</p>
+        <div class="about-grid">
+          <div><b>⚡ Perto de você</b><span>Atendimento e entrega sem sair do condomínio</span></div>
+          <div><b>🤝 Confiança</b><span>Avaliações abertas de quem já usou</span></div>
+          <div><b>💬 Simples</b><span>Tudo pelo WhatsApp, sem cadastro</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="avaliacoes">
+    <div class="container">
+      <div class="sec-head"><div>
+        <span class="kicker">Avaliações</span>
+        <h2>O que os moradores dizem</h2>
+        <p class="sec-sub">Só quem teve um serviço concluído pode avaliar. As marcadas como “Exemplo” são fictícias, para demonstração.</p>
+      </div></div>
+      <div class="rv-wrap"><div class="rv-sum" id="rvSum"></div><div class="rv-list" id="rvList"></div></div>
+    </div>
+  </section>
+
+  <section class="block" id="trabalhos">
+    <div class="container">
+      <div class="sec-head"><div>
+        <span class="kicker">Portfólio</span>
+        <h2>Nossos trabalhos</h2>
+        <p class="sec-sub">Nesta demonstração, as imagens são ilustrações. Em breve, fotos reais de serviços feitos no condomínio.</p>
+      </div></div>
+      <div class="chips" id="gChips" role="group" aria-label="Filtrar trabalhos"></div>
+      <div class="gallery" id="gallery"></div>
+
+      <div class="ba" id="ba">
+        <div class="ba-stage" id="baStage">
+          <div id="baAfter"></div>
+          <div class="ba-before" id="baBefore"></div>
+          <span class="ba-line"></span>
+          <span class="ba-knob"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#102B57" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></span>
+          <span class="ba-tag l">Antes</span><span class="ba-tag r">Depois</span>
+          <label class="sr" for="baRange">Comparar antes e depois</label>
+          <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50">
+        </div>
+        <div class="ba-cap">
+          <div><b>Antes e depois — revitalização de jardim</b><br><small>Arraste para comparar • Imagem ilustrativa</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="orcamento">
+    <div class="container">
+      <div class="sec-head"><div>
+        <span class="kicker">Orçamento</span>
+        <h2>Solicite seu orçamento</h2>
+        <p class="sec-sub">Leva menos de 1 minuto. No final, o WhatsApp abre com a mensagem pronta para você enviar.</p>
+      </div></div>
+      <form class="form-card" id="quoteForm" novalidate>
+        <div class="form-grid">
+          <div class="field" data-f="nome">
+            <label for="f-nome">Seu nome</label>
+            <input class="input" id="f-nome" name="nome" autocomplete="name" placeholder="Ex.: Maria Souza">
+            <div class="msg">Informe seu nome.</div>
+          </div>
+          <div class="field" data-f="tel">
+            <label for="f-tel">Seu WhatsApp</label>
+            <input class="input" id="f-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 91234-5678" maxlength="16">
+            <div class="msg">Informe um número com DDD.</div>
+          </div>
+          <div class="field full" data-f="servico">
+            <label for="f-servico">Serviço</label>
+            <select class="input" id="f-servico" name="servico"></select>
+            <div class="msg">Escolha um serviço.</div>
+          </div>
+          <div class="field full" data-f="quando">
+            <span class="lbl">Quando você precisa?</span>
+            <div class="when" role="radiogroup" aria-label="Quando você precisa">
+              <label><input type="radio" name="quando" value="O quanto antes"><span>⚡ O quanto antes</span></label>
+              <label><input type="radio" name="quando" value="Esta semana"><span>Esta semana</span></label>
+              <label><input type="radio" name="quando" value="Próxima semana"><span>Próxima semana</span></label>
+              <label><input type="radio" name="quando" value="data"><span>📅 Escolher data</span></label>
+            </div>
+            <input class="input" id="f-data" type="date" style="margin-top:10px" hidden aria-label="Data desejada">
+            <div class="msg" id="quandoMsg">Escolha quando precisa do serviço.</div>
+          </div>
+          <div class="field full" data-f="desc">
+            <label for="f-desc">Descreva o trabalho</label>
+            <textarea class="input" id="f-desc" name="desc" placeholder="Ex.: cortar a grama da frente e do fundo, cerca de 150 m²."></textarea>
+            <div class="msg">Conte um pouco sobre o serviço.</div>
+          </div>
+          <div class="field full" data-f="setor">
+            <label for="f-setor">Localização no condomínio <small>(opcional)</small></label>
+            <input class="input" id="f-setor" name="setor" placeholder="Ex.: Quadra B, perto da portaria">
+          </div>
+        </div>
+        <div class="form-foot">
+          <button class="btn btn-orange btn-block" type="submit">
+            Solicitar orçamento
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <p class="tiny"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6880" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          Ao tocar no botão, o WhatsApp abre com sua mensagem pronta. Ela só é enviada quando você confirmar lá. Atendimento: (11) 96735-3508 ou (11) 95852-9823.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="block" id="duvidas">
+    <div class="container">
+      <span class="kicker">Dúvidas</span>
+      <h2>Perguntas frequentes</h2>
+      <div class="faq">
+        <details><summary>O orçamento é pago?</summary><p>Não. O orçamento é sem compromisso: você só paga se aprovar o valor.</p></details>
+        <details><summary>Como faço o pagamento?</summary><p>Pagamento combinado pelo WhatsApp, na entrega ou ao final do serviço. Nesta versão o site não recebe pagamentos.</p></details>
+        <details><summary>Vocês entregam fora do horário comercial?</summary><p>Sempre que possível, sim. Ao fazer o pedido, confirmamos pelo WhatsApp em quanto tempo conseguimos entregar.</p></details>
+        <details><summary>Como funciona o aluguel de equipamentos?</summary><p>Você escolhe os itens, a data e quantos dias. Entregamos na sua casa e buscamos no fim do período. O valor final é confirmado no WhatsApp.</p></details>
+        <details><summary>Preciso criar conta ou senha?</summary><p>Não. É só preencher nome e WhatsApp no pedido. Guarde o número do pedido para acompanhar.</p></details>
+        <details><summary>Não achei o que preciso. E agora?</summary><p>Peça um “Serviço personalizado” ou sugira um item na aba Comprar. Os itens mais pedidos entram na lista.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="acompanhar">
+    <div class="container">
+      <div class="track" id="track">
+        <span class="kicker">Acompanhar pedido</span>
+        <h2>Como está meu pedido?</h2>
+        <p class="sec-sub" style="margin-bottom:16px">Digite o número que você recebeu ao pedir o orçamento.</p>
+        <form class="track-form" id="trackForm" autocomplete="off">
+          <label for="trackId" class="sr">Número do pedido</label>
+          <input class="input" id="trackId" placeholder="Ex.: RS-1009" autocapitalize="characters" enterkeyhint="search">
+          <button class="btn btn-orange" type="submit">Consultar</button>
+        </form>
+        <div class="mine" id="mine"></div>
+        <div id="trackResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <span class="logo-text">Riviera <span style="color:#FF781F">Serviços</span></span>
+      <p>Serviços residenciais, compras rápidas e aluguel de equipamentos para moradores do condomínio Riviera de Santa Cristina III.</p>
+      <div class="wa-list"><a href="https://wa.me/5511967353508" target="_blank" rel="noopener">💬 (11) 96735-3508</a><a href="https://wa.me/5511958529823" target="_blank" rel="noopener">💬 (11) 95852-9823</a></div>
+      <p class="ios-tip" style="margin-top:14px">📲 <b>Use como aplicativo:</b> no iPhone, abra no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.</p>
+      <p style="font-size:13.5px;color:#8FA3C6">Protótipo de demonstração. Imagens ilustrativas. Sem pagamentos ou login nesta versão.</p>
+    </div>
+  </footer>
+
+  <a class="fab" id="fab" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8.5 8.5 0 0 1-12.6 7.4L3.5 20l1.2-3.7A8.5 8.5 0 1 1 20 11.5z"/><path d="M9 8.8c.2 2.6 2.4 5 5.2 5.6l1-1.2 1.8.8-.4 1.6c-3.7.2-7.4-3.3-7.4-7.3l1.6-.4.8 1.8z" fill="#fff" stroke-width="1"/></svg>
+  </a>
+</main>
+
+<!-- =================== COMPRAS RÁPIDAS =================== -->
+<main id="view-compras" hidden>
+  <section class="admin-hero rent-hero shop-hero">
+    <div class="container">
+      <span class="eyebrow">🛒 Compras rápidas</span>
+      <h1>Precisou de algo <em>agora?</em></h1>
+      <p>Itens do dia a dia para resolver na hora, sem sair do condomínio. A gente leva até sua casa.</p>
+      <div class="rent-perks"><span>🛵 Entrega no condomínio</span><span>🌙 Para quando as lojas estão fechadas</span><span>💬 Pedido pelo WhatsApp</span></div>
+    </div>
+  </section>
+  <div class="container">
+    <section class="rent-list">
+      <div class="chips shop-chips" id="shopChips" role="group" aria-label="Filtrar produtos"></div>
+      <div class="sp-grid" id="shopGrid"></div>
+      <p class="note">Preços de exemplo. A disponibilidade é confirmada no WhatsApp.</p>
+    </section>
+    <section class="block" id="sugestoes" style="padding-top:44px">
+      <div class="sug-card">
+        <span class="kicker">Sugestões</span>
+        <h2>Sentiu falta de algum item?</h2>
+        <p class="sec-sub">Conte o que você gostaria de encontrar aqui. Os itens mais pedidos entram na lista.</p>
+        <form id="sugForm" class="sug-form" autocomplete="off" novalidate>
+          <div class="field" data-f="sg-item"><label for="sgItem">Qual item?</label>
+            <input class="input" id="sgItem" placeholder="Ex.: ração, carvão, gelo…"><div class="msg">Escreva o nome do item.</div></div>
+          <div class="field" style="margin-top:12px"><label for="sgMot">Para quê? <small>(opcional)</small></label>
+            <input class="input" id="sgMot" placeholder="Ex.: sempre acaba no fim de semana"></div>
+          <div class="field" style="margin-top:12px"><label for="sgNome">Seu nome <small>(opcional)</small></label>
+            <input class="input" id="sgNome" placeholder="Ex.: Maria S."></div>
+          <button class="btn btn-orange btn-block" type="submit" style="margin-top:16px">💡 Enviar sugestão</button>
+        </form>
+      </div>
+      <h3 class="sug-title">Sugestões dos moradores</h3>
+      <p class="tiny" style="margin:-6px 0 12px">Toque em 👍 se você também quer o item.</p>
+      <div class="sug-list" id="sugList"></div>
+    </section>
+  </div>
+  <footer>
+    <div class="container">
+      <span class="logo-text">Riviera <span style="color:#FF781F">Serviços</span></span>
+      <p style="font-size:13.5px;color:#8FA3C6">Protótipo de demonstração. Preços de exemplo. Sem pagamentos ou login nesta versão.</p>
+    </div>
+  </footer>
+  <div class="cartbar" id="shopBar" hidden>
+    <span class="cb-ic">🛒</span><div id="sbInfo"></div>
+    <button class="btn btn-orange" type="button" data-shopcheckout>Ver pedido</button>
+  </div>
+</main>
+
+<!-- =================== ALUGUEL =================== -->
+<main id="view-aluguel" hidden>
+  <section class="admin-hero rent-hero">
+    <div class="container">
+      <span class="eyebrow">🏗️ Aluguel de equipamentos</span>
+      <h1>Vai reformar? <em>Alugue aqui mesmo.</em></h1>
+      <p>Escolha os itens, a quantidade e por quantos dias. Entregamos e buscamos dentro do condomínio.</p>
+      <div class="rent-perks"><span>🚚 Entrega e retirada</span><span>📅 Diária, semana ou mês</span><span>💬 Confirmação pelo WhatsApp</span></div>
+    </div>
+  </section>
+  <div class="container">
+    <section class="rent-list" id="equipamentos">
+      <div class="eq-grid" id="eqGrid"></div>
+      <p class="note">Preços de exemplo, por dia. Desenhos ilustrativos.</p>
+    </section>
+    <section class="block" style="padding-top:44px">
+      <span class="kicker">Como funciona o aluguel</span>
+      <h2>Simples assim</h2>
+      <div class="steps" style="margin-top:20px">
+        <div class="step"><span class="step-n">1</span><div><b>Escolha os equipamentos</b><p>Toque em “+ Adicionar” e ajuste a quantidade.</p></div></div>
+        <div class="step"><span class="step-n">2</span><div><b>Defina o período</b><p>Data de início, quantos dias e se quer entrega.</p></div></div>
+        <div class="step"><span class="step-n">3</span><div><b>Confirme no WhatsApp</b><p>Combinamos o valor final e o horário de entrega.</p></div></div>
+      </div>
+      <a class="promo" href="#morador" data-goto="acompanhar" style="margin-top:22px">
+        <span class="pi">📦</span>
+        <span><b>Já fez um pedido de aluguel?</b><small>Acompanhe pelo número do pedido</small></span>
+        <span class="go"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+    </section>
+  </div>
+  <footer>
+    <div class="container">
+      <span class="logo-text">Riviera <span style="color:#FF781F">Serviços</span></span>
+      <p style="font-size:13.5px;color:#8FA3C6">Protótipo de demonstração. Preços de exemplo. Sem pagamentos ou login nesta versão.</p>
+    </div>
+  </footer>
+  <div class="cartbar" id="cartBar" hidden>
+    <span class="cb-ic">🏗️</span><div id="cbInfo"></div>
+    <button class="btn btn-orange" type="button" data-checkout>Continuar</button>
+  </div>
+
+</main>
+
+<!-- =================== ÁREA DA EMPRESA =================== -->
+<main id="view-empresa" hidden>
+  <section class="admin-hero">
+    <div class="container">
+      <span class="eyebrow">Painel da empresa • demonstração</span>
+      <h1>Pedidos de orçamento</h1>
+      <p>Acompanhe as solicitações dos moradores e atualize o andamento de cada uma.</p>
+      <div class="notice">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFB27A" stroke-width="2.3" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span id="storageNote">Pedidos salvos apenas neste navegador. Eles <b>não são sincronizados</b> entre dispositivos. Os primeiros pedidos da lista são fictícios, para demonstração.</span>
+      </div>
+    </div>
+  </section>
+  <div class="container">
+    <div class="stats" id="stats"></div>
+    <div class="fin" id="fin"></div>
+    <div class="seg" role="group" aria-label="Visualização">
+      <button type="button" data-atab="pedidos" aria-pressed="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/></svg> Pedidos</button>
+      <button type="button" data-atab="agenda" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg> Agenda <span class="cnt" id="agCount">0</span></button>
+      <button type="button" data-atab="sugestoes" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg> Sugestões <span class="cnt" id="sgCount">0</span></button>
+    </div>
+    <div id="tabPedidos">
+      <div class="toolbar">
+        <h2 id="listTitle">Todas as solicitações</h2>
+        <label class="mini-search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B6880" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <span class="sr">Buscar cliente ou serviço</span>
+          <input id="adminQ" type="search" placeholder="Buscar cliente ou serviço">
+        </label>
+      </div>
+      <div class="chips type-chips" id="typeChips" role="group" aria-label="Tipo de pedido"></div>
+      <div class="orders" id="orders"></div>
+    </div>
+    <div id="tabAgenda" hidden>
+      <div class="toolbar"><h2>Serviços agendados</h2></div>
+      <div id="agenda"></div>
+    </div>
+    <div id="tabSug" hidden>
+      <div class="toolbar"><h2>Sugestões dos moradores</h2></div>
+      <p class="tiny" style="margin:-6px 0 14px">Mais votadas primeiro. Marque “Vamos vender” para mostrar “Em breve” aos moradores.</p>
+      <div id="sugAdmin"></div>
+    </div>
+    <div class="admin-foot">
+      <button class="btn btn-line" id="resetBtn" type="button">↺ Restaurar dados de demonstração</button>
+      <a class="btn btn-ghost" href="#morador">+ Simular novo pedido como morador</a>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <span class="logo-text">Riviera <span style="color:#FF781F">Serviços</span></span>
+      <p style="font-size:13.5px;color:#8FA3C6">Painel de demonstração. Sem login, sem banco de dados: pedidos ficam guardados no armazenamento deste navegador.</p>
+    </div>
+  </footer>
+</main>
+
+<!-- Sheet -->
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO
+   ============================================================ */
+// WhatsApp da empresa: o pedido pode ser enviado para qualquer um dos dois
+const WA_NUMBERS = [
+  {num:'5511967353508', label:'(11) 96735-3508'},
+  {num:'5511958529823', label:'(11) 95852-9823'}
+];
+const WA_NUMBER = WA_NUMBERS[0].num;
+const STORE_KEY = 'riviera_demo_pedidos_v3';  // chave no armazenamento local
+
+/* ---------- Ícones ---------- */
+const ICONS = {
+  leaf:'<path d="M5 19c0-8.5 5.5-14 15-14 0 9-5.5 14.5-14 14.5"/><path d="M5 19.5l8-8"/>',
+  sparkle:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  pool:'<path d="M2 15c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0"/><path d="M2 19.5c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0"/><path d="M8 13V5.5a2 2 0 0 1 4 0M16 13V5.5a2 2 0 0 0-4 0"/><path d="M8 9h8"/>',
+  bolt:'<path d="M13 2.5L4.5 13.5H11l-1 8 8.5-11H12z"/>',
+  drop:'<path d="M12 3s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 10 12 3 12 3z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
+  roller:'<rect x="3" y="3.5" width="14" height="5.5" rx="1.5"/><path d="M17 6.2h3v5.3h-8v3"/><rect x="10.5" y="14.5" width="3" height="6.5" rx="1"/>',
+  hammer:'<path d="M14.5 3.5l6 6-2.5 2.5-6-6z"/><path d="M12 6L4 14a2.1 2.1 0 0 0 3 3l8-8"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M16.5 13.5v6M13.5 16.5h6"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  pin:'<path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
+  cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  inbox:'<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/>',
+  star:'<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+  file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  chat:'<path d="M20 11.5a8.5 8.5 0 0 1-12.6 7.4L3.5 20l1.2-3.7A8.5 8.5 0 1 1 20 11.5z"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  bag:'<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+  helmet:'<path d="M3 18h18v2H3z"/><path d="M5 18v-3a7 7 0 0 1 14 0v3"/><path d="M12 8V5M9 9.5L8 7M15 9.5L16 7"/>'
+};
+const ic = (n, size=22, color='currentColor', sw=2.3) =>
+  `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+
+/* ---------- Categorias ---------- */
+const CATS = [
+  {id:'jardinagem', name:'Jardinagem', icon:'leaf', desc:'Grama, poda, terreno e paisagismo',
+   subs:['Corte de grama','Poda de árvores e arbustos','Limpeza de terreno','Paisagismo'], kw:'jardim grama gramado poda arvore mato terreno roçada paisagismo planta'},
+  {id:'limpeza', name:'Limpeza', icon:'sparkle', desc:'Residencial, pós-obra e faxina',
+   subs:['Limpeza residencial','Limpeza pós-obra','Faxina completa'], kw:'faxina limpar diarista pos obra casa vidro'},
+  {id:'piscinas', name:'Piscinas', icon:'pool', desc:'Limpeza e manutenção',
+   subs:['Limpeza de piscina','Manutenção e tratamento da água'], kw:'piscina agua verde cloro filtro tratamento'},
+  {id:'eletrica', name:'Elétrica', icon:'bolt', desc:'Tomadas, iluminação e instalações',
+   subs:['Tomadas e interruptores','Iluminação','Instalações elétricas'], kw:'eletricista tomada luz lampada chuveiro disjuntor fiação led spot'},
+  {id:'hidraulica', name:'Hidráulica', icon:'drop', desc:'Vazamentos, torneiras e encanamentos',
+   subs:['Vazamentos','Torneiras e registros','Encanamentos'], kw:'encanador vazamento torneira cano pia descarga registro esgoto entupimento'},
+  {id:'pintura', name:'Pintura', icon:'roller', desc:'Interna, externa e muros',
+   subs:['Pintura interna','Pintura externa','Pintura de muros'], kw:'pintor pintar parede muro tinta fachada'},
+  {id:'reformas', name:'Reformas', icon:'hammer', desc:'Alvenaria, pisos e pequenos reparos',
+   subs:['Alvenaria','Pisos e revestimentos','Pequenos reparos'], kw:'pedreiro reforma obra piso azulejo reparo conserto parede'},
+  {id:'outros', name:'Outros serviços', icon:'grid', desc:'Manutenção geral e sob medida',
+   subs:['Manutenção geral','Serviço personalizado'], kw:'marido de aluguel manutencao montagem moveis instalacao suporte tv outros'}
+];
+const RENT_CAT = {id:'aluguel', name:'Aluguel de equipamentos', icon:'helmet', desc:'', subs:[], kw:''};
+const catById = id => CATS.find(c => c.id === id) || (id === 'aluguel' ? RENT_CAT : id === 'compras' ? SHOP_CAT : CATS[CATS.length - 1]);
+
+const STATUS = {
+  novo:      {label:'Novo',         color:'#FF781F', soft:'#FFF1E7', ic:'star'},
+  orcamento: {label:'Em orçamento', color:'#2F6FDE', soft:'#E9F0FD', ic:'file'},
+  agendado:  {label:'Agendado',     color:'#102B57', soft:'#E8EEF8', ic:'cal'},
+  concluido: {label:'Concluído',    color:'#17A75B', soft:'#E6F6EE', ic:'check'}
+};
+
+/* ============================================================
+   ILUSTRAÇÕES (SVG) — substituíveis por fotos reais
+   ============================================================ */
+let _uid = 0;
+function scene(kind){
+  const u = 'g' + (++_uid);
+  const sky = (a='#A8D4FA', b='#EAF5FF') => `<linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+  const wrap = (defs, body, vb='0 0 400 260') => `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${defs}</defs>${body}</svg>`;
+  const palm = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 Q-8 -60 6 -120" stroke="#8B6A4A" stroke-width="9" fill="none" stroke-linecap="round"/><g transform="translate(6 -120)" fill="#2E9A57"><ellipse rx="44" ry="9" transform="rotate(-25) translate(-30 0)"/><ellipse rx="44" ry="9" transform="rotate(25) translate(30 0)"/><ellipse rx="40" ry="8" fill="#37AD63" transform="rotate(-150) translate(-28 0)"/><ellipse rx="40" ry="8" fill="#37AD63" transform="rotate(150) translate(28 0)"/><ellipse rx="34" ry="8" fill="#259050" transform="rotate(-80) translate(-22 0)"/></g></g>`;
+
+  switch(kind){
+  case 'hero': return wrap(
+    sky('#6FA9E6','#FFE4CC') +
+    `<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BFE6FF"/><stop offset=".55" stop-color="#6FB3E8"/><stop offset="1" stop-color="#3D7FC1"/></linearGradient>
+     <linearGradient id="${u}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#74C983"/><stop offset="1" stop-color="#4AA35E"/></linearGradient>
+     <radialGradient id="${u}w" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE7A8"/><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"/></radialGradient>`,
+    `<rect width="800" height="550" fill="url(#${u}s)"/>
+     <circle cx="640" cy="120" r="90" fill="url(#${u}w)"/><circle cx="640" cy="120" r="42" fill="#FFD48F"/>
+     <g fill="#fff" opacity=".85"><ellipse cx="150" cy="90" rx="62" ry="17"/><ellipse cx="190" cy="78" rx="40" ry="20"/><ellipse cx="470" cy="62" rx="52" ry="13"/><ellipse cx="500" cy="54" rx="28" ry="13"/></g>
+     <path d="M0 330 Q120 262 250 306 T500 296 T800 280 V420 H0Z" fill="#A6D7B2"/>
+     <path d="M0 352 Q170 306 330 338 T650 326 T800 334 V420 H0Z" fill="#86C796"/>
+     <g fill="#2F8A52"><circle cx="70" cy="330" r="34"/><circle cx="105" cy="318" r="26"/><circle cx="730" cy="322" r="32"/><circle cx="765" cy="334" r="26"/></g>
+     <!-- casa -->
+     <rect x="410" y="148" width="226" height="78" fill="#FBFAF7"/>
+     <rect x="440" y="164" width="176" height="46" rx="2" fill="url(#${u}g)"/>
+     <path d="M498 164v46M556 164v46" stroke="#E9EEF5" stroke-width="4"/>
+     <path d="M452 206l40-42h22l-40 42z" fill="#fff" opacity=".25"/>
+     <rect x="396" y="134" width="256" height="16" rx="3" fill="#102B57"/>
+     <rect x="220" y="222" width="400" height="176" fill="#F6F2EA"/>
+     <rect x="188" y="208" width="464" height="18" rx="3" fill="#102B57"/>
+     <rect x="240" y="246" width="128" height="152" fill="#C98B5A"/>
+     <g stroke="#B37748" stroke-width="3"><path d="M240 262h128M240 278h128M240 294h128M240 310h128M240 326h128M240 342h128M240 358h128M240 374h128"/></g>
+     <rect x="276" y="300" width="56" height="98" rx="3" fill="#102B57"/><circle cx="322" cy="350" r="3.5" fill="#FF9B57"/>
+     <rect x="388" y="246" width="214" height="126" rx="2" fill="url(#${u}g)"/>
+     <path d="M459 246v126M530 246v126" stroke="#EEF2F7" stroke-width="5"/>
+     <path d="M400 360l78-114h30l-78 114z" fill="#fff" opacity=".22"/>
+     <rect x="380" y="372" width="230" height="8" rx="2" fill="#E2DACB"/>
+     <!-- gramado -->
+     <rect y="392" width="800" height="160" fill="url(#${u}l)"/>
+     <g fill="#5FB672" opacity=".55"><path d="M0 392h80l-40 70H0z"/><path d="M160 392h80l-60 70h-80z"/><path d="M560 392h80l20 70h-80z"/><path d="M720 392h80v70h-60z"/></g>
+     <g fill="#E7DED0"><ellipse cx="304" cy="410" rx="26" ry="7"/><ellipse cx="296" cy="428" rx="28" ry="8"/><ellipse cx="290" cy="448" rx="30" ry="8"/></g>
+     <g fill="#2B8B4D"><rect x="388" y="380" width="230" height="26" rx="13"/><rect x="150" y="384" width="80" height="22" rx="11"/></g>
+     <g fill="#FF8A3D"><circle cx="410" cy="384" r="4"/><circle cx="452" cy="381" r="4"/><circle cx="500" cy="384" r="4"/><circle cx="548" cy="381" r="4"/><circle cx="592" cy="384" r="4"/></g>
+     ${palm(150,400,1.25)}${palm(705,404,1.1)}
+     <g><rect x="642" y="300" width="5" height="100" fill="#3A4A66"/><rect x="633" y="292" width="23" height="12" rx="4" fill="#3A4A66"/><circle cx="644.5" cy="306" r="5" fill="#FFE29A"/></g>
+     <rect y="470" width="800" height="80" fill="#5E6879"/><rect y="466" width="800" height="7" fill="#D7D2C8"/>
+     <g fill="#fff" opacity=".7"><rect x="30" y="505" width="60" height="6" rx="3"/><rect x="170" y="505" width="60" height="6" rx="3"/><rect x="310" y="505" width="60" height="6" rx="3"/><rect x="450" y="505" width="60" height="6" rx="3"/><rect x="590" y="505" width="60" height="6" rx="3"/><rect x="730" y="505" width="60" height="6" rx="3"/></g>`,
+    '0 0 800 550');
+
+  case 'jardinagem': return wrap(sky(),
+    `<rect width="400" height="260" fill="url(#${u}s)"/>
+     <circle cx="335" cy="52" r="24" fill="#FFD27A"/>
+     <path d="M0 140 Q100 108 200 132 T400 124 V260 H0Z" fill="#BFE5C8"/>
+     <rect y="150" width="400" height="110" fill="#5DBB6B"/>
+     <g fill="#6FCB7C"><path d="M0 150h50l-30 110H0z"/><path d="M100 150h50l-50 110h-50z"/><path d="M200 150h50l-70 110h-50z"/><path d="M300 150h50l-90 110h-50z"/></g>
+     <rect x="58" y="88" width="13" height="72" rx="4" fill="#8B5A3C"/>
+     <circle cx="64" cy="78" r="36" fill="#2E8B4E"/><circle cx="40" cy="96" r="22" fill="#38A05B"/><circle cx="90" cy="96" r="24" fill="#38A05B"/>
+     <rect x="120" y="128" width="96" height="30" rx="15" fill="#2F8F4E"/>
+     <g fill="#FF8A3D"><circle cx="140" cy="132" r="4"/><circle cx="166" cy="128" r="4"/><circle cx="192" cy="132" r="4"/></g>
+     <g transform="translate(232 162)"><path d="M58 4 L86 -38" stroke="#102B57" stroke-width="6" stroke-linecap="round"/><rect x="0" y="0" width="70" height="32" rx="9" fill="#FF781F"/><rect x="8" y="-6" width="40" height="10" rx="4" fill="#E8650E"/><circle cx="14" cy="34" r="10" fill="#102B57"/><circle cx="58" cy="34" r="10" fill="#102B57"/><circle cx="14" cy="34" r="4" fill="#9FB0CC"/><circle cx="58" cy="34" r="4" fill="#9FB0CC"/></g>`);
+
+  case 'limpeza': return wrap(
+    `<linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7F3EC"/><stop offset="1" stop-color="#EFE8DC"/></linearGradient>`,
+    `<rect width="400" height="260" fill="url(#${u}s)"/>
+     <rect x="230" y="34" width="120" height="100" rx="6" fill="#fff"/><rect x="238" y="42" width="104" height="84" rx="3" fill="#BFE2FB"/><path d="M290 42v84M238 84h104" stroke="#fff" stroke-width="5"/>
+     <path d="M252 116l40-62h18l-40 62z" fill="#fff" opacity=".5"/>
+     <rect y="188" width="400" height="72" fill="#E3D2BB"/><path d="M0 188h400" stroke="#D3BFA4" stroke-width="3"/>
+     <rect x="24" y="118" width="150" height="58" rx="14" fill="#102B57"/><rect x="18" y="140" width="162" height="50" rx="14" fill="#1A3D78"/>
+     <rect x="38" y="104" width="54" height="40" rx="10" fill="#FF9B57"/><rect x="104" y="108" width="54" height="36" rx="10" fill="#E8EEF8"/>
+     <g transform="translate(250 160)"><path d="M0 0h56l-6 44H6z" fill="#2F80ED"/><path d="M4 0 Q28 -26 52 0" stroke="#1D5FBF" stroke-width="4" fill="none"/><ellipse cx="28" cy="2" rx="27" ry="5" fill="#9ED0FF"/></g>
+     <path d="M330 60 L352 196" stroke="#C98B5A" stroke-width="6" stroke-linecap="round"/><rect x="334" y="190" width="40" height="16" rx="5" fill="#FF781F"/>
+     <g fill="#FFC24D"><path d="M206 74l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path d="M188 132l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M366 120l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g>`);
+
+  case 'piscinas': return wrap(sky() +
+    `<linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4FD1F5"/><stop offset="1" stop-color="#1B86D2"/></linearGradient>`,
+    `<rect width="400" height="260" fill="url(#${u}s)"/>
+     <circle cx="70" cy="50" r="22" fill="#FFD27A"/>
+     <rect y="118" width="400" height="142" fill="#EBDCC6"/>
+     <rect x="28" y="146" width="344" height="96" rx="16" fill="#fff"/>
+     <rect x="36" y="153" width="328" height="82" rx="12" fill="url(#${u}p)"/>
+     <g stroke="#fff" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round"><path d="M60 180q12-8 24 0t24 0"/><path d="M180 200q12-8 24 0t24 0"/><path d="M270 170q12-8 24 0t24 0"/><path d="M110 220q12-8 24 0t24 0"/></g>
+     <g stroke="#C8D2E0" stroke-width="5" fill="none" stroke-linecap="round"><path d="M322 150v-26q0-10 10-10"/><path d="M344 150v-26q0-10 10-10"/></g>
+     ${palm(360,122,.8)}
+     <g transform="translate(70 92)"><path d="M0 26h80l10-14" stroke="#102B57" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="0" y="16" width="78" height="10" rx="4" fill="#FF781F"/></g>
+     <path d="M190 58 Q230 20 270 58z" fill="#FF781F"/><path d="M230 40v80" stroke="#6B7A93" stroke-width="4"/>`);
+
+  case 'eletrica': return wrap(
+    `<linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF0F8"/><stop offset="1" stop-color="#DCE5F2"/></linearGradient>
+     <radialGradient id="${u}w" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE48A" stop-opacity=".95"/><stop offset="1" stop-color="#FFE48A" stop-opacity="0"/></radialGradient>`,
+    `<rect width="400" height="260" fill="url(#${u}s)"/>
+     <circle cx="140" cy="120" r="90" fill="url(#${u}w)"/>
+     <path d="M140 0v62" stroke="#102B57" stroke-width="4"/>
+     <path d="M108 96h64l-12-34h-40z" fill="#102B57"/>
+     <circle cx="140" cy="104" r="14" fill="#FFE07A"/>
+     <path d="M86 160l-16 30M140 170v36M194 160l16 30" stroke="#FFD15C" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+     <rect x="262" y="116" width="78" height="96" rx="14" fill="#fff" stroke="#C7D2E3" stroke-width="3"/>
+     <rect x="282" y="134" width="38" height="58" rx="10" fill="#F2F5FA"/>
+     <circle cx="294" cy="160" r="4.5" fill="#102B57"/><circle cx="308" cy="160" r="4.5" fill="#102B57"/><rect x="298" y="170" width="6" height="8" rx="2" fill="#102B57"/>
+     <path d="M300 212 Q300 240 360 240 H400" stroke="#FF781F" stroke-width="6" fill="none" stroke-linecap="round"/>
+     <circle cx="352" cy="58" r="26" fill="#FF781F"/><path d="M356 40l-14 20h10l-4 16 14-20h-10z" fill="#fff"/>`);
+
+  case 'hidraulica': return wrap(
+    `<linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF6FA"/><stop offset="1" stop-color="#D9EEF5"/></linearGradient>`,
+    `<rect width="400" height="260" fill="url(#${u}s)"/>
+     <g stroke="#C5E0EA" stroke-width="2"><path d="M0 40h400M0 80h400M0 120h400M60 0v150M120 0v150M180 0v150M240 0v150M300 0v150M360 0v150"/></g>
+     <rect x="70" y="140" width="260" height="22" rx="6" fill="#B9C6D8"/>
+     <path d="M110 140 Q110 186 200 186 Q290 186 290 140z" fill="#fff" stroke="#D3DCE8" stroke-width="3"/>
+     <path d="M200 138v-50h40v18" stroke="#9AA9BF" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+     <rect x="188" y="128" width="24" height="14" rx="4" fill="#7E8DA6"/>
+     <path d="M240 124s10 13 10 19a10 10 0 0 1-20 0c0-6 10-19 10-19z" fill="#3DA9F5"/>
+     <path d="M186 186v40h-50v34M214 186v24h70v50" stroke="#8D9AAE" stroke-width="10" fill="none" stroke-linejoin="round"/>
+     <rect x="268" y="196" width="34" height="18" rx="5" fill="#FF781F"/>
+     <g transform="translate(320 40) rotate(35)"><rect x="-6" y="0" width="12" height="70" rx="5" fill="#102B57"/><path d="M-16 -8a16 16 0 1 0 32 0l-8 0v10h-16v-10z" fill="#102B57"/></g>`);
+
+  case 'pintura': return wrap('',
+    `<rect width="400" height="260" fill="#F2EEE7"/>
+     <path d="M0 0h230v200H0z" fill="#FF9B57"/>
+     <path d="M230 0v200" stroke="#FFB27D" stroke-width="2"/>
+     <g fill="#FF9B57"><rect x="226" y="40" width="10" height="34" rx="5"/><rect x="226" y="110" width="10" height="22" rx="5"/></g>
+     <rect y="200" width="400" height="60" fill="#D9CDBA"/>
+     <g transform="translate(196 34)"><rect x="0" y="0" width="70" height="30" rx="9" fill="#FF781F"/><rect x="4" y="4" width="62" height="22" rx="6" fill="#FF9B57"/><path d="M70 15h14v34H35v26" stroke="#102B57" stroke-width="6" fill="none" stroke-linejoin="round"/><rect x="29" y="74" width="12" height="40" rx="5" fill="#102B57"/></g>
+     <g transform="translate(286 196)"><path d="M0 0h80l-8 22H8z" fill="#102B57"/><ellipse cx="34" cy="2" rx="26" ry="4" fill="#FF9B57"/></g>
+     <g stroke="#B6905F" stroke-width="6" stroke-linecap="round"><path d="M40 254L70 90M110 254L80 90"/><path d="M50 210h50M56 170h40M62 130h30" stroke-width="5"/></g>`);
+
+  case 'reformas': return wrap('',
+    `<rect width="400" height="260" fill="#F4EDE4"/>
+     <g fill="#C9714D">${[0,1,2,3,4,5].map(r=>[0,1,2,3,4,5,6].map(c=>`<rect x="${c*62-(r%2?31:0)}" y="${r*26}" width="58" height="22" rx="2"/>`).join('')).join('')}</g>
+     <rect x="250" y="0" width="150" height="160" fill="#F4EDE4"/>
+     <path d="M250 0v160" stroke="#E2D6C6" stroke-width="3"/>
+     <rect y="160" width="400" height="100" fill="#E7DCCB"/>
+     <g stroke="#D3C3AC" stroke-width="2"><path d="M0 190h400M0 222h400M50 160v100M120 160v100M190 160v100M260 160v100M330 160v100"/></g>
+     <g transform="translate(150 168)"><rect x="0" y="16" width="110" height="56" rx="8" fill="#FF781F"/><rect x="0" y="16" width="110" height="16" rx="6" fill="#E8650E"/><path d="M36 16v-12h38v12" stroke="#102B57" stroke-width="7" fill="none" stroke-linejoin="round"/><rect x="48" y="38" width="14" height="10" rx="2" fill="#102B57"/></g>
+     <g transform="translate(300 130)"><path d="M-32 30a32 30 0 0 1 64 0z" fill="#FFC531"/><rect x="-38" y="28" width="76" height="9" rx="4" fill="#F0B000"/><rect x="-4" y="-2" width="8" height="18" rx="3" fill="#F0B000"/></g>
+     <g transform="translate(60 200) rotate(-25)"><rect x="0" y="0" width="56" height="9" rx="3" fill="#102B57"/><path d="M56 -12h44v34H56z" fill="#9AA9BF"/></g>`);
+
+  case 'outros': return wrap(
+    `<linearGradient id="${u}s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8EEF8"/><stop offset="1" stop-color="#D4E0F2"/></linearGradient>`,
+    `<rect width="400" height="260" fill="url(#${u}s)"/>
+     <circle cx="330" cy="40" r="70" fill="#fff" opacity=".5"/>
+     <path d="M110 120l90-70 90 70v110H110z" fill="#fff"/><path d="M96 126L200 44l104 82" stroke="#102B57" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+     <rect x="176" y="160" width="48" height="70" rx="6" fill="#102B57"/>
+     <rect x="128" y="140" width="34" height="34" rx="5" fill="#BFE2FB"/><rect x="238" y="140" width="34" height="34" rx="5" fill="#BFE2FB"/>
+     <rect y="228" width="400" height="32" fill="#9FB4D3"/>
+     <circle cx="312" cy="190" r="36" fill="#FF781F"/>
+     <g transform="translate(312 190)" stroke="#fff" stroke-width="7" stroke-linecap="round"><path d="M-14 14L10 -10"/><path d="M14 14L-10 -10"/></g>
+     <g transform="translate(312 190)" fill="#fff"><circle cx="13" cy="-13" r="8"/><rect x="-18" y="-18" width="9" height="9" rx="2"/></g>`);
+
+  case 'jardimAntes': case 'jardimDepois': {
+    const after = kind === 'jardimDepois';
+    let r = 7; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+    let blades = '';
+    if(!after){ for(let i=0;i<150;i++){ const x=rnd()*400, y=150+rnd()*110, h=14+rnd()*30, w=3+rnd()*4; blades += `<path d="M${x} ${y} l${w/2} -${h} l${w/2} ${h}z" fill="${rnd()>.5?'#7E9A3E':'#9BB14F'}"/>`; } }
+    let leaves = '';
+    if(!after){ for(let i=0;i<26;i++){ leaves += `<ellipse cx="${rnd()*400}" cy="${170+rnd()*90}" rx="5" ry="3" fill="${rnd()>.5?'#C98A3B':'#D9A24E'}" transform="rotate(${rnd()*180})"/>`; } }
+    return wrap(sky('#A8D4FA','#EAF5FF'),
+     `<rect width="400" height="260" fill="url(#${u}s)"/>
+      <rect x="0" y="62" width="400" height="92" fill="#EFE6D7"/><rect x="0" y="56" width="400" height="10" fill="#102B57"/>
+      <rect x="250" y="80" width="90" height="56" rx="3" fill="#BFE2FB"/><path d="M295 80v56" stroke="#fff" stroke-width="4"/>
+      <rect y="150" width="400" height="110" fill="${after?'#5DBB6B':'#93A84D'}"/>
+      ${after ? `<g fill="#6FCB7C"><path d="M0 150h40v110H0z"/><path d="M80 150h40v110H80z"/><path d="M160 150h40v110h-40z"/><path d="M240 150h40v110h-40z"/><path d="M320 150h40v110h-40z"/></g>
+        <g fill="#E8DFD1"><ellipse cx="200" cy="176" rx="22" ry="6"/><ellipse cx="200" cy="200" rx="25" ry="7"/><ellipse cx="200" cy="228" rx="28" ry="8"/></g>
+        <g fill="#2F8F4E"><circle cx="50" cy="146" r="26"/><circle cx="110" cy="148" r="22"/><circle cx="350" cy="146" r="26"/></g>
+        <rect x="20" y="160" width="140" height="14" rx="7" fill="#3E2B1F" opacity=".35"/>
+        <g>${[30,50,70,90,110,130,150].map((x,i)=>`<circle cx="${x}" cy="166" r="5" fill="${['#FF781F','#FFC531','#F25C8C','#FF781F','#FFC531','#F25C8C','#FF781F'][i]}"/>`).join('')}</g>`
+      : `<g fill="#B79B5C" opacity=".7"><ellipse cx="90" cy="200" rx="50" ry="14"/><ellipse cx="290" cy="230" rx="60" ry="14"/></g>
+        <g fill="#47703A"><path d="M20 160c-10-40 30-60 50-30 20-30 60-6 40 26 20 10 0 30-20 20-10 20-50 16-50-4-20 0-26-12-20-12z"/><path d="M310 158c-6-36 34-50 48-24 22-20 50 6 30 30 16 14-10 26-26 14-14 16-46 6-40-10-16-2-18-12-12-10z"/></g>
+        ${blades}${leaves}`}`);
+  }
+  }
+  return '';
+}
+
+/* ============================================================
+   ARMAZENAMENTO LOCAL
+   ============================================================ */
+let ORDERS = null, storageOK = true;
+function iso(daysAgo, hour){ const d = new Date(); d.setDate(d.getDate()-daysAgo); d.setHours(hour, (daysAgo*17)%60, 0, 0); return d.toISOString(); }
+function fmtDay(d){ return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); }
+function seed(){
+  const inDays = n => { const d=new Date(); d.setDate(d.getDate()+n); return 'Data: ' + fmtDay(d); };
+  const day = n => { const d = new Date(); d.setDate(d.getDate()+n); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+  const demo = (id, nome, cat, sub, status, ago, h, quando, setor, desc, valor=null, agenda=null) =>
+    ({id, nome, tel:'11974833364', cat, sub, status, criado:iso(ago,h), quando, setor, desc, valor, agenda, demo:true});
+  const rent = (id, nome, status, ago, h, itensQ, iniDays, dias, setor, desc, agenda=null) => {
+    const itens = itensQ.map(([rid,q]) => { const r = rentById(rid); return {id:rid, nome:r.nome, unid:r.unid, preco:r.preco, qtd:q}; });
+    const inicio = day(iniDays), daily = itens.reduce((a,i) => a + i.preco * i.qtd, 0);
+    return {id, tipo:'aluguel', nome, tel:'11974833364', cat:'aluguel', sub:rentSub(itens), status, criado:iso(ago,h),
+      quando:`A partir de ${fmtDay(fromYmd(inicio))} • ${diasTxt(dias)}`, setor, desc, itens, inicio, dias, entrega:true,
+      valor:daily * dias, estimado:true, agenda, demo:true};
+  };
+  return [
+    shopDemo('RS-1011'),
+    rent('RS-1010','Juliana Castro','agendado',0,11,[['betoneira',1],['carrinho',2]],1,7,'Quadra C, casa 8','Construção de uma edícula nos fundos.',{data:day(1), hora:'08:00'}),
+    rent('RS-1009','Paulo Henrique','novo',0,10,[['andaime',6],['tapume',12]],2,15,'Quadra G, casa 3','Reforma da fachada do sobrado.'),
+    demo('RS-1008','Marina Albuquerque','piscinas','Limpeza de piscina','novo',0,9,'Esta semana','Quadra C','A água ficou esverdeada depois das chuvas. Piscina de aproximadamente 6 x 3 m.'),
+    demo('RS-1007','Roberto Siqueira','jardinagem','Corte de grama','novo',0,8,'O quanto antes','Quadra A, perto da portaria','Gramado da frente e do fundo, cerca de 200 m². Também preciso aparar as bordas.'),
+    demo('RS-1006','Lourdes Ferreira','hidraulica','Vazamentos','orcamento',1,15,'O quanto antes','Quadra F','Vazamento embaixo da pia da cozinha, pingando dentro do armário.', 180),
+    demo('RS-1005','Carlos Menezes','pintura','Pintura de muros','orcamento',2,11,'Próxima semana','Quadra B','Muro frontal com cerca de 15 metros. Quero manter a cor cinza atual.', 950),
+    demo('RS-1004','Patrícia Nogueira','limpeza','Limpeza pós-obra','agendado',3,10,inDays(3),'Quadra D','Casa de 3 quartos, acabamos de trocar o piso da sala.', 680, {data:day(3), hora:'08:00'}),
+    demo('RS-1003','Antônio Ribeiro','eletrica','Iluminação','agendado',4,17,'Esta semana','Quadra E','Instalar 6 spots de LED na varanda gourmet.', 420, {data:day(1), hora:'14:00'}),
+    demo('RS-1002','Fernanda Lima','reformas','Pequenos reparos','concluido',6,14,'Esta semana','','Rejunte do banheiro e uma porta de armário que não fecha.', 250),
+    demo('RS-1001','José Andrade','jardinagem','Poda de árvores e arbustos','concluido',8,9,'Próxima semana','Quadra A','Poda de duas árvores no quintal e da cerca viva lateral.', 380)
+  ];
+}
+function load(){
+  try{ const raw = localStorage.getItem(STORE_KEY); if(raw){ const v = JSON.parse(raw); if(Array.isArray(v)) return v; } }catch(e){ storageOK = false; }
+  return null;
+}
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(ORDERS)); storageOK = true; }catch(e){ storageOK = false; }
+}
+function orders(){
+  if(!ORDERS){ ORDERS = load(); if(!ORDERS){ ORDERS = seed(); save(); } }
+  return ORDERS;
+}
+
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const digits = s => String(s).replace(/\D/g,'');
+function fmtPhone(d){
+  d = digits(d).slice(0,11);
+  if(d.length <= 2) return d ? '(' + d : '';
+  if(d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+  if(d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+}
+const waLink = (num, text) => `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
+function fmtDate(isoStr){
+  const d = new Date(isoStr), now = new Date();
+  const diff = Math.floor((new Date(now.toDateString()) - new Date(d.toDateString())) / 864e5);
+  const hm = d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  if(diff === 0) return 'Hoje, ' + hm;
+  if(diff === 1) return 'Ontem, ' + hm;
+  return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.','') + ', ' + hm;
+}
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2600); }
+
+/* ============================================================
+   NAVEGAÇÃO (abas)
+   ============================================================ */
+const VIEWS = ['morador','compras','aluguel','empresa'];
+let currentView = 'morador';
+function route(){
+  const hv = location.hash.slice(1);
+  const v = VIEWS.includes(hv) ? hv : 'morador';
+  currentView = v;
+  VIEWS.forEach(x => { $('#view-' + x).hidden = x !== v; });
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.view === v));
+  if(v === 'empresa') renderAdmin();
+  else if(v === 'aluguel') { renderRentCards(); }
+  else if(v === 'compras') { renderShop(); renderSug(); }
+  else { renderReviews(); renderMine(); if(trackedId) renderTrack(trackedId); }
+  renderCartBar(); renderShopBar();
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  const v = t.dataset.view;
+  if(location.hash !== '#' + v) location.hash = v; else route();
+  window.scrollTo({top:0, behavior:'smooth'});
+}));
+window.addEventListener('hashchange', () => {
+  const h = location.hash.slice(1);
+  if(h === '' || VIEWS.includes(h)){ route(); window.scrollTo({top:0}); }
+});
+function goTo(view, anchor){
+  if(location.hash !== '#' + view) location.hash = view; else route();
+  setTimeout(() => { if(anchor) scrollToId(anchor); else window.scrollTo({top:0}); }, 60);
+}
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]'); if(!g) return;
+  e.preventDefault();
+  const t = g.dataset.goto;
+  t === 'acompanhar' ? goTo('morador', 'acompanhar') : goTo(t);
+});
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-scroll]');
+  if(!a) return;
+  e.preventDefault();
+  scrollToId(a.dataset.scroll);
+});
+function scrollToId(id){
+  const el = document.getElementById(id); if(!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - ($('.header').offsetHeight + 8);
+  window.scrollTo({top:y, behavior:'smooth'});
+}
+
+/* ============================================================
+   MORADOR — categorias, busca, galeria, formulário
+   ============================================================ */
+$('#heroArt').insertAdjacentHTML('afterbegin', scene('hero'));
+$('#fab').href = waLink(WA_NUMBER, 'Olá, Riviera Serviços! Gostaria de mais informações sobre os serviços.');
+
+$('#cats').innerHTML = CATS.map(c => `
+  <button class="cat" type="button" data-cat="${c.id}" aria-label="${esc(c.name)}: ${esc(c.desc)}">
+    <div class="cat-art">${scene(c.id)}<span class="cat-ic">${ic(c.icon,22,'#fff',2.3)}</span></div>
+    <div class="cat-body"><b>${esc(c.name)}</b><small>${esc(c.desc)}</small>
+      <span class="cat-go">Ver opções ${ic('chev',16,'currentColor',2.8)}</span></div>
+  </button>`).join('');
+$('#cats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if(b) openCategory(b.dataset.cat); });
+
+/* --- Sheet genérico --- */
+const overlay = $('#overlay'), sheet = $('#sheet');
+let lastFocus = null;
+function openSheet(html){
+  lastFocus = document.activeElement;
+  $('#toast').classList.remove('show');
+  sheet.innerHTML = '<div class="sheet-grab"></div>' + html;
+  overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { const f = sheet.querySelector('[data-autofocus]') || sheet.querySelector('button,a'); f && f.focus({preventScroll:true}); }, 60);
+}
+function closeSheet(){
+  overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
+  lastFocus && lastFocus.focus && lastFocus.focus({preventScroll:true});
+}
+overlay.addEventListener('click', e => { if(e.target === overlay || e.target.closest('[data-close]')) closeSheet(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && overlay.classList.contains('open')) closeSheet(); });
+
+function openCategory(id){
+  const c = catById(id);
+  openSheet(`
+    <div class="sheet-art">${scene(c.id)}</div>
+    <div class="sheet-head"><div><h3 id="sheetTitle">${esc(c.name)}</h3><p>Escolha o serviço que você precisa</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="subs">${c.subs.map(s => `
+      <button class="sub" type="button" data-pick="${c.id}|${esc(s)}">
+        <span class="dot">${ic(c.icon,20,'#102B57',2.2)}</span><b>${esc(s)}</b><em>Pedir orçamento</em>${ic('chev',18,'#FF781F',2.6)}
+      </button>`).join('')}</div>
+    <div class="sheet-pad"><p class="tiny">Não encontrou? Escolha “Outros serviços → Serviço personalizado” e descreva o que precisa.</p></div>`);
+}
+sheet.addEventListener('click', e => {
+  const p = e.target.closest('[data-pick]');
+  if(p){ closeSheet(); pickService(p.dataset.pick); }
+});
+function pickService(val){
+  const sel = $('#f-servico'); sel.value = val;
+  markOk('servico');
+  scrollToId('orcamento');
+  setTimeout(() => { const n = $('#f-nome'); if(!n.value) n.focus({preventScroll:true}); }, 550);
+  const [cid, sub] = val.split('|');
+  toast(`Selecionado: ${sub}`);
+}
+
+/* --- Busca --- */
+const INDEX = CATS.flatMap(c => c.subs.map(s => ({c, s, t: norm(c.name + ' ' + s + ' ' + c.kw)})));
+const qEl = $('#q'), resEl = $('#results');
+function search(q){
+  const n = norm(q.trim()); if(!n){ resEl.hidden = true; return []; }
+  const words = n.split(/\s+/);
+  const found = INDEX.concat(RENT_INDEX, SHOP_INDEX).filter(it => words.every(w => it.t.includes(w))).slice(0,8);
+  resEl.innerHTML = found.length
+    ? found.map(it => it.shop
+        ? `<button class="result" type="button" data-shop="${it.shop.id}"><span class="ri" style="font-size:20px">${it.shop.em}</span><span><b>Comprar: ${esc(it.shop.nome)}</b><small>${BRL(it.shop.preco)} • Compras rápidas</small></span></button>`
+        : it.rent
+        ? `<button class="result" type="button" data-rent="${it.rent.id}"><span class="ri">${ic('helmet',20,'#FF781F')}</span><span><b>Alugar: ${esc(it.rent.nome)}</b><small>${BRL(it.rent.preco)}/dia • Aluguel de equipamentos</small></span></button>`
+        : `<button class="result" type="button" data-pick="${it.c.id}|${esc(it.s)}"><span class="ri">${ic(it.c.icon,20,'#102B57')}</span><span><b>${esc(it.s)}</b><small>${esc(it.c.name)}</small></span></button>`).join('')
+    : `<div class="result-empty">Nenhum serviço encontrado para “${esc(q)}”.<br><button type="button" data-pick="outros|Serviço personalizado">Pedir um serviço personalizado →</button></div>`;
+  resEl.hidden = false;
+  return found;
+}
+qEl.addEventListener('input', () => search(qEl.value));
+qEl.addEventListener('focus', () => { if(qEl.value) search(qEl.value); });
+$('#searchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = search(qEl.value);
+  if(!qEl.value.trim()){ qEl.focus(); return; }
+  if(f.length === 1 && !f[0].rent && !f[0].shop){ resEl.hidden = true; pickService(f[0].c.id + '|' + f[0].s); }
+});
+resEl.addEventListener('click', e => {
+  const p = e.target.closest('[data-pick]'); if(p){ resEl.hidden = true; qEl.blur(); pickService(p.dataset.pick); return; }
+  const sp = e.target.closest('[data-shop]');
+  if(sp){ resEl.hidden = true; qEl.blur(); const id = sp.dataset.shop; setSQty(id, (SCART[id] || 0) + 1); goTo('compras'); toast(`${shopById(id).nome} adicionado ✓`); return; }
+  const r = e.target.closest('[data-rent]');
+  if(r){ resEl.hidden = true; qEl.blur(); const id = r.dataset.rent; setQty(id, (CART[id] || 0) + 1); goTo('aluguel'); toast(`${rentById(id).nome} adicionado ✓`); }
+});
+document.addEventListener('click', e => { if(!e.target.closest('#searchWrap')) resEl.hidden = true; });
+
+/* --- Galeria ---
+   Para usar fotos reais no futuro, troque "scene" por "src" (ex.: src:'fotos/jardim-01.jpg')
+   e defina illustrative:false. A estrutura abaixo já suporta os dois formatos. */
+const GALLERY = [
+  {cat:'jardinagem', title:'Gramado aparado e bordas acabadas', scene:'jardinagem', illustrative:true},
+  {cat:'pintura',    title:'Pintura interna em tom terracota',   scene:'pintura',    illustrative:true},
+  {cat:'limpeza',    title:'Faxina completa de sala de estar',   scene:'limpeza',    illustrative:true},
+  {cat:'reformas',   title:'Reparo de alvenaria e piso',         scene:'reformas',   illustrative:true},
+  {cat:'jardinagem', title:'Canteiro revitalizado com flores',   scene:'jardimDepois', illustrative:true}
+];
+const GCATS = [['todos','Todos'],['jardinagem','Jardinagem'],['pintura','Pintura'],['limpeza','Limpeza'],['reformas','Reformas']];
+let gFilter = 'todos';
+function renderGallery(){
+  $('#gChips').innerHTML = GCATS.map(([id,l]) => `<button class="chip" type="button" data-g="${id}" aria-pressed="${gFilter===id}">${l}</button>`).join('');
+  const items = GALLERY.filter(g => gFilter === 'todos' || g.cat === gFilter);
+  $('#gallery').innerHTML = items.map(g => `
+    <figure class="g-item"><div class="g-art">${g.src ? `<img src="${esc(g.src)}" alt="${esc(g.title)}" loading="lazy">` : scene(g.scene)}
+      ${g.illustrative ? '<span class="illus-badge">Imagem ilustrativa</span>' : ''}</div>
+      <figcaption><small>${esc(catById(g.cat).name)}</small><b>${esc(g.title)}</b></figcaption></figure>`).join('')
+    + `<div class="g-ph">${ic('plus',28,'#9AA9BF',2.4)}<b>Espaço para fotos reais</b>Os trabalhos feitos no condomínio vão aparecer aqui.</div>`;
+}
+$('#gChips').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if(b){ gFilter = b.dataset.g; renderGallery(); } });
+renderGallery();
+
+$('#baAfter').innerHTML = scene('jardimDepois');
+$('#baBefore').innerHTML = scene('jardimAntes');
+$('#baRange').addEventListener('input', e => $('#baStage').style.setProperty('--pos', e.target.value + '%'));
+
+/* --- Formulário --- */
+$('#f-servico').innerHTML = '<option value="">Toque para escolher…</option>' +
+  CATS.map(c => `<optgroup label="${esc(c.name)}">${c.subs.map(s => `<option value="${c.id}|${esc(s)}">${esc(s)}</option>`).join('')}</optgroup>`).join('');
+const tel = $('#f-tel');
+tel.addEventListener('input', () => { tel.value = fmtPhone(tel.value); });
+const dateEl = $('#f-data');
+dateEl.min = new Date().toISOString().slice(0,10);
+document.querySelectorAll('input[name="quando"]').forEach(r => r.addEventListener('change', () => {
+  dateEl.hidden = r.value !== 'data' || !r.checked;
+  if(!dateEl.hidden) dateEl.focus();
+  markOk('quando');
+}));
+dateEl.addEventListener('change', () => markOk('quando'));
+['nome','tel','servico','desc'].forEach(k => {
+  const el = document.querySelector(`[data-f="${k}"] .input`);
+  el.addEventListener('input', () => markOk(k)); el.addEventListener('change', () => markOk(k));
+});
+function markErr(k){ document.querySelector(`[data-f="${k}"]`).classList.add('err'); }
+function markOk(k){ document.querySelector(`[data-f="${k}"]`).classList.remove('err'); }
+
+function buildMessage(o){
+  if(isShop(o)) return [
+    'Olá, *Riviera Serviços*! 👋',
+    'Quero fazer um pedido de *compras rápidas* 🛒',
+    '',
+    `📋 *Pedido:* ${o.id}`,
+    `👤 *Nome:* ${o.nome}`,
+    `📱 *WhatsApp:* ${fmtPhone(o.tel)}`,
+    ...shopLines(o, 'cliente'),
+    o.setor ? `📍 *Local:* ${o.setor}` : null,
+    o.desc ? `📝 *Observações:* ${o.desc}` : null,
+    '',
+    '_Enviado pelo site Riviera Serviços_'
+  ].filter(l => l !== null).join('\n');
+  if(isRent(o)) return [
+    'Olá, *Riviera Serviços*! 👋',
+    'Gostaria de *alugar equipamentos*.',
+    '',
+    `📋 *Pedido:* ${o.id}`,
+    `👤 *Nome:* ${o.nome}`,
+    `📱 *WhatsApp:* ${fmtPhone(o.tel)}`,
+    ...rentLines(o, 'cliente'),
+    o.setor ? `📍 *Local:* ${o.setor}` : null,
+    `💰 *Estimativa:* ${BRL(o.valor)}`,
+    o.desc ? `📝 *Observações:* ${o.desc}` : null,
+    '',
+    '_Enviado pelo site Riviera Serviços_'
+  ].filter(l => l !== null).join('\n');
+  const c = catById(o.cat), em = (typeof CAT_EMOJI !== 'undefined' && CAT_EMOJI[o.cat]) || '🛠️';
+  return [
+    'Olá, *Riviera Serviços*! 👋',
+    'Gostaria de solicitar um orçamento.',
+    '',
+    `📋 *Pedido:* ${o.id}`,
+    `👤 *Nome:* ${o.nome}`,
+    `📱 *WhatsApp:* ${fmtPhone(o.tel)}`,
+    `${em} *Serviço:* ${c.name} — ${o.sub}`,
+    `📅 *Quando:* ${o.quando}`,
+    o.setor ? `📍 *Local:* ${o.setor}` : null,
+    '',
+    `📝 *Descrição:*`,
+    o.desc,
+    '',
+    '_Enviado pelo site Riviera Serviços_'
+  ].filter(l => l !== null).join('\n');
+}
+
+$('#quoteForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const nome = $('#f-nome').value.trim();
+  const telD = digits(tel.value);
+  const serv = $('#f-servico').value;
+  const qr = document.querySelector('input[name="quando"]:checked');
+  const desc = $('#f-desc').value.trim();
+  const setor = $('#f-setor').value.trim();
+  let bad = [];
+  if(nome.length < 2) bad.push('nome');
+  if(telD.length < 10) bad.push('tel');
+  if(!serv) bad.push('servico');
+  let quando = qr ? qr.value : '';
+  if(quando === 'data'){
+    if(!dateEl.value){ quando = ''; }
+    else { const [y,m,d] = dateEl.value.split('-'); quando = `Data: ${d}/${m}/${y}`; }
+  }
+  $('#quandoMsg').textContent = qr && qr.value === 'data' ? 'Escolha a data desejada.' : 'Escolha quando precisa do serviço.';
+  if(!quando) bad.push('quando');
+  if(desc.length < 3) bad.push('desc');
+  bad.forEach(markErr);
+  if(bad.length){
+    const first = document.querySelector(`[data-f="${bad[0]}"]`);
+    const y = first.getBoundingClientRect().top + window.scrollY - ($('.header').offsetHeight + 20);
+    window.scrollTo({top:y, behavior:'smooth'});
+    toast('Confira os campos destacados');
+    return;
+  }
+  const list = orders();
+  const next = Math.max(1000, ...list.map(o => parseInt(String(o.id).replace(/\D/g,''),10) || 0)) + 1;
+  const [cat, sub] = serv.split('|');
+  const o = {id:'RS-' + next, nome, tel:telD, cat, sub, status:'novo', criado:new Date().toISOString(), quando, setor, desc, valor:null, agenda:null};
+  list.unshift(o); save();
+  mine().unshift(o.id); lsSet(MINE_KEY, MINE); renderMine();
+  lsSet(CLIENT_KEY, {nome, tel:telD, setor});
+  const msg = buildMessage(o);
+  showSuccess(o, msg);
+  e.target.reset(); dateEl.hidden = true;
+});
+
+function showSuccess(o, msg){
+  openSheet(`
+    <div class="success">
+      <div class="success-ic">${ic('check',40,'#17A75B',3)}</div>
+      <h3 id="sheetTitle">Pedido ${esc(o.id)} registrado!</h3>
+      <p>Agora é só abrir o WhatsApp e tocar em <b>Enviar</b>. A mensagem já está pronta.</p>
+    </div>
+    <div class="bubble-lbl">Prévia da mensagem</div>
+    <div class="bubble" id="msgPreview">${esc(msg)}</div>
+    <div class="sheet-actions">
+      <a class="btn btn-green btn-block" data-autofocus href="${waLink(WA_NUMBERS[0].num, msg)}" target="_blank" rel="noopener">${ic('chat',24,'#fff',2.3)} Enviar no WhatsApp</a>
+      <a class="btn btn-wa2 btn-block" href="${waLink(WA_NUMBERS[1].num, msg)}" target="_blank" rel="noopener">${ic('chat',22,'#17A75B',2.3)} Enviar para o 2º número</a>
+      <p class="tiny" style="display:block;text-align:center">Atendimento 1: ${WA_NUMBERS[0].label}<br>Atendimento 2: ${WA_NUMBERS[1].label}<br>Se não responderem em alguns minutos, envie também para o outro número.</p>
+      <button class="btn btn-line btn-block" type="button" id="copyMsg">${ic('copy',20,'#102B57',2.3)} Copiar mensagem</button>
+      <button class="btn btn-ghost btn-block" type="button" data-close>Fechar</button>
+    </div>
+    <div class="sheet-pad"><p class="tiny">${ic('clock',16,'#5B6880',2.2)}<span>Guarde o número <b>${esc(o.id)}</b> para acompanhar o pedido em “Acompanhar pedido”.</span></p></div>`);
+  $('#copyMsg').addEventListener('click', async () => {
+    try{ await navigator.clipboard.writeText(msg); toast('Mensagem copiada'); }
+    catch(err){
+      const r = document.createRange(); r.selectNodeContents($('#msgPreview'));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      toast('Texto selecionado — use “Copiar” do aparelho');
+    }
+  });
+}
+
+/* ============================================================
+   AVALIAÇÕES E ACOMPANHAMENTO (morador)
+   ============================================================ */
+const REV_KEY = 'riviera_demo_avaliacoes_v2';
+const MINE_KEY = 'riviera_demo_meus_pedidos_v1';
+function lsGet(k){ try{ const r = localStorage.getItem(k); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+let REVIEWS = null, MINE = null, trackedId = null;
+function seedReviews(){ return [
+  {id:'AV-3', pedido:'', nome:'Cláudia R.', cat:'limpeza',   sub:'Faxina completa', nota:5, texto:'Casa impecável, até os vidros ficaram brilhando. Pessoal pontual e muito educado.', data:iso(5,18), exemplo:true},
+  {id:'AV-2', pedido:'', nome:'Marcos T.',   cat:'pintura', sub:'Pintura interna', nota:5, texto:'Pintaram a sala e o corredor sem sujar nada. Recomendo para os vizinhos.', data:iso(7,10), exemplo:true},
+  {id:'AV-1', pedido:'', nome:'Ana P.',      cat:'piscinas',   sub:'Limpeza de piscina', nota:4, texto:'A água ficou cristalina. Atrasaram uns minutinhos, mas avisaram pelo WhatsApp.', data:iso(12,16), exemplo:true}
+];}
+function reviews(){ if(!REVIEWS){ REVIEWS = lsGet(REV_KEY); if(!Array.isArray(REVIEWS)){ REVIEWS = seedReviews(); lsSet(REV_KEY, REVIEWS); } } return REVIEWS; }
+function mine(){ if(!MINE){ MINE = lsGet(MINE_KEY); if(!Array.isArray(MINE)) MINE = []; } return MINE; }
+const reviewFor = id => reviews().find(r => r.pedido === id);
+const STAR = '<path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/>';
+const starsHTML = (n, size=18, empty='#D4DBE6') => `<span class="stars" role="img" aria-label="${fmt1(n)} de 5 estrelas">` +
+  [1,2,3,4,5].map(i => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${i <= Math.round(n) ? '#FFB020' : empty}" aria-hidden="true">${STAR}</svg>`).join('') + '</span>';
+const avgRating = () => { const r = reviews(); return r.length ? r.reduce((a,b) => a + b.nota, 0) / r.length : 0; };
+function fmt1(n){ return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}); }
+const BRL = v => (v == null || isNaN(v)) ? '—' : Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function parseBRL(s){ s = String(s).replace(/[^\d,.]/g,''); if(!s) return null; if(s.includes(',')) s = s.replace(/\./g,'').replace(',','.'); const n = parseFloat(s); return isNaN(n) ? null : Math.round(n*100)/100; }
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fromYmd = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+function dayDiff(s){ const t = new Date(); t.setHours(0,0,0,0); return Math.round((fromYmd(s) - t) / 864e5); }
+function dayLabel(s){
+  const base = fromYmd(s).toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'}).replace(/\./g,'');
+  const d = dayDiff(s);
+  return d === 0 ? 'Hoje (' + base + ')' : d === 1 ? 'Amanhã (' + base + ')' : base;
+}
+const agendaText = o => o.agenda ? `${dayLabel(o.agenda.data)} às ${o.agenda.hora}` : '';
+
+function renderReviews(){
+  const r = [...reviews()].sort((a,b) => b.data.localeCompare(a.data));
+  const a = avgRating();
+  const dist = [5,4,3,2,1].map(s => [s, r.filter(x => x.nota === s).length]);
+  $('#rvSum').innerHTML = `
+    <div class="big">${fmt1(a)}</div>
+    <div style="margin-top:8px">${starsHTML(a, 26, 'rgba(255,255,255,.22)')}</div>
+    <div class="rv-count">${r.length} avaliaç${r.length === 1 ? 'ão' : 'ões'} de moradores</div>
+    <div class="rv-bars">${dist.map(([s,n]) => `<div class="rv-bar"><span>${s}★</span><span class="t"><i style="width:${r.length ? n/r.length*100 : 0}%"></i></span><span>${n}</span></div>`).join('')}</div>
+    <button class="btn btn-orange btn-block" type="button" id="rvBtn">${ic('star',20,'#fff',2.4)} Avaliar um serviço</button>`;
+  $('#rvList').innerHTML = r.slice(0,6).map(x => `
+    <article class="rv">${starsHTML(x.nota)}
+      <p>${esc(x.texto || 'Sem comentário.')}</p>
+      <div class="rv-foot"><span class="avatar">${esc((x.nome.trim()[0] || '?').toUpperCase())}</span>
+        <span><b>${esc(x.nome)}</b><small>${esc(x.sub)} • ${fmtDate(x.data).split(',')[0]}</small></span>
+        ${x.exemplo ? '<span class="tag-ex">Exemplo</span>' : ''}</div>
+    </article>`).join('');
+}
+$('#rvSum').addEventListener('click', e => { if(e.target.closest('#rvBtn')) askOrderForReview(); });
+
+function normId(s){
+  s = String(s).toUpperCase().replace(/\s/g,'');
+  if(/^\d+$/.test(s)) return 'RS-' + s;
+  if(/^RS\d+$/.test(s)) return 'RS-' + s.slice(2);
+  return s;
+}
+function askOrderForReview(){
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">Avaliar um serviço</h3><p>Informe o número do seu pedido</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="sheet-pad field" id="askF">
+      <label for="askId">Número do pedido</label>
+      <input class="input" id="askId" placeholder="Ex.: RS-1009" autocapitalize="characters" data-autofocus>
+      <div class="msg" id="askMsg"></div>
+      <p class="tiny" style="margin-top:10px">Só pedidos concluídos podem ser avaliados. Para testar: RS-1001 ou RS-1002.</p>
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="askGo">Continuar</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+  const go = () => {
+    const id = normId($('#askId').value), o = orders().find(x => x.id === id);
+    let m = '';
+    if(!id) m = 'Digite o número do pedido.';
+    else if(!o) m = 'Pedido não encontrado neste aparelho.';
+    else if(o.status !== 'concluido') m = `Este pedido ainda está “${stLabel(o, o.status)}”. A avaliação libera quando ele for concluído.`;
+    else if(reviewFor(o.id)) m = 'Este pedido já foi avaliado. Obrigado!';
+    if(m){ $('#askMsg').textContent = m; $('#askF').classList.add('err'); return; }
+    openReview(o);
+  };
+  $('#askGo').addEventListener('click', go);
+  $('#askId').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); go(); } });
+}
+function openReview(o){
+  let nota = 0;
+  const labels = ['Toque nas estrelas','Ruim','Regular','Bom','Muito bom','Excelente!'];
+  const nm = o.nome.trim().split(/\s+/), short = nm[0] + (nm[1] ? ' ' + nm[1][0] + '.' : '');
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">Como foi o serviço?</h3><p>${esc(o.sub)} • ${esc(o.id)}</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="star-pick" id="sp" role="radiogroup" aria-label="Nota">${[1,2,3,4,5].map(i => `<button type="button" data-n="${i}" role="radio" aria-checked="false" aria-label="${i} estrela${i > 1 ? 's' : ''}"><svg width="44" height="44" viewBox="0 0 24 24" fill="#D4DBE6">${STAR}</svg></button>`).join('')}</div>
+    <div class="star-lbl" id="spl">${labels[0]}</div>
+    <div class="sheet-pad field">
+      <label for="rvTxt">Comentário <small>(opcional)</small></label>
+      <textarea class="input" id="rvTxt" placeholder="Conte como foi o atendimento"></textarea>
+      <label for="rvNome" style="margin-top:14px">Nome exibido</label>
+      <input class="input" id="rvNome" value="${esc(short)}">
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="rvSend">Enviar avaliação</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+  $('#sp').addEventListener('click', e => {
+    const b = e.target.closest('[data-n]'); if(!b) return;
+    nota = +b.dataset.n;
+    $('#sp').querySelectorAll('button').forEach((x,i) => { x.querySelector('svg').setAttribute('fill', i < nota ? '#FFB020' : '#D4DBE6'); x.setAttribute('aria-checked', i + 1 === nota); });
+    $('#spl').textContent = labels[nota];
+  });
+  $('#rvSend').addEventListener('click', () => {
+    if(!nota){ toast('Escolha de 1 a 5 estrelas'); return; }
+    reviews().unshift({id:'AV-' + Date.now(), pedido:o.id, nome:$('#rvNome').value.trim() || short, cat:o.cat, sub:o.sub, nota, texto:$('#rvTxt').value.trim(), data:new Date().toISOString()});
+    lsSet(REV_KEY, REVIEWS);
+    closeSheet(); renderReviews(); if(trackedId === o.id) renderTrack(o.id);
+    toast('Obrigado pela avaliação! ⭐');
+  });
+}
+
+/* --- Acompanhar pedido --- */
+function renderMine(){
+  const m = mine().filter(id => orders().some(o => o.id === id)).slice(0,6);
+  const chips = ids => ids.map(id => `<button type="button" data-track="${id}">${id}</button>`).join('');
+  $('#mine').innerHTML = (m.length ? `<div class="mine-row"><span>Seus pedidos:</span>${chips(m)}</div>` : '') + `<div class="mine-row"><span>Exemplos:</span>${chips(['RS-1011','RS-1010','RS-1004','RS-1002'])}</div>`;
+}
+function renderTrack(raw){
+  const id = normId(raw), o = orders().find(x => x.id === id), box = $('#trackResult');
+  trackedId = o ? o.id : null;
+  if(!o){
+    box.innerHTML = `<div class="t-card"><b style="color:var(--navy);font-size:18px">Pedido não encontrado</b><p class="tiny" style="margin-top:6px">Confira o número (ex.: RS-1009). Nesta demonstração só aparecem os pedidos feitos neste aparelho e os exemplos.</p></div>`;
+    return;
+  }
+  const keys = ['novo','orcamento','agendado','concluido'], idx = keys.indexOf(o.status), c = catById(o.cat);
+  const steps = isShop(o) ? [
+    ['Pedido recebido', fmtDate(o.criado)],
+    ['Separando os itens', 'Total: ' + BRL(o.valor)],
+    [o.entrega ? 'Saiu para entrega' : 'Pronto para retirada', o.entrega ? 'Entrega dentro do condomínio' : 'Retire no ponto combinado'],
+    ['Entregue', o.status === 'concluido' ? 'Pedido finalizado' : '—']
+  ] : [
+    ['Pedido recebido', fmtDate(o.criado)],
+    ['Orçamento', o.valor != null ? 'Valor: ' + BRL(o.valor) : (idx >= 1 ? 'A empresa está preparando o valor' : 'Aguardando análise')],
+    [isRent(o) ? (o.entrega ? 'Entrega agendada' : 'Retirada agendada') : 'Serviço agendado', o.agenda ? agendaText(o) + (isRent(o) ? ` • devolução ${fmtDay(fromYmd(addDays(o.agenda.data, o.dias)))}` : '') : 'Data a combinar'],
+    ['Concluído', o.status === 'concluido' ? (isRent(o) ? 'Equipamentos devolvidos' : 'Serviço finalizado') : '—']
+  ];
+  const rv = reviewFor(o.id);
+  box.innerHTML = `
+    <div class="t-card">
+      <div class="o-top"><span class="o-id">${esc(o.id)}</span><span class="pill" style="background:${STATUS[o.status].soft};color:${STATUS[o.status].color}"><i></i>${stLabel(o, o.status)}</span></div>
+      <div class="o-svc" style="margin-top:10px"><span class="ri">${ic(c.icon,19,'#102B57')}</span>${isRent(o) ? 'Aluguel de equipamentos' : isShop(o) ? 'Compras rápidas' : `${esc(c.name)} — ${esc(o.sub)}`}</div>
+      ${isRent(o) ? `<div class="o-desc" style="margin-top:10px"><div class="it-list">${o.itens.map(i => `<div><b>${i.qtd}× ${esc(i.nome)}</b></div>`).join('')}</div><div style="margin-top:6px;color:var(--muted)">${diasTxt(o.dias)} • ${rentPeriod(o)} • ${o.entrega ? 'entrega em casa' : 'você retira'}</div></div>` : ''}
+      ${isShop(o) ? `<div class="o-desc" style="margin-top:10px"><div class="it-list">${o.itens.map(i => `<div><b>${i.qtd}× ${esc(i.nome)}</b><span>${BRL(i.preco * i.qtd)}</span></div>`).join('')}</div><div style="margin-top:6px;color:var(--muted)">Total ${BRL(o.valor)} • ${o.entrega ? 'entrega em casa' : 'você retira'}</div></div>` : ''}
+      <div class="timeline">${steps.map(([t,s],i) => {
+        const cls = (i < idx || (i === idx && o.status === 'concluido')) ? 'done' : i === idx ? 'cur' : 'todo';
+        return `<div class="tl ${cls}"><span class="b">${cls === 'done' ? ic('check',18,'#fff',3) : i + 1}</span><div><b>${t}</b><small>${esc(s)}</small></div></div>`;
+      }).join('')}</div>
+      ${o.status === 'concluido'
+        ? (rv ? `<div class="o-row"><span class="l">Sua avaliação</span>${starsHTML(rv.nota, 20)}</div>`
+              : `<button class="btn btn-orange btn-block" type="button" data-review="${o.id}">${ic('star',20,'#fff',2.4)} Avaliar este serviço</button>`)
+        : `<a class="btn btn-green btn-block" href="${waLink(WA_NUMBER, `Olá, Riviera Serviços! Gostaria de saber sobre o meu pedido ${o.id} (${o.sub}).`)}" target="_blank" rel="noopener">${ic('chat',22,'#fff',2.3)} Falar sobre este pedido</a>`}
+    </div>`;
+}
+$('#trackForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#trackId').value.trim();
+  if(!v){ $('#trackId').focus(); toast('Digite o número do pedido'); return; }
+  renderTrack(v);
+});
+$('#track').addEventListener('click', e => {
+  const t = e.target.closest('[data-track]');
+  if(t){ $('#trackId').value = t.dataset.track; renderTrack(t.dataset.track); return; }
+  const r = e.target.closest('[data-review]');
+  if(r){ const o = orders().find(x => x.id === r.dataset.review); if(o) openReview(o); }
+});
+
+/* ============================================================
+   ALUGUEL DE EQUIPAMENTOS
+   Preços de exemplo — ajuste aqui quando definirem a tabela real.
+   ============================================================ */
+const RENT = [
+  {id:'andaime',     nome:'Andaime tubular',          unid:'módulo 1,0 × 1,5 m', preco:4,  desc:'Para fachadas, pintura e muros altos.',  kw:'andaime escora altura fachada'},
+  {id:'betoneira',   nome:'Betoneira 400 L',          unid:'unidade',            preco:45, desc:'Mistura concreto e argamassa.',          kw:'betoneira concreto massa cimento'},
+  {id:'tapume',      nome:'Tapume',                   unid:'placa 2,2 × 1,1 m',  preco:3,  desc:'Fecha e protege a área da obra.',        kw:'tapume cerca fechamento obra madeirite'},
+  {id:'martelete',   nome:'Martelete rompedor',       unid:'unidade',            preco:60, desc:'Quebra piso, parede e concreto.',        kw:'martelete rompedor quebrar demolir furadeira'},
+  {id:'escada',      nome:'Escada extensível',        unid:'até 7 m',            preco:15, desc:'Telhado, calhas e pintura.',             kw:'escada telhado calha'},
+  {id:'carrinho',    nome:'Carrinho de mão',          unid:'unidade',            preco:8,  desc:'Transporte de entulho e material.',      kw:'carrinho mao entulho'},
+  {id:'lavadora',    nome:'Lavadora de alta pressão', unid:'unidade',            preco:40, desc:'Limpa calçadas, muros e telhados.',      kw:'lavadora alta pressao wap limpeza calcada'},
+  {id:'compactador', nome:'Compactador de solo',      unid:'tipo sapo',          preco:90, desc:'Compacta terra antes de piso e calçada.', kw:'compactador sapo solo terra'}
+];
+const rentById = id => RENT.find(r => r.id === id);
+const RENT_INDEX = RENT.map(r => ({rent:r, t:norm('aluguel alugar equipamento obra ' + r.nome + ' ' + r.kw)}));
+const isRent = o => o && o.tipo === 'aluguel';
+function addDays(s, n){ const d = fromYmd(s); d.setDate(d.getDate() + n); return ymd(d); }
+const rentPeriod = o => `${fmtDay(fromYmd(o.inicio))} a ${fmtDay(fromYmd(addDays(o.inicio, o.dias)))}`;
+const diasTxt = n => `${n} ${n === 1 ? 'dia' : 'dias'}`;
+function rentSub(itens){ const n = itens.map(i => i.nome); return n.length <= 2 ? n.join(' + ') : `${n[0]} + ${n[1]} + ${n.length - 2} item(ns)`; }
+function rentLines(o, quem){
+  return [
+    `🏗️ *Equipamentos:*`,
+    ...o.itens.map(i => `• ${i.qtd}× ${i.nome}`),
+    `📅 *Período:* ${diasTxt(o.dias)} (${rentPeriod(o)})`,
+    `🚚 *Entrega:* ${o.entrega ? (quem === 'cliente' ? 'na minha casa' : 'na sua casa') : (quem === 'cliente' ? 'vou retirar' : 'retirada por você')}`
+  ];
+}
+
+function eqArt(id){
+  const bg = inner => `<svg viewBox="0 0 200 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><rect width="200" height="140" fill="#FFF3E8"/><circle cx="168" cy="26" r="36" fill="#FFE4CC"/><ellipse cx="100" cy="124" rx="72" ry="7" fill="#F2D9C4"/>${inner}</svg>`;
+  const N = '#102B57', O = '#FF781F';
+  switch(id){
+    case 'andaime': return bg(`<g stroke="${N}" stroke-width="5" stroke-linecap="round"><path d="M62 122V22M138 122V22M62 122h76"/></g><g stroke="#4D6A99" stroke-width="3"><path d="M62 120L138 72M62 72L138 24"/></g><rect x="52" y="66" width="96" height="9" rx="2" fill="${O}"/><rect x="52" y="18" width="96" height="9" rx="2" fill="${O}"/><g fill="${N}"><rect x="54" y="118" width="16" height="6" rx="2"/><rect x="130" y="118" width="16" height="6" rx="2"/></g>`);
+    case 'betoneira': return bg(`<path d="M74 122l22-44M128 122l-18-44" stroke="${N}" stroke-width="6" stroke-linecap="round"/><circle cx="72" cy="114" r="11" fill="${N}"/><circle cx="72" cy="114" r="4" fill="#9FB0CC"/><rect x="112" y="84" width="34" height="22" rx="5" fill="#3A4A66"/><g transform="rotate(-28 100 60)"><path d="M64 42h62l14 18-14 18H64z" fill="${O}"/><path d="M64 42l-14 18 14 18z" fill="#E8650E"/><path d="M84 42v36M104 42v36" stroke="#E8650E" stroke-width="4"/><ellipse cx="140" cy="60" rx="5" ry="18" fill="#5A3A20"/></g>`);
+    case 'tapume': return bg(`${[0,1,2,3].map(i => `<rect x="${30 + i*35}" y="36" width="34" height="84" fill="${i % 2 ? '#DCCAA8' : '#E7D8BD'}"/><path d="M${41 + i*35} 38v80M${53 + i*35} 38v80" stroke="#CDB892" stroke-width="2"/>`).join('')}<g fill="${N}"><rect x="26" y="30" width="7" height="94" rx="2"/><rect x="167" y="30" width="7" height="94" rx="2"/></g><rect x="70" y="58" width="60" height="26" rx="4" fill="${O}"/><path d="M78 71h44" stroke="#fff" stroke-width="5" stroke-dasharray="8 6"/>`);
+    case 'martelete': return bg(`<rect x="14" y="66" width="34" height="8" rx="4" fill="#9AA9BF"/><rect x="44" y="60" width="22" height="20" rx="4" fill="${O}"/><rect x="62" y="52" width="74" height="34" rx="12" fill="${N}"/><path d="M118 86v30h22V86" fill="#1A3D78"/><rect x="76" y="84" width="11" height="30" rx="5" fill="${O}"/><path d="M80 62h40" stroke="#4D6A99" stroke-width="4" stroke-linecap="round"/>`);
+    case 'escada': { const f = [.1,.24,.38,.52,.66,.8]; return bg(`<path d="M72 122L104 16M128 122L148 16" stroke="#9AA9BF" stroke-width="7" stroke-linecap="round"/>${f.map(t => `<path d="M${72 + 32*t} ${122 - 106*t}H${128 + 20*t}" stroke="${N}" stroke-width="5" stroke-linecap="round"/>`).join('')}<rect x="64" y="116" width="16" height="8" rx="3" fill="${O}"/><rect x="120" y="116" width="16" height="8" rx="3" fill="${O}"/>`); }
+    case 'carrinho': return bg(`<path d="M44 58h96l-16 38H62z" fill="${O}"/><path d="M44 58h96" stroke="#E8650E" stroke-width="5" stroke-linecap="round"/><path d="M62 96L52 108M124 96l14-30 28-8M108 96l8 24M80 96l-4 24" stroke="${N}" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="50" cy="110" r="14" fill="${N}"/><circle cx="50" cy="110" r="5" fill="#9FB0CC"/>`);
+    case 'lavadora': return bg(`<rect x="50" y="50" width="56" height="64" rx="12" fill="#FFC531"/><rect x="58" y="62" width="40" height="22" rx="5" fill="#E8A800"/><path d="M60 50V38h36v12" stroke="${N}" stroke-width="5" fill="none"/><circle cx="62" cy="116" r="8" fill="${N}"/><circle cx="96" cy="116" r="8" fill="${N}"/><path d="M106 100C146 122 160 88 138 74" stroke="${N}" stroke-width="4" fill="none"/><path d="M134 66l34-12 4 8-28 13 3 14h-9z" fill="${N}"/><g stroke="#3DA9F5" stroke-width="3" stroke-linecap="round"><path d="M176 52l14-8M178 58l16-2M176 64l14 6"/></g>`);
+    case 'compactador': return bg(`<rect x="60" y="106" width="80" height="12" rx="3" fill="${N}"/><path d="M74 106l-4-44h60l-4 44z" fill="${O}"/><rect x="84" y="40" width="34" height="24" rx="6" fill="#3A4A66"/><circle cx="101" cy="52" r="6" fill="#9FB0CC"/><path d="M126 72L158 30h14" stroke="${N}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M80 84h40" stroke="#E8650E" stroke-width="5"/>`);
+  }
+  return bg('');
+}
+
+/* --- Carrinho --- */
+const CART_KEY = 'riviera_demo_carrinho_v1', CLIENT_KEY = 'riviera_demo_cliente_v1';
+let CART = lsGet(CART_KEY);
+if(!CART || typeof CART !== 'object' || Array.isArray(CART)) CART = {};
+Object.keys(CART).forEach(k => { if(!rentById(k)) delete CART[k]; });
+const cartCount = () => Object.values(CART).reduce((a,b) => a + b, 0);
+const cartDaily = () => Object.entries(CART).reduce((a,[id,q]) => a + (rentById(id) ? rentById(id).preco * q : 0), 0);
+function setQty(id, q){
+  q = Math.max(0, Math.min(999, q));
+  if(q) CART[id] = q; else delete CART[id];
+  lsSet(CART_KEY, CART); renderRentCards(); renderCartBar();
+}
+function renderRentCards(){
+  $('#eqGrid').innerHTML = RENT.map(r => {
+    const q = CART[r.id] || 0;
+    return `<article class="eq ${q ? 'in' : ''}" data-eq="${r.id}">
+      <div class="eq-art">${eqArt(r.id)}${q ? `<span class="eq-badge">${q} no pedido</span>` : ''}</div>
+      <div class="eq-body"><b>${esc(r.nome)}</b><small>${esc(r.desc)}</small>
+        <div class="price">${BRL(r.preco)}<span>/dia • ${esc(r.unid)}</span></div>
+        ${q ? `<div class="stepper"><button type="button" data-dec aria-label="Diminuir ${esc(r.nome)}">−</button><output>${q}</output><button type="button" data-inc aria-label="Aumentar ${esc(r.nome)}">+</button></div>`
+            : `<button class="eq-add" type="button" data-inc>+ Adicionar</button>`}
+      </div></article>`;
+  }).join('');
+}
+$('#eqGrid').addEventListener('click', e => {
+  const card = e.target.closest('[data-eq]'); if(!card) return;
+  const id = card.dataset.eq, q = CART[id] || 0;
+  if(e.target.closest('[data-inc]')){ setQty(id, q + 1); if(!q) toast(`${rentById(id).nome} adicionado ✓`); }
+  else if(e.target.closest('[data-dec]')) setQty(id, q - 1);
+});
+function renderCartBar(){
+  const n = cartCount(), bar = $('#cartBar');
+  updateHasCart();
+  bar.hidden = !n;
+  if(n) $('#cbInfo').innerHTML = `<b>${n} ${n === 1 ? 'item' : 'itens'} para alugar</b><small>${BRL(cartDaily())} por dia</small>`;
+}
+$('#cartBar').addEventListener('click', e => { if(e.target.closest('[data-checkout]')) openCheckout(); });
+
+/* --- Finalizar aluguel --- */
+const ck = {dias:7, entrega:true, inicio:null};
+function openCheckout(){
+  if(!cartCount()){ toast('Adicione um equipamento primeiro'); return; }
+  const cli = lsGet(CLIENT_KEY) || {};
+  const tm = new Date(); tm.setDate(tm.getDate() + 1);
+  if(!ck.inicio || dayDiff(ck.inicio) < 0) ck.inicio = ymd(tm);
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">Seu pedido de aluguel</h3><p>Confira os itens e o período</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="sheet-pad">
+      <div class="ck-items" id="ckItems"></div>
+      <div class="field" data-f="r-data" style="margin-top:18px"><label for="ckIni">Data de início</label>
+        <input class="input" type="date" id="ckIni" min="${ymd(new Date())}" value="${ck.inicio}"><div class="msg">Escolha a data de início.</div></div>
+      <div class="field" style="margin-top:16px"><span class="lbl">Por quantos dias?</span>
+        <div class="stepper light"><button type="button" id="dDec" aria-label="Menos dias">−</button><output id="dOut"></output><button type="button" id="dInc" aria-label="Mais dias">+</button></div>
+        <div class="day-chips" id="dChips">${[1,3,7,15,30].map(d => `<button type="button" data-d="${d}">${diasTxt(d)}</button>`).join('')}</div></div>
+      <div class="field" style="margin-top:16px"><span class="lbl">Entrega</span>
+        <div class="when" id="ckEnt">
+          <label><input type="radio" name="ckEnt" value="1" ${ck.entrega ? 'checked' : ''}><span>🚚 Entregar na minha casa</span></label>
+          <label><input type="radio" name="ckEnt" value="0" ${!ck.entrega ? 'checked' : ''}><span>🙋 Eu retiro</span></label></div></div>
+      <div class="field" data-f="r-nome" style="margin-top:16px"><label for="ckNome">Seu nome</label>
+        <input class="input" id="ckNome" autocomplete="name" placeholder="Ex.: Maria Souza" value="${esc(cli.nome || '')}"><div class="msg">Informe seu nome.</div></div>
+      <div class="field" data-f="r-tel" style="margin-top:14px"><label for="ckTel">Seu WhatsApp</label>
+        <input class="input" id="ckTel" type="tel" inputmode="tel" maxlength="16" placeholder="(11) 91234-5678" value="${esc(cli.tel ? fmtPhone(cli.tel) : '')}"><div class="msg">Informe um número com DDD.</div></div>
+      <div class="field" data-f="r-setor" style="margin-top:14px"><label for="ckSetor">Endereço no condomínio <small id="ckSetorHint"></small></label>
+        <input class="input" id="ckSetor" placeholder="Ex.: Quadra B, casa 12" value="${esc(cli.setor || '')}"><div class="msg">Informe onde entregar.</div></div>
+      <div class="field" style="margin-top:14px"><label for="ckObs">Observações <small>(opcional)</small></label>
+        <textarea class="input" id="ckObs" style="min-height:90px" placeholder="Ex.: o andaime é para pintar a fachada"></textarea></div>
+      <div class="ck-sum" id="ckSum"></div>
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="ckSend">Solicitar aluguel ${ic('chev',20,'#fff',2.8)}</button>
+      <button class="btn btn-ghost" type="button" data-close>Continuar escolhendo</button></div>`);
+  renderCk();
+  $('#ckItems').addEventListener('click', e => {
+    const row = e.target.closest('[data-eq]'); if(!row) return;
+    const id = row.dataset.eq, q = CART[id] || 0;
+    if(e.target.closest('[data-inc]')) setQty(id, q + 1);
+    else if(e.target.closest('[data-dec]')) setQty(id, q - 1);
+    if(!cartCount()){ closeSheet(); toast('Pedido de aluguel vazio'); return; }
+    renderCk();
+  });
+  const setDias = n => { ck.dias = Math.max(1, Math.min(90, n)); renderCk(); };
+  $('#dDec').addEventListener('click', () => setDias(ck.dias - 1));
+  $('#dInc').addEventListener('click', () => setDias(ck.dias + 1));
+  $('#dChips').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if(b) setDias(+b.dataset.d); });
+  $('#ckIni').addEventListener('change', e => { ck.inicio = e.target.value; document.querySelector('[data-f="r-data"]').classList.remove('err'); renderCk(); });
+  $('#ckEnt').addEventListener('change', e => { ck.entrega = e.target.value === '1'; renderCk(); });
+  $('#ckTel').addEventListener('input', e => { e.target.value = fmtPhone(e.target.value); });
+  ['r-nome','r-tel','r-setor'].forEach(k => document.querySelector(`[data-f="${k}"] .input`).addEventListener('input', () => markOk(k)));
+  $('#ckSend').addEventListener('click', submitRent);
+}
+function renderCk(){
+  $('#ckItems').innerHTML = Object.entries(CART).map(([id,q]) => { const r = rentById(id); return `
+    <div class="ck-row" data-eq="${id}"><div><b>${esc(r.nome)}</b><small>${BRL(r.preco)}/dia • ${esc(r.unid)}</small></div>
+      <div class="stepper light sm"><button type="button" data-dec aria-label="Diminuir">−</button><output>${q}</output><button type="button" data-inc aria-label="Aumentar">+</button></div></div>`; }).join('');
+  $('#dOut').textContent = diasTxt(ck.dias);
+  $('#dChips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.d === ck.dias));
+  $('#ckSetorHint').textContent = ck.entrega ? '(para a entrega)' : '(opcional)';
+  const daily = cartDaily(), fim = ck.inicio ? fmtDay(fromYmd(addDays(ck.inicio, ck.dias))) : '—';
+  $('#ckSum').innerHTML = `
+    <div><span>Valor por dia</span><b>${BRL(daily)}</b></div>
+    <div><span>Período</span><b>${diasTxt(ck.dias)}${ck.inicio ? ` • ${fmtDay(fromYmd(ck.inicio))} a ${fim}` : ''}</b></div>
+    <div><span>Entrega</span><b>${ck.entrega ? 'Na sua casa' : 'Você retira'}</b></div>
+    <div class="tot"><span>Estimativa total</span><b>${BRL(daily * ck.dias)}</b></div>
+    <p class="tiny" style="margin-top:8px">Preços de exemplo desta demonstração. O valor final é confirmado pela empresa no WhatsApp.</p>`;
+}
+function submitRent(){
+  const nome = $('#ckNome').value.trim(), tel = digits($('#ckTel').value), setor = $('#ckSetor').value.trim(), obs = $('#ckObs').value.trim();
+  const bad = [];
+  if(!ck.inicio) bad.push('r-data');
+  if(nome.length < 2) bad.push('r-nome');
+  if(tel.length < 10) bad.push('r-tel');
+  if(ck.entrega && setor.length < 2) bad.push('r-setor');
+  bad.forEach(markErr);
+  if(bad.length){ document.querySelector(`[data-f="${bad[0]}"]`).scrollIntoView({behavior:'smooth', block:'center'}); toast('Confira os campos destacados'); return; }
+  const itens = Object.entries(CART).map(([id,q]) => { const r = rentById(id); return {id, nome:r.nome, unid:r.unid, preco:r.preco, qtd:q}; });
+  const daily = itens.reduce((a,i) => a + i.preco * i.qtd, 0);
+  const list = orders();
+  const next = Math.max(1000, ...list.map(o => parseInt(String(o.id).replace(/\D/g,''),10) || 0)) + 1;
+  const o = {id:'RS-' + next, tipo:'aluguel', nome, tel, cat:'aluguel', sub:rentSub(itens), status:'novo', criado:new Date().toISOString(),
+    quando:`A partir de ${fmtDay(fromYmd(ck.inicio))} • ${diasTxt(ck.dias)}`, setor, desc:obs, itens, inicio:ck.inicio, dias:ck.dias,
+    entrega:ck.entrega, valor:daily * ck.dias, estimado:true, agenda:null};
+  list.unshift(o); save();
+  mine().unshift(o.id); lsSet(MINE_KEY, MINE); renderMine();
+  lsSet(CLIENT_KEY, {nome, tel, setor});
+  CART = {}; lsSet(CART_KEY, CART); renderRentCards(); renderCartBar();
+  showSuccess(o, buildMessage(o));
+}
+renderRentCards();
+
+/* ============================================================
+   COMPRAS RÁPIDAS + SUGESTÕES
+   Preços de exemplo — ajuste aqui quando definirem os produtos reais.
+   ============================================================ */
+const SHOP_CATS = [['todos','Todos'],['eletrica','⚡ Elétrica'],['hidraulica','🚰 Hidráulica'],['ferramentas','🔩 Fixação e reparo'],['casa','🏠 Casa']];
+const SHOP = [
+  {id:'lampada',      nome:'Lâmpada LED 9W',         det:'Bivolt • luz branca',      preco:12, cat:'eletrica',    em:'💡', kw:'lampada luz led queimou'},
+  {id:'fita',         nome:'Fita isolante',          det:'Rolo de 10 m',             preco:8,  cat:'eletrica',    em:'⚡', kw:'fita isolante fio'},
+  {id:'pilha',        nome:'Pilhas AA',              det:'Cartela com 4',            preco:18, cat:'eletrica',    em:'🔋', kw:'pilha bateria aa controle'},
+  {id:'extensao',     nome:'Extensão 3 tomadas',     det:'Cabo de 3 m',              preco:35, cat:'eletrica',    em:'🔌', kw:'extensao tomada benjamim filtro linha'},
+  {id:'resistencia',  nome:'Resistência de chuveiro',det:'220 V • confira o modelo', preco:39, cat:'eletrica',    em:'🚿', kw:'resistencia chuveiro queimou agua fria'},
+  {id:'vedarosca',    nome:'Veda rosca',             det:'18 mm × 10 m',             preco:7,  cat:'hidraulica',  em:'🚰', kw:'veda rosca vazamento cano'},
+  {id:'reparo',       nome:'Reparo de torneira',     det:'Kit de vedação',           preco:12, cat:'hidraulica',  em:'🔧', kw:'reparo torneira pingando vedacao courinho'},
+  {id:'desentupidor', nome:'Desentupidor de pia',    det:'Ventosa com cabo',         preco:22, cat:'hidraulica',  em:'🪠', kw:'desentupidor entupiu pia vaso ralo'},
+  {id:'silicone',     nome:'Silicone incolor',       det:'Tubo de 50 g',             preco:16, cat:'ferramentas', em:'🧴', kw:'silicone vedar box pia'},
+  {id:'cola',         nome:'Cola instantânea',       det:'3 g',                      preco:9,  cat:'ferramentas', em:'🧪', kw:'cola super bonder'},
+  {id:'buchas',       nome:'Buchas e parafusos',     det:'Kit 6 mm • 10 unidades',   preco:10, cat:'ferramentas', em:'🔩', kw:'bucha parafuso furar parede quadro'},
+  {id:'saco',         nome:'Sacos de lixo 100 L',    det:'Pacote com 10',            preco:14, cat:'casa',        em:'🗑️', kw:'saco lixo'},
+  {id:'esponja',      nome:'Esponjas multiuso',      det:'Pacote com 4',             preco:8,  cat:'casa',        em:'🧽', kw:'esponja limpeza louca'}
+];
+const SHOP_BG = {eletrica:'#FFF6DB', hidraulica:'#E3F3FC', casa:'#EAF7EE', ferramentas:'#F1ECFB'};
+const SHOP_CAT = {id:'compras', name:'Compras rápidas', icon:'bag', desc:'', subs:[], kw:''};
+const shopById = id => SHOP.find(p => p.id === id);
+const isShop = o => o && o.tipo === 'compra';
+const SHOP_INDEX = SHOP.map(p => ({shop:p, t:norm('comprar compra loja ' + p.nome + ' ' + p.det + ' ' + p.kw)}));
+const SHOP_ST = {novo:'Novo', orcamento:'Separando', agendado:'Saiu p/ entrega', concluido:'Entregue'};
+function stLabel(o, k){
+  if(isShop(o)) return k === 'agendado' && !o.entrega ? 'Pronto p/ retirada' : SHOP_ST[k];
+  return STATUS[k].label;
+}
+function shopSub(itens){ const n = itens.map(i => i.nome); return n.length <= 2 ? n.join(' + ') : `${n[0]} + ${n[1]} + ${n.length - 2} item(ns)`; }
+function shopLines(o, quem){
+  return [
+    `🛒 *Itens:*`,
+    ...o.itens.map(i => `• ${i.qtd}× ${i.nome} — ${BRL(i.preco * i.qtd)}`),
+    `💰 *Total dos itens:* ${BRL(o.valor)}`,
+    `🛵 *Entrega:* ${o.entrega ? (quem === 'cliente' ? 'na minha casa' : 'na sua casa') : (quem === 'cliente' ? 'vou retirar' : 'retirada por você')}`
+  ];
+}
+function shopDemo(id){
+  const itens = [['resistencia',1],['lampada',2]].map(([pid,q]) => { const p = shopById(pid); return {id:pid, nome:p.nome, preco:p.preco, qtd:q}; });
+  return {id, tipo:'compra', nome:'Renata Alves', tel:'11974833364', cat:'compras', sub:shopSub(itens), status:'orcamento', criado:iso(1,22),
+    quando:'Entrega no condomínio', setor:'Quadra E, casa 21', desc:'O chuveiro queimou agora à noite.', itens, entrega:true,
+    valor:itens.reduce((a,i) => a + i.preco * i.qtd, 0), estimado:false, agenda:null, demo:true};
+}
+
+/* --- Carrinho de compras --- */
+const SHOP_CART_KEY = 'riviera_demo_compras_carrinho_v1';
+let SCART = lsGet(SHOP_CART_KEY);
+if(!SCART || typeof SCART !== 'object' || Array.isArray(SCART)) SCART = {};
+Object.keys(SCART).forEach(k => { if(!shopById(k)) delete SCART[k]; });
+let shopFilter = 'todos';
+const scount = () => Object.values(SCART).reduce((a,b) => a + b, 0);
+const stotal = () => Object.entries(SCART).reduce((a,[id,q]) => a + (shopById(id) ? shopById(id).preco * q : 0), 0);
+function updateHasCart(){
+  document.body.classList.toggle('has-cart', (cartCount() > 0 && currentView === 'aluguel') || (scount() > 0 && currentView === 'compras'));
+}
+function setSQty(id, q){
+  q = Math.max(0, Math.min(99, q));
+  if(q) SCART[id] = q; else delete SCART[id];
+  lsSet(SHOP_CART_KEY, SCART); renderShop(); renderShopBar();
+}
+function renderShop(){
+  $('#shopChips').innerHTML = SHOP_CATS.map(([k,l]) => `<button class="chip" type="button" data-sc="${k}" aria-pressed="${shopFilter === k}">${l}</button>`).join('');
+  $('#shopGrid').innerHTML = SHOP.filter(p => shopFilter === 'todos' || p.cat === shopFilter).map(p => {
+    const q = SCART[p.id] || 0;
+    return `<article class="sp ${q ? 'in' : ''}" data-sp="${p.id}">
+      <div class="sp-ic" style="background:${SHOP_BG[p.cat]}"><span aria-hidden="true">${p.em}</span>${q ? `<span class="eq-badge">${q} no pedido</span>` : ''}</div>
+      <div class="eq-body"><b>${esc(p.nome)}</b><small>${esc(p.det)}</small>
+        <div class="price">${BRL(p.preco)}</div>
+        ${q ? `<div class="stepper"><button type="button" data-dec aria-label="Diminuir ${esc(p.nome)}">−</button><output>${q}</output><button type="button" data-inc aria-label="Aumentar ${esc(p.nome)}">+</button></div>`
+            : `<button class="eq-add" type="button" data-inc>+ Adicionar</button>`}
+      </div></article>`;
+  }).join('');
+}
+$('#shopChips').addEventListener('click', e => { const b = e.target.closest('[data-sc]'); if(b){ shopFilter = b.dataset.sc; renderShop(); } });
+$('#shopGrid').addEventListener('click', e => {
+  const card = e.target.closest('[data-sp]'); if(!card) return;
+  const id = card.dataset.sp, q = SCART[id] || 0;
+  if(e.target.closest('[data-inc]')){ setSQty(id, q + 1); if(!q) toast(`${shopById(id).nome} adicionado ✓`); }
+  else if(e.target.closest('[data-dec]')) setSQty(id, q - 1);
+});
+function renderShopBar(){
+  const n = scount(), bar = $('#shopBar');
+  bar.hidden = !n;
+  if(n) $('#sbInfo').innerHTML = `<b>${n} ${n === 1 ? 'item' : 'itens'} no pedido</b><small>Total ${BRL(stotal())}</small>`;
+  updateHasCart();
+}
+$('#shopBar').addEventListener('click', e => { if(e.target.closest('[data-shopcheckout]')) openShopCheckout(); });
+
+const sck = {entrega:true};
+function openShopCheckout(){
+  if(!scount()){ toast('Adicione um item primeiro'); return; }
+  const cli = lsGet(CLIENT_KEY) || {};
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">Seu pedido</h3><p>Compras rápidas</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="sheet-pad">
+      <div class="ck-items" id="skItems"></div>
+      <div class="field" style="margin-top:16px"><span class="lbl">Entrega</span>
+        <div class="when" id="skEnt">
+          <label><input type="radio" name="skEnt" value="1" ${sck.entrega ? 'checked' : ''}><span>🛵 Entregar na minha casa</span></label>
+          <label><input type="radio" name="skEnt" value="0" ${!sck.entrega ? 'checked' : ''}><span>🙋 Eu retiro</span></label></div></div>
+      <div class="field" data-f="s-nome" style="margin-top:16px"><label for="skNome">Seu nome</label>
+        <input class="input" id="skNome" autocomplete="name" placeholder="Ex.: Maria Souza" value="${esc(cli.nome || '')}"><div class="msg">Informe seu nome.</div></div>
+      <div class="field" data-f="s-tel" style="margin-top:14px"><label for="skTel">Seu WhatsApp</label>
+        <input class="input" id="skTel" type="tel" inputmode="tel" maxlength="16" placeholder="(11) 91234-5678" value="${esc(cli.tel ? fmtPhone(cli.tel) : '')}"><div class="msg">Informe um número com DDD.</div></div>
+      <div class="field" data-f="s-setor" style="margin-top:14px"><label for="skSetor">Endereço no condomínio <small id="skSetorHint"></small></label>
+        <input class="input" id="skSetor" placeholder="Ex.: Quadra B, casa 12" value="${esc(cli.setor || '')}"><div class="msg">Informe onde entregar.</div></div>
+      <div class="field" style="margin-top:14px"><label for="skObs">Observações <small>(opcional)</small></label>
+        <textarea class="input" id="skObs" style="min-height:80px" placeholder="Ex.: pode deixar na portaria"></textarea></div>
+      <div class="ck-sum" id="skSum"></div>
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="skSend">Fazer pedido ${ic('chev',20,'#fff',2.8)}</button>
+      <button class="btn btn-ghost" type="button" data-close>Continuar comprando</button></div>`);
+  renderSk();
+  $('#skItems').addEventListener('click', e => {
+    const row = e.target.closest('[data-sp]'); if(!row) return;
+    const id = row.dataset.sp, q = SCART[id] || 0;
+    if(e.target.closest('[data-inc]')) setSQty(id, q + 1);
+    else if(e.target.closest('[data-dec]')) setSQty(id, q - 1);
+    if(!scount()){ closeSheet(); toast('Pedido vazio'); return; }
+    renderSk();
+  });
+  $('#skEnt').addEventListener('change', e => { sck.entrega = e.target.value === '1'; renderSk(); });
+  $('#skTel').addEventListener('input', e => { e.target.value = fmtPhone(e.target.value); });
+  ['s-nome','s-tel','s-setor'].forEach(k => document.querySelector(`[data-f="${k}"] .input`).addEventListener('input', () => markOk(k)));
+  $('#skSend').addEventListener('click', submitShop);
+}
+function renderSk(){
+  $('#skItems').innerHTML = Object.entries(SCART).map(([id,q]) => { const p = shopById(id); return `
+    <div class="ck-row" data-sp="${id}"><div><b>${p.em} ${esc(p.nome)}</b><small>${BRL(p.preco)} cada • ${BRL(p.preco * q)}</small></div>
+      <div class="stepper light sm"><button type="button" data-dec aria-label="Diminuir">−</button><output>${q}</output><button type="button" data-inc aria-label="Aumentar">+</button></div></div>`; }).join('');
+  $('#skSetorHint').textContent = sck.entrega ? '(para a entrega)' : '(opcional)';
+  $('#skSum').innerHTML = `
+    <div><span>Itens</span><b>${scount()}</b></div>
+    <div><span>Entrega</span><b>${sck.entrega ? 'Na sua casa' : 'Você retira'}</b></div>
+    <div class="tot"><span>Total dos itens</span><b>${BRL(stotal())}</b></div>
+    <p class="tiny" style="margin-top:8px">Preços de exemplo desta demonstração. A disponibilidade é confirmada no WhatsApp. Pagamento combinado na entrega.</p>`;
+}
+function submitShop(){
+  const nome = $('#skNome').value.trim(), tel = digits($('#skTel').value), setor = $('#skSetor').value.trim(), obs = $('#skObs').value.trim();
+  const bad = [];
+  if(nome.length < 2) bad.push('s-nome');
+  if(tel.length < 10) bad.push('s-tel');
+  if(sck.entrega && setor.length < 2) bad.push('s-setor');
+  bad.forEach(markErr);
+  if(bad.length){ document.querySelector(`[data-f="${bad[0]}"]`).scrollIntoView({behavior:'smooth', block:'center'}); toast('Confira os campos destacados'); return; }
+  const itens = Object.entries(SCART).map(([id,q]) => { const p = shopById(id); return {id, nome:p.nome, preco:p.preco, qtd:q}; });
+  const list = orders();
+  const next = Math.max(1000, ...list.map(o => parseInt(String(o.id).replace(/\D/g,''),10) || 0)) + 1;
+  const o = {id:'RS-' + next, tipo:'compra', nome, tel, cat:'compras', sub:shopSub(itens), status:'novo', criado:new Date().toISOString(),
+    quando:sck.entrega ? 'Entrega no condomínio' : 'Retirada', setor, desc:obs, itens, entrega:sck.entrega,
+    valor:itens.reduce((a,i) => a + i.preco * i.qtd, 0), estimado:false, agenda:null};
+  list.unshift(o); save();
+  mine().unshift(o.id); lsSet(MINE_KEY, MINE); renderMine();
+  lsSet(CLIENT_KEY, {nome, tel, setor});
+  SCART = {}; lsSet(SHOP_CART_KEY, SCART); renderShop(); renderShopBar();
+  showSuccess(o, buildMessage(o));
+}
+
+/* --- Sugestões dos moradores --- */
+const SUG_KEY = 'riviera_demo_sugestoes_v1', VOTE_KEY = 'riviera_demo_votos_v1';
+function seedSug(){ return [
+  {id:'SG-3', item:'Ração para cachorro', motivo:'Sempre acaba no fim de semana', nome:'Ana P.', data:iso(3,20), votos:7, status:'nova', exemplo:true},
+  {id:'SG-2', item:'Carvão para churrasco', motivo:'', nome:'Marcos T.', data:iso(6,12), votos:5, status:'embreve', exemplo:true},
+  {id:'SG-1', item:'Água mineral 20 L', motivo:'Entregar dentro do condomínio ajudaria muito', nome:'', data:iso(9,9), votos:4, status:'nova', exemplo:true}
+];}
+let SUGS = null, VOTES = new Set(Array.isArray(lsGet(VOTE_KEY)) ? lsGet(VOTE_KEY) : []);
+function sugs(){ if(!SUGS){ SUGS = lsGet(SUG_KEY); if(!Array.isArray(SUGS)){ SUGS = seedSug(); lsSet(SUG_KEY, SUGS); } } return SUGS; }
+const saveSugs = () => { lsSet(SUG_KEY, SUGS); lsSet(VOTE_KEY, [...VOTES]); };
+function renderSug(){
+  const s = sugs().filter(x => x.status !== 'arquivada').sort((a,b) => b.votos - a.votos);
+  $('#sugList').innerHTML = s.length ? s.map(x => `
+    <div class="sug" data-sg="${x.id}">
+      <div class="txt"><b>${esc(x.item)}${x.status === 'embreve' ? '<span class="badge-soon">Em breve</span>' : ''}</b>
+        ${x.motivo ? `<small>“${esc(x.motivo)}”</small>` : ''}
+        <small>${x.nome ? esc(x.nome) + ' • ' : ''}${fmtDate(x.data).split(',')[0]}${x.exemplo ? ' • exemplo' : ''}</small></div>
+      <button class="vote" type="button" data-vote aria-pressed="${VOTES.has(x.id)}" aria-label="Eu também quero ${esc(x.item)}"><span>👍 ${x.votos}</span><small>${VOTES.has(x.id) ? 'Você quer' : 'Eu também'}</small></button>
+    </div>`).join('')
+    : '<div class="empty"><b>Nenhuma sugestão ainda</b>Seja o primeiro a sugerir um item.</div>';
+}
+$('#sugList').addEventListener('click', e => {
+  const b = e.target.closest('[data-vote]'); if(!b) return;
+  const x = sugs().find(s => s.id === b.closest('[data-sg]').dataset.sg); if(!x) return;
+  if(VOTES.has(x.id)){ VOTES.delete(x.id); x.votos = Math.max(0, x.votos - 1); }
+  else { VOTES.add(x.id); x.votos++; toast('Voto registrado 👍'); }
+  saveSugs(); renderSug();
+});
+$('#sugForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const item = $('#sgItem').value.trim();
+  if(item.length < 2){ markErr('sg-item'); $('#sgItem').focus(); return; }
+  const same = sugs().find(s => norm(s.item) === norm(item));
+  if(same){
+    if(!VOTES.has(same.id)){ VOTES.add(same.id); same.votos++; }
+    if(same.status === 'arquivada') same.status = 'nova';
+    toast('Esse item já foi sugerido. Contamos seu voto! 👍');
+  } else {
+    const sg = {id:'SG-' + Date.now(), item, motivo:$('#sgMot').value.trim(), nome:$('#sgNome').value.trim(), data:new Date().toISOString(), votos:1, status:'nova'};
+    sugs().unshift(sg); VOTES.add(sg.id);
+    toast('Sugestão enviada! Obrigado 💡');
+  }
+  saveSugs(); e.target.reset(); renderSug();
+});
+$('#sgItem').addEventListener('input', () => markOk('sg-item'));
+
+function renderSugAdmin(){
+  const s = [...sugs()].sort((a,b) => ((a.status === 'arquivada') - (b.status === 'arquivada')) || (b.votos - a.votos));
+  $('#sugAdmin').innerHTML = s.length ? s.map(x => `
+    <div class="sug ${x.status === 'arquivada' ? 'arch' : ''}" data-sg="${x.id}">
+      <div class="vote static"><span>${x.votos}</span><small>${x.votos === 1 ? 'voto' : 'votos'}</small></div>
+      <div class="txt"><b>${esc(x.item)}${x.status === 'embreve' ? '<span class="badge-soon">Em breve</span>' : ''}${x.status === 'arquivada' ? '<span class="badge-soon" style="background:#EEF1F5;color:#5B6880">Arquivada</span>' : ''}${x.exemplo ? '<span class="badge-soon" style="background:#F5F7FB;color:#5B6880">Exemplo</span>' : ''}</b>
+        ${x.motivo ? `<small>“${esc(x.motivo)}”</small>` : ''}
+        <small>${x.nome ? esc(x.nome) + ' • ' : ''}${fmtDate(x.data).split(',')[0]}</small>
+        <div class="sg-acts">
+          ${x.status === 'embreve' ? '<button class="link-btn" type="button" data-sga="nova">Desfazer “Em breve”</button>' : x.status === 'nova' ? '<button class="link-btn" type="button" data-sga="embreve">✅ Vamos vender</button>' : ''}
+          ${x.status === 'arquivada' ? '<button class="link-btn" type="button" data-sga="nova">Restaurar</button>' : '<button class="link-btn" type="button" data-sga="arquivada" style="color:#5B6880;border-color:#DCE3EE">Arquivar</button>'}
+        </div></div>
+    </div>`).join('')
+    : '<div class="empty"><b>Nenhuma sugestão ainda</b>Quando os moradores sugerirem itens, eles aparecem aqui.</div>';
+}
+$('#sugAdmin').addEventListener('click', e => {
+  const b = e.target.closest('[data-sga]'); if(!b) return;
+  const x = sugs().find(s => s.id === b.closest('[data-sg]').dataset.sg); if(!x) return;
+  x.status = b.dataset.sga; saveSugs(); renderAdmin();
+  toast(x.status === 'embreve' ? `“${x.item}” marcado como Em breve` : x.status === 'arquivada' ? 'Sugestão arquivada' : 'Sugestão restaurada');
+});
+
+/* Coloca 1 pedido de compra de exemplo em quem já tinha dados salvos */
+(function(){
+  const FLAG = 'riviera_demo_compra_exemplo_v1';
+  if(lsGet(FLAG)) return;
+  const list = orders();
+  if(!list.some(isShop)){
+    const next = Math.max(1000, ...list.map(o => parseInt(String(o.id).replace(/\D/g,''),10) || 0)) + 1;
+    list.unshift(shopDemo('RS-' + next)); save();
+  }
+  lsSet(FLAG, 1);
+})();
+renderShop(); renderShopBar();
+
+/* ============================================================
+   EMPRESA — painel
+   ============================================================ */
+let aFilter = 'todos', aQuery = '', aTab = 'pedidos', aType = 'todos';
+
+const CAT_EMOJI = {jardinagem:'🌿', limpeza:'🧹', piscinas:'🏊', eletrica:'⚡', hidraulica:'🚰', pintura:'🎨', reformas:'🧱', outros:'🛠️', aluguel:'🏗️', compras:'🛒'};
+function dataLonga(s){ const t = fromYmd(s).toLocaleDateString('pt-BR',{weekday:'long', day:'2-digit', month:'2-digit'}); return t.charAt(0).toUpperCase() + t.slice(1); }
+function replyFor(o){
+  const n = o.nome.trim().split(/\s+/)[0], c = catById(o.cat), em = CAT_EMOJI[o.cat] || '🛠️';
+  const head = [`Olá, *${n}*! 👋`, `Aqui é da *Riviera Serviços* 🏡`, ''];
+  const rentO = isRent(o);
+  const base = isShop(o) ? [`📋 *Pedido:* ${o.id}`, ...shopLines(o, 'empresa')] : rentO ? [`📋 *Pedido:* ${o.id}`, ...rentLines(o, 'empresa')] : [`📋 *Pedido:* ${o.id}`, `${em} *Serviço:* ${c.name} — ${o.sub}`];
+  const join = arr => arr.filter(l => l !== null).join('\n');
+  if(isShop(o) && o.status !== 'concluido'){
+    const sl = [`📋 *Pedido:* ${o.id}`, ...shopLines(o, 'empresa'), o.setor ? `📍 *Local:* ${o.setor}` : null];
+    if(o.status === 'agendado') return {label: o.entrega ? 'Avisar saída no WhatsApp' : 'Avisar que está pronto', text: join([
+      ...head, o.entrega ? 'Seu pedido *saiu para entrega*! 🛵' : 'Seu pedido está *pronto para retirada*! 🛍️', '', ...sl, '',
+      o.entrega ? 'Em instantes chegamos aí. 😊' : 'É só passar para retirar. 😊'])};
+    return {label:'Confirmar pedido no WhatsApp', text: join([
+      ...head, 'Recebemos seu pedido de *compras rápidas*! 🛒', '', ...sl, '',
+      '✅ Já estamos separando os itens.', 'Se algum item estiver em falta, avisamos por aqui.'])};
+  }
+  if(o.status === 'orcamento' && o.valor != null) return {label:'Enviar orçamento no WhatsApp', text: join([
+    ...head, 'Seu orçamento está pronto! ✅', '', ...base,
+    o.setor ? `📍 *Local:* ${o.setor}` : null,
+    `💰 *Valor:* ${BRL(o.valor)}`, '',
+    rentO ? `📅 Podemos ${o.entrega ? 'entregar' : 'separar para retirada'} em ${dataLonga(o.inicio)}. Qual horário é melhor?` : '📅 Qual o melhor dia e horário para você?',
+    'É só responder esta mensagem que a gente agenda. 😊'])};
+  if(o.status === 'agendado' && o.agenda) return {label:'Confirmar horário no WhatsApp', text: join([
+    ...head, rentO ? (o.entrega ? 'Sua entrega está *confirmada*! ✅' : 'Sua retirada está *confirmada*! ✅') : 'Seu serviço está *confirmado*! ✅', '', ...base,
+    `📅 *Data:* ${dataLonga(o.agenda.data)}`,
+    `⏰ *Horário:* ${o.agenda.hora}`,
+    o.setor ? `📍 *Local:* ${o.setor}` : null,
+    rentO ? `↩️ *Devolução:* ${dataLonga(addDays(o.agenda.data, o.dias))}` : null,
+    o.valor != null ? `💰 *Valor:* ${BRL(o.valor)}` : null, '',
+    'Qualquer imprevisto, é só avisar por aqui.', 'Até lá! 👍'])};
+  if(o.status === 'concluido') return {label:'Pedir avaliação no WhatsApp', text: join([
+    ...head, rentO ? 'Equipamentos devolvidos, aluguel *concluído*! ✅' : isShop(o) ? 'Seu pedido foi *entregue*! ✅' : 'Seu serviço foi *concluído*! ✅', '', ...base, '',
+    'Obrigado pela confiança! 🙏', '',
+    `⭐ Avalie o atendimento no nosso site, em *Acompanhar pedido*, com o número *${o.id}*.`,
+    'Sua opinião ajuda muito!'])};
+  return {label:'Conversar no WhatsApp', text: join([
+    ...head, 'Recebemos seu pedido e já estamos cuidando dele. 👍', '', ...base, '',
+    '💰 Em breve enviamos o orçamento.',
+    rentO ? '📦 Vamos conferir a disponibilidade dos itens para as suas datas.' : '📸 Se puder, mande fotos do local por aqui. Ajuda a passar um valor mais certo.'])};
+}
+
+function renderAdmin(){
+  const list = orders();
+  const count = k => list.filter(o => o.status === k).length;
+  const tiles = [
+    ['todos','Total de pedidos', list.length, '#102B57', '#E8EEF8', 'inbox'],
+    ['novo','Pedidos novos', count('novo'), STATUS.novo.color, STATUS.novo.soft, STATUS.novo.ic],
+    ['orcamento','Em orçamento', count('orcamento'), STATUS.orcamento.color, STATUS.orcamento.soft, STATUS.orcamento.ic],
+    ['agendado','Agendados', count('agendado'), STATUS.agendado.color, STATUS.agendado.soft, STATUS.agendado.ic],
+    ['concluido','Concluídos', count('concluido'), STATUS.concluido.color, STATUS.concluido.soft, STATUS.concluido.ic]
+  ];
+  $('#stats').innerHTML = tiles.map(([k,l,n,c,s,i]) => `
+    <button class="stat" type="button" data-filter="${k}" aria-pressed="${aTab === 'pedidos' && aFilter === k}">
+      <span class="s-top"><span class="s-ic" style="background:${s}">${ic(i,20,c,2.4)}</span></span>
+      <strong>${n}</strong><span>${l}</span>
+    </button>`).join('');
+
+  const sum = st => list.filter(o => st.includes(o.status) && o.valor != null).reduce((a,o) => a + o.valor, 0);
+  const r = reviews();
+  $('#fin').innerHTML = `
+    <div class="fin-t"><span class="s-ic" style="background:#E9F0FD">${ic('file',22,'#2F6FDE',2.3)}</span><div><strong>${BRL(sum(['orcamento','agendado']))}</strong><span>Previsto (orçados e agendados)</span></div></div>
+    <div class="fin-t"><span class="s-ic" style="background:#E6F6EE">${ic('check',22,'#17A75B',2.6)}</span><div><strong>${BRL(sum(['concluido']))}</strong><span>Valor de serviços concluídos</span></div></div>
+    <div class="fin-t"><span class="s-ic" style="background:#FFF6E0">${ic('star',22,'#E89B00',2.3)}</span><div><strong>${r.length ? fmt1(avgRating()) + ' ★' : '—'}</strong><span>Avaliação média (${r.length} avaliaç${r.length === 1 ? 'ão' : 'ões'})</span></div></div>`;
+
+  document.querySelectorAll('[data-atab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.atab === aTab));
+  $('#tabPedidos').hidden = aTab !== 'pedidos';
+  $('#tabAgenda').hidden = aTab !== 'agenda';
+  $('#tabSug').hidden = aTab !== 'sugestoes';
+  $('#sgCount').textContent = sugs().filter(s => s.status === 'nova').length;
+  const agCount = list.filter(o => o.status === 'agendado' && !isShop(o)).length;
+  $('#agCount').textContent = agCount;
+  if(!storageOK) $('#storageNote').innerHTML = 'Este navegador bloqueou o armazenamento local: os pedidos ficam só enquanto a página estiver aberta e <b>não são sincronizados</b> entre dispositivos.';
+  aTab === 'pedidos' ? renderOrders(tiles) : aTab === 'agenda' ? renderAgenda() : renderSugAdmin();
+}
+
+function renderOrders(tiles){
+  const list = orders();
+  $('#listTitle').textContent = aFilter === 'todos' ? 'Todas as solicitações' : tiles.find(t => t[0] === aFilter)[1];
+  const q = norm(aQuery.trim());
+  const nT = t => list.filter(o => (o.tipo || 'servico') === t).length;
+  $('#typeChips').innerHTML = [['todos','Todos', list.length],['servico','Serviços', nT('servico')],['compra','🛒 Compras', nT('compra')],['aluguel','🏗️ Aluguéis', nT('aluguel')]]
+    .map(([k,l,n]) => `<button class="chip" type="button" data-type="${k}" aria-pressed="${aType === k}">${l} (${n})</button>`).join('');
+  const shown = list.filter(o => (aFilter === 'todos' || o.status === aFilter) && (aType === 'todos' || (o.tipo || 'servico') === aType) &&
+    (!q || norm(o.nome + ' ' + o.sub + ' ' + catById(o.cat).name + ' ' + o.id).includes(q)));
+
+  $('#orders').innerHTML = shown.length ? shown.map(o => {
+    const c = catById(o.cat), st = STATUS[o.status], rep = replyFor(o), rv = reviewFor(o.id);
+    return `
+    <article class="order" data-id="${esc(o.id)}">
+      <div class="o-top"><span class="o-id">${esc(o.id)} • ${fmtDate(o.criado)}</span>
+        <span class="pill" style="background:${st.soft};color:${st.color}"><i></i>${stLabel(o, o.status)}</span></div>
+      <div class="o-name">${esc(o.nome)}${o.demo ? '<span class="fake">fictício</span>' : ''}</div>
+      <div class="o-svc"><span class="ri" ${isRent(o) ? 'style="background:#FFF1E7"' : ''}>${ic(c.icon,19,isRent(o) ? '#E8650E' : '#102B57')}</span>${isRent(o) ? 'Aluguel de equipamentos' : isShop(o) ? 'Compras rápidas' : `${esc(c.name)} — ${esc(o.sub)}`}</div>
+      <div class="o-meta">
+        ${isRent(o)
+          ? `<div>${ic('cal',17,'#5B6880')} Período: <b>${diasTxt(o.dias)} (${rentPeriod(o)})</b></div><div>🚚 <b>${o.entrega ? 'Entregar na casa' : 'Cliente retira'}</b></div>`
+          : isShop(o) ? `<div>🛵 <b>${o.entrega ? 'Entregar na casa' : 'Cliente retira'}</b></div>` : `<div>${ic('clock',17,'#5B6880')} Precisa: <b>${esc(o.quando)}</b></div>`}
+        ${o.setor ? `<div>${ic('pin',17,'#5B6880')} <b>${esc(o.setor)}</b></div>` : ''}
+        <div>${ic('phone',17,'#5B6880')} <b>${esc(fmtPhone(o.tel))}</b>${o.demo ? ' <span style="font-size:13px">(nº de teste)</span>' : ''}</div>
+      </div>
+      ${(isRent(o) || isShop(o))
+        ? `<div class="o-desc"><div class="it-list">${o.itens.map(i => `<div><b>${i.qtd}× ${esc(i.nome)}</b><span>${isShop(o) ? BRL(i.preco * i.qtd) : BRL(i.preco) + '/dia'}</span></div>`).join('')}</div>${o.desc ? `<div style="margin-top:8px">📝 ${esc(o.desc)}</div>` : ''}</div>`
+        : `<div class="o-desc">${esc(o.desc)}</div>`}
+      <div class="o-row"><span class="l">${ic('file',18,'#5B6880')} ${isShop(o) ? 'Total dos itens' : o.estimado ? 'Estimativa do site' : 'Valor'}: <b>${o.valor != null ? BRL(o.valor) : 'não definido'}</b></span>
+        <button class="link-btn" type="button" data-valor>${o.valor != null ? 'Editar' : '+ Definir valor'}</button></div>
+      ${o.status === 'agendado' && !isShop(o) ? `<div class="o-row"><span class="l">${ic('cal',18,'#102B57')} <b>${o.agenda ? esc(agendaText(o)) : 'Sem data definida'}</b></span>
+        <button class="link-btn" type="button" data-agendar>${o.agenda ? 'Remarcar' : 'Definir data'}</button></div>` : ''}
+      ${rv ? `<div class="o-row"><span class="l">Avaliação do cliente</span>${starsHTML(rv.nota,18)}</div>` : ''}
+      <div class="o-lbl">Atualizar status</div>
+      <div class="st-btns">${Object.entries(STATUS).map(([k,s]) => `
+        <button class="st-btn" type="button" data-status="${k}" aria-pressed="${o.status === k}" style="${o.status === k ? `background:${s.color}` : ''}">${o.status === k ? ic('check',16,'#fff',3) : ''}${stLabel(o, k)}</button>`).join('')}
+      </div>
+      <div class="o-actions">
+        <a class="btn btn-green" href="${waLink('55' + digits(o.tel), rep.text)}" target="_blank" rel="noopener">${ic('chat',21,'#fff',2.3)} ${rep.label}</a>
+        <button class="btn del" type="button" data-del aria-label="Excluir pedido ${esc(o.id)}">${ic('trash',20,'#C0353A',2.2)}</button>
+      </div>
+    </article>`;}).join('')
+  : `<div class="empty"><b>Nenhum pedido aqui</b>${aQuery ? 'Nenhum resultado para essa busca.' : 'Quando houver solicitações neste status, elas aparecem aqui.'}</div>`;
+}
+
+function renderAgenda(){
+  const entries = [];
+  orders().filter(o => o.status === 'agendado' && !isShop(o)).forEach(o => {
+    entries.push({o, data:o.agenda ? o.agenda.data : null, hora:o.agenda ? o.agenda.hora : '--:--', tag:isRent(o) ? (o.entrega ? 'Entrega' : 'Retirada') : null});
+    if(isRent(o) && o.agenda) entries.push({o, data:addDays(o.agenda.data, o.dias), hora:o.agenda.hora, tag:o.entrega ? 'Recolher' : 'Devolução', ret:true});
+  });
+  const groups = {};
+  entries.forEach(en => { const k = !en.data ? 'sem' : dayDiff(en.data) < 0 ? 'late' : en.data; (groups[k] = groups[k] || []).push(en); });
+  const keys = Object.keys(groups).filter(k => k !== 'sem' && k !== 'late').sort();
+  if(groups.late) keys.unshift('late');
+  if(groups.sem) keys.push('sem');
+  const title = k => k === 'late' ? 'Atrasados (data já passou)' : k === 'sem' ? 'Sem data definida' : dayLabel(k);
+  const item = en => {
+    const o = en.o, c = catById(o.cat), rep = replyFor(o);
+    const [h, m] = en.hora.split(':');
+    return `<div class="ag-item" data-id="${esc(o.id)}">
+      <div class="ag-time" ${en.ret ? 'style="background:#FDECEC;color:#C0353A"' : ''}>${h}:${m}<small>${en.data && dayDiff(en.data) < 0 ? fmtDay(fromYmd(en.data)) : 'horário'}</small></div>
+      <div><b>${esc(o.nome)}</b>${en.tag ? `<span class="ag-tag ${en.ret ? 'ret' : ''}">${en.tag}</span>` : ''}
+        <div class="meta">${isRent(o) ? '🏗️ ' + o.itens.map(i => `${i.qtd}× ${esc(i.nome)}`).join(', ') : `${esc(c.name)} — ${esc(o.sub)}`}</div>
+        <div class="meta">${o.setor ? esc(o.setor) + ' • ' : ''}${o.valor != null ? BRL(o.valor) : 'sem valor'}</div>
+        <div class="ag-acts">
+          <a class="btn btn-green" href="${waLink('55' + digits(o.tel), rep.text)}" target="_blank" rel="noopener">${ic('chat',18,'#fff',2.3)} ${en.ret ? 'Avisar' : 'Confirmar'}</a>
+          ${(!isRent(o) || en.ret) ? `<button class="btn btn-ghost" type="button" data-status="concluido">${ic('check',18,'#102B57',2.6)} ${en.ret ? 'Devolvido' : 'Concluir'}</button>` : ''}
+          <button class="btn btn-line" type="button" data-agendar>Remarcar</button>
+        </div></div></div>`;
+  };
+  $('#agenda').innerHTML = keys.length
+    ? keys.map(k => `<div class="ag-day ${k === 'late' ? 'late' : ''}"><h3>${title(k)} <span class="cnt">${groups[k].length}</span></h3>${groups[k].sort((a,b) => a.hora.localeCompare(b.hora)).map(item).join('')}</div>`).join('')
+    : `<div class="empty"><b>Nada agendado</b>Marque um pedido como “Agendado” e escolha dia e horário.</div>`;
+}
+
+function setStatus(o, k){
+  if(k === 'agendado' && !isShop(o)){ openSchedule(o); return; }
+  if(o.status === k) return;
+  o.status = k; o.atualizado = new Date().toISOString(); save(); renderAdmin();
+  toast(`${o.id} → ${stLabel(o, k)}`);
+}
+function openValor(o){
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">Valor do orçamento</h3><p>${esc(o.nome)} — ${esc(o.sub)}</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="sheet-pad field" id="vF">
+      <label for="vIn">Valor (R$)</label>
+      <input class="input" id="vIn" inputmode="decimal" placeholder="Ex.: 250,00" value="${o.valor != null ? String(o.valor.toFixed(2)).replace('.',',') : ''}" data-autofocus style="font-size:24px;font-weight:800">
+      <div class="msg">Digite um valor válido.</div>
+      ${o.status === 'novo' ? '<p class="tiny" style="margin-top:10px">Ao salvar, o pedido passa para “Em orçamento”.</p>' : ''}
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="vSave">Salvar valor</button>
+      ${o.valor != null ? '<button class="btn btn-line" type="button" id="vClear">Remover valor</button>' : ''}
+      <button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+  const saveV = () => {
+    const v = parseBRL($('#vIn').value);
+    if(v == null || v <= 0){ $('#vF').classList.add('err'); return; }
+    o.valor = v; o.estimado = false; if(o.status === 'novo') o.status = 'orcamento';
+    save(); closeSheet(); renderAdmin(); toast(`Valor salvo: ${BRL(v)}`);
+  };
+  $('#vSave').addEventListener('click', saveV);
+  $('#vIn').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); saveV(); } });
+  const cl = $('#vClear'); if(cl) cl.addEventListener('click', () => { o.valor = null; o.estimado = false; save(); closeSheet(); renderAdmin(); toast('Valor removido'); });
+}
+function openSchedule(o){
+  const tm = new Date(); tm.setDate(tm.getDate() + 1);
+  const d0 = o.agenda ? o.agenda.data : (isRent(o) && o.inicio && dayDiff(o.inicio) >= 0 ? o.inicio : ymd(tm)), h0 = o.agenda ? o.agenda.hora : '08:00';
+  const slots = ['08:00','10:00','13:00','15:00','17:00'];
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">${isRent(o) ? (o.entrega ? 'Agendar entrega' : 'Agendar retirada') : 'Agendar serviço'}</h3><p>${esc(o.nome)} — ${esc(o.sub)}</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="sheet-pad">
+      <div class="field"><label for="sD">Dia</label><input class="input" id="sD" type="date" value="${d0}"></div>
+      <div class="field" style="margin-top:14px"><span class="lbl">Horário</span>
+        <div class="slots" id="slots">${slots.map(s => `<button type="button" data-h="${s}" aria-pressed="${s === h0}">${s}</button>`).join('')}</div>
+        <input class="input" id="sH" type="time" value="${h0}" style="margin-top:10px" aria-label="Outro horário">
+      </div>
+      <p class="tiny" style="margin-top:10px">O cliente pode acompanhar a data pelo número do pedido no site.</p>
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="sSave">${ic('cal',20,'#fff',2.3)} Confirmar agendamento</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+  $('#slots').addEventListener('click', e => {
+    const b = e.target.closest('[data-h]'); if(!b) return;
+    $('#sH').value = b.dataset.h;
+    $('#slots').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  });
+  $('#sH').addEventListener('input', () => $('#slots').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.h === $('#sH').value)));
+  $('#sSave').addEventListener('click', () => {
+    const d = $('#sD').value, h = $('#sH').value;
+    if(!d || !h){ toast('Escolha dia e horário'); return; }
+    o.agenda = {data:d, hora:h}; o.status = 'agendado'; o.atualizado = new Date().toISOString();
+    save(); closeSheet(); renderAdmin(); toast(`Agendado: ${dayLabel(d)} às ${h}`);
+  });
+}
+function orderAction(e){
+  const card = e.target.closest('[data-id]'); if(!card) return;
+  const o = orders().find(x => x.id === card.dataset.id); if(!o) return;
+  const sb = e.target.closest('[data-status]');
+  if(sb){ setStatus(o, sb.dataset.status); return; }
+  if(e.target.closest('[data-valor]')){ openValor(o); return; }
+  if(e.target.closest('[data-agendar]')){ openSchedule(o); return; }
+  if(e.target.closest('[data-del]')){
+    openSheet(`<div class="sheet-head"><div><h3 id="sheetTitle">Excluir pedido ${esc(o.id)}?</h3><p>${esc(o.nome)} — ${esc(o.sub)}</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+      <div class="confirm"><p>Esta ação remove o pedido deste navegador.</p></div>
+      <div class="sheet-actions"><button class="btn btn-orange" type="button" id="confirmDel" data-autofocus>Sim, excluir</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+    $('#confirmDel').addEventListener('click', () => {
+      ORDERS = orders().filter(x => x.id !== o.id); save(); closeSheet(); renderAdmin(); toast('Pedido excluído');
+    });
+  }
+}
+$('#orders').addEventListener('click', orderAction);
+$('#agenda').addEventListener('click', orderAction);
+$('#stats').addEventListener('click', e => { const b = e.target.closest('[data-filter]'); if(b){ aFilter = b.dataset.filter; aTab = 'pedidos'; renderAdmin(); } });
+document.querySelectorAll('[data-atab]').forEach(b => b.addEventListener('click', () => { aTab = b.dataset.atab; renderAdmin(); }));
+$('#typeChips').addEventListener('click', e => { const b = e.target.closest('[data-type]'); if(b){ aType = b.dataset.type; renderAdmin(); } });
+$('#adminQ').addEventListener('input', e => { aQuery = e.target.value; renderAdmin(); });
+$('#resetBtn').addEventListener('click', () => {
+  openSheet(`<div class="sheet-head"><div><h3 id="sheetTitle">Restaurar demonstração?</h3><p>Volta aos 11 pedidos, 3 avaliações e 3 sugestões de exemplo.</p></div>
+    <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="confirm"><p>Pedidos, avaliações e sugestões criados neste navegador serão apagados.</p></div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="confirmReset" data-autofocus>Restaurar</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+  $('#confirmReset').addEventListener('click', () => {
+    ORDERS = seed(); save(); SUGS = seedSug(); VOTES = new Set(); saveSugs(); REVIEWS = seedReviews(); lsSet(REV_KEY, REVIEWS); MINE = []; lsSet(MINE_KEY, MINE);
+    aFilter = 'todos'; aQuery = ''; $('#adminQ').value = ''; trackedId = null; $('#trackResult').innerHTML = '';
+    closeSheet(); renderAdmin(); renderReviews(); renderMine(); toast('Dados de demonstração restaurados');
+  });
+});
+
+/* ---------- Início ---------- */
+orders();
+route();
+</script>
+</body>
+</html>
