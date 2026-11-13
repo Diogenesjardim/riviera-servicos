@@ -789,7 +789,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <div class="wa-list"><a href="https://wa.me/5511967353508" target="_blank" rel="noopener">💬 (11) 96735-3508</a><a href="https://wa.me/5511958529823" target="_blank" rel="noopener">💬 (11) 95852-9823</a></div>
       <p class="ios-tip" style="margin-top:14px">📲 <b>Use como aplicativo:</b> no iPhone, abra no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.</p>
       <p style="font-size:13.5px;color:#8FA3C6">Imagens ilustrativas. Pedidos e pagamentos combinados pelo WhatsApp.</p>
-      <a class="foot-admin" href="#empresa">🔒 Área da empresa</a>
+      <a class="foot-admin" href="#empresa" hidden>🔒 Área da empresa</a>
     </div>
   </footer>
 
@@ -2353,9 +2353,10 @@ async function authReq(tipo, corpo){
   const j = await r.json().catch(() => ({}));
   if(!r.ok){ const er = new Error(j.error_description || j.msg || ('HTTP ' + r.status)); er.status = r.status; throw er; }
   SES = {access:j.access_token, refresh:j.refresh_token, exp:Date.now() + (j.expires_in || 3600) * 1000 - 60000, email:(j.user && j.user.email) || ''};
-  lsSet(SES_KEY, SES); return SES;
+  lsSet(SES_KEY, SES); linkAdmin(); return SES;
 }
-function sairAdmin(){ SES = null; ADMIN = null; adminErro = ''; try{ localStorage.removeItem(SES_KEY); }catch(e){} }
+function linkAdmin(){ const a = document.querySelector('.foot-admin'); if(a) a.hidden = !SES; }
+function sairAdmin(){ SES = null; ADMIN = null; adminErro = ''; try{ localStorage.removeItem(SES_KEY); }catch(e){} linkAdmin(); }
 async function tokenAdmin(){
   if(!SES) return null;
   if(Date.now() < SES.exp) return SES.access;
@@ -2700,6 +2701,7 @@ $('#resetBtn').addEventListener('click', () => {
 /* ---------- Início ---------- */
 orders();
 route();
+linkAdmin();
 /* Link de avaliação vindo do WhatsApp: ?avaliar=RS-1003&servico=...&nome=... */
 (function(){
   const q = new URLSearchParams(location.search);
