@@ -1610,7 +1610,7 @@ const agendaText = o => o.agenda ? `${dayLabel(o.agenda.data)} às ${o.agenda.ho
 
 function renderReviews(){
   if(ONLINE && PUB === null){ carregarPub(); $('#rvSum').innerHTML = '<div class="rv-load">Carregando avaliações…</div>'; $('#rvList').innerHTML = ''; return; }
-  if(ONLINE && $('#rvSub')) $('#rvSub').textContent = 'Avaliações reais de moradores. Elas aparecem aqui depois de uma conferência rápida da equipe.';
+  if(ONLINE && $('#rvSub')) $('#rvSub').textContent = 'Avaliações reais de moradores do condomínio.';
   const r = ONLINE ? [...PUB] : [...reviews()].sort((a,b) => b.data.localeCompare(a.data));
   const a = r.length ? r.reduce((s,x) => s + x.nota, 0) / r.length : 0;
   const dist = [5,4,3,2,1].map(s => [s, r.filter(x => x.nota === s).length]);
@@ -1718,7 +1718,7 @@ function openReviewPublic(pre){
       <input class="input" id="rvPed" maxlength="20" value="${esc(pre.pedido || '')}" placeholder="Ex.: RS-1009" autocapitalize="characters">
       <input class="hp" id="rvSite" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="msg" id="rvMsg"></div>
-      <p class="tiny" style="margin-top:10px">A avaliação aparece no site depois de uma conferência rápida da equipe.</p>
+      <p class="tiny" style="margin-top:10px">Sua avaliação aparece no site para os vizinhos. Seja sincero e respeitoso. 🙂</p>
     </div>
     <div class="sheet-actions"><button class="btn btn-orange" type="button" id="rvSend">Enviar avaliação</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
   $('#sp').addEventListener('click', e => {
@@ -1742,7 +1742,7 @@ function openReviewPublic(pre){
     try {
       await enviarPub({nome, servico, nota, comentario, pedido:normId($('#rvPed').value.trim()).slice(0, 20)});
       lsSet('riviera_av_ultimo', Date.now());
-      closeSheet(); toast('Obrigado! Sua avaliação aparece no site depois da conferência ⭐');
+      closeSheet(); toast('Obrigado pela avaliação! ⭐'); rvTodas = false; setTimeout(carregarPub, 600);
     } catch(e){ btn.disabled = false; btn.textContent = 'Enviar avaliação'; erro('Não consegui enviar. Confira a internet e tente de novo.'); }
   });
 }

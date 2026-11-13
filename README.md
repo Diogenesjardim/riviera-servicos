@@ -9,7 +9,7 @@ Site de serviços residenciais, compras rápidas e aluguel de equipamentos para 
 - Os pedidos são enviados pelo WhatsApp: (11) 96735-3508 ou (11) 95852-9823.
 - Comprar e Alugar estão como **em breve**: "Quero ser avisado" e sugestões vão para o Supabase (tabelas `interessados` e `sugestoes`, script em `supabase/em_breve.sql`).
 - Área da empresa e acompanhamento de pedido estão escondidos até a próxima versão (pedidos no Supabase + login).
-- **Avaliações públicas:** ficam no Supabase quando `SB_URL` e `SB_KEY` estão preenchidos no `index.html`. Script do banco em `supabase/avaliacoes.sql`. Para aprovar: Supabase → Table Editor → `avaliacoes` → marcar `aprovado`.
+- **Avaliações públicas:** ficam no Supabase (`supabase/avaliacoes.sql` + `supabase/avaliacoes_automatico.sql`). Publicam na hora; com palavrão ou link ficam escondidas (`aprovado = false`) para conferência no Table Editor.
 - Preços de compras e aluguel são de exemplo.
 
 ## Como alterar
