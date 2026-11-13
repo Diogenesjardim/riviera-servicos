@@ -296,6 +296,9 @@ footer p{margin-top:12px;max-width:520px}
 .rv-foot{display:flex;align-items:center;gap:10px;margin-top:auto}
 .avatar{width:40px;height:40px;border-radius:50%;background:var(--orange-soft);color:var(--orange-2);font-weight:800;display:grid;place-items:center;flex:0 0 auto}
 .rv-foot b{display:block;font-size:15px}.rv-foot small{color:var(--muted);font-size:13px}
+.rv-more{grid-column:1 / -1}
+.rv-load{color:var(--muted);text-align:center;padding:18px 8px}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
 .tag-ex{font-size:11px;font-weight:800;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-left:auto;white-space:nowrap}
 .star-pick{display:flex;justify-content:center;gap:4px;padding:14px 0 4px}
 .star-pick button{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;transition:transform .12s}
@@ -634,7 +637,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <div class="sec-head"><div>
         <span class="kicker">Avaliações</span>
         <h2>O que os moradores dizem</h2>
-        <p class="sec-sub">Só quem teve um serviço concluído pode avaliar. As marcadas como “Exemplo” são fictícias, para demonstração.</p>
+        <p class="sec-sub" id="rvSub">Só quem teve um serviço concluído pode avaliar. As marcadas como “Exemplo” são fictícias, para demonstração.</p>
       </div></div>
       <div class="rv-wrap"><div class="rv-sum" id="rvSum"></div><div class="rv-list" id="rvList"></div></div>
     </div>
@@ -1541,6 +1544,27 @@ function showSuccess(o, msg){
 /* ============================================================
    AVALIAÇÕES E ACOMPANHAMENTO (morador)
    ============================================================ */
+/* --- Avaliações públicas (Supabase) ---
+   Cole aqui a Project URL e a chave "anon public" do Supabase.
+   Com as duas preenchidas, as avaliações ficam online e todo mundo vê. Vazias = modo demonstração. */
+const SB_URL = '';
+const SB_KEY = '';
+const ONLINE = !!(SB_URL && SB_KEY);
+let PUB = null, pubErro = false, rvTodas = false;
+const sbHead = () => ({apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY});
+async function carregarPub(){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/avaliacoes?select=id,criado_em,nome,servico,nota,comentario&order=criado_em.desc&limit=300`, {headers:sbHead()});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    PUB = (await r.json()).map(x => ({id:x.id, nome:x.nome, sub:x.servico, nota:x.nota, texto:x.comentario, data:x.criado_em}));
+    pubErro = false;
+  } catch(e){ pubErro = true; if(!PUB) PUB = []; }
+  renderReviews();
+}
+async function enviarPub(d){
+  const r = await fetch(`${SB_URL}/rest/v1/avaliacoes`, {method:'POST', headers:{...sbHead(), 'Content-Type':'application/json', Prefer:'return=minimal'}, body:JSON.stringify(d)});
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+}
 const REV_KEY = 'riviera_demo_avaliacoes_v2';
 const MINE_KEY = 'riviera_demo_meus_pedidos_v1';
 function lsGet(k){ try{ const r = localStorage.getItem(k); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
@@ -1572,24 +1596,33 @@ function dayLabel(s){
 const agendaText = o => o.agenda ? `${dayLabel(o.agenda.data)} às ${o.agenda.hora}` : '';
 
 function renderReviews(){
-  const r = [...reviews()].sort((a,b) => b.data.localeCompare(a.data));
-  const a = avgRating();
+  if(ONLINE && PUB === null){ carregarPub(); $('#rvSum').innerHTML = '<div class="rv-load">Carregando avaliações…</div>'; $('#rvList').innerHTML = ''; return; }
+  if(ONLINE && $('#rvSub')) $('#rvSub').textContent = 'Avaliações reais de moradores. Elas aparecem aqui depois de uma conferência rápida da equipe.';
+  const r = ONLINE ? [...PUB] : [...reviews()].sort((a,b) => b.data.localeCompare(a.data));
+  const a = r.length ? r.reduce((s,x) => s + x.nota, 0) / r.length : 0;
   const dist = [5,4,3,2,1].map(s => [s, r.filter(x => x.nota === s).length]);
   $('#rvSum').innerHTML = `
-    <div class="big">${fmt1(a)}</div>
+    <div class="big">${r.length ? fmt1(a) : '–'}</div>
     <div style="margin-top:8px">${starsHTML(a, 26, 'rgba(255,255,255,.22)')}</div>
-    <div class="rv-count">${r.length} avaliaç${r.length === 1 ? 'ão' : 'ões'} de moradores</div>
+    <div class="rv-count">${r.length ? `${r.length} avaliaç${r.length === 1 ? 'ão' : 'ões'} de moradores` : 'Ainda sem avaliações'}</div>
     <div class="rv-bars">${dist.map(([s,n]) => `<div class="rv-bar"><span>${s}★</span><span class="t"><i style="width:${r.length ? n/r.length*100 : 0}%"></i></span><span>${n}</span></div>`).join('')}</div>
     <button class="btn btn-orange btn-block" type="button" id="rvBtn">${ic('star',20,'#fff',2.4)} Avaliar um serviço</button>`;
-  $('#rvList').innerHTML = r.slice(0,6).map(x => `
+  const lim = rvTodas ? r.length : 6;
+  $('#rvList').innerHTML = (r.length ? r.slice(0, lim).map(x => `
     <article class="rv">${starsHTML(x.nota)}
       <p>${esc(x.texto || 'Sem comentário.')}</p>
-      <div class="rv-foot"><span class="avatar">${esc((x.nome.trim()[0] || '?').toUpperCase())}</span>
+      <div class="rv-foot"><span class="avatar">${esc((String(x.nome).trim()[0] || '?').toUpperCase())}</span>
         <span><b>${esc(x.nome)}</b><small>${esc(x.sub)} • ${fmtDate(x.data).split(',')[0]}</small></span>
         ${x.exemplo ? '<span class="tag-ex">Exemplo</span>' : ''}</div>
-    </article>`).join('');
+    </article>`).join('') : `<div class="rv rv-more"><p><b>Seja o primeiro a avaliar!</b><br>Já usou algum serviço da Riviera? Toque em “Avaliar um serviço” e conte como foi.</p></div>`)
+    + (r.length > lim ? `<button class="btn btn-ghost btn-block rv-more" type="button" id="rvMais">Ver todas as ${r.length} avaliações</button>` : '')
+    + (ONLINE && pubErro ? `<div class="rv rv-more"><p>Não consegui carregar as avaliações agora. <button class="btn btn-ghost" type="button" id="rvRetry">Tentar de novo</button></p></div>` : '');
 }
-$('#rvSum').addEventListener('click', e => { if(e.target.closest('#rvBtn')) askOrderForReview(); });
+$('#rvList').addEventListener('click', e => {
+  if(e.target.closest('#rvMais')){ rvTodas = true; renderReviews(); }
+  if(e.target.closest('#rvRetry')){ PUB = null; renderReviews(); }
+});
+$('#rvSum').addEventListener('click', e => { if(e.target.closest('#rvBtn')) (ONLINE ? openReviewPublic({}) : askOrderForReview()); });
 
 function normId(s){
   s = String(s).toUpperCase().replace(/\s/g,'');
@@ -1652,6 +1685,55 @@ function openReview(o){
   });
 }
 
+function openReviewPublic(pre){
+  let nota = 0;
+  const labels = ['Toque nas estrelas','Ruim','Regular','Bom','Muito bom','Excelente!'];
+  const opcoes = [...CATS.flatMap(c => c.subs), 'Compras rápidas', 'Aluguel de equipamentos', 'Outro serviço'];
+  openSheet(`
+    <div class="sheet-head"><div><h3 id="sheetTitle">Como foi o serviço?</h3><p>Sua avaliação ajuda os vizinhos a escolher.</p></div>
+      <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="star-pick" id="sp" role="radiogroup" aria-label="Nota">${[1,2,3,4,5].map(i => `<button type="button" data-n="${i}" role="radio" aria-checked="false" aria-label="${i} estrela${i > 1 ? 's' : ''}"><svg width="44" height="44" viewBox="0 0 24 24" fill="#D4DBE6">${STAR}</svg></button>`).join('')}</div>
+    <div class="star-lbl" id="spl">${labels[0]}</div>
+    <div class="sheet-pad field" id="rvF">
+      <label for="rvServ">Qual serviço?</label>
+      <select class="input" id="rvServ"><option value="">Escolha…</option>${opcoes.map(o => `<option ${o === pre.sub ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>
+      <label for="rvTxt" style="margin-top:14px">Comentário <small>(opcional)</small></label>
+      <textarea class="input" id="rvTxt" maxlength="600" placeholder="Conte como foi o atendimento"></textarea>
+      <label for="rvNome" style="margin-top:14px">Seu nome <small>(aparece assim no site)</small></label>
+      <input class="input" id="rvNome" maxlength="40" value="${esc(pre.nome || '')}" placeholder="Ex.: Cláudia R.">
+      <label for="rvPed" style="margin-top:14px">Nº do pedido <small>(opcional)</small></label>
+      <input class="input" id="rvPed" maxlength="20" value="${esc(pre.pedido || '')}" placeholder="Ex.: RS-1009" autocapitalize="characters">
+      <input class="hp" id="rvSite" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="msg" id="rvMsg"></div>
+      <p class="tiny" style="margin-top:10px">A avaliação aparece no site depois de uma conferência rápida da equipe.</p>
+    </div>
+    <div class="sheet-actions"><button class="btn btn-orange" type="button" id="rvSend">Enviar avaliação</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
+  $('#sp').addEventListener('click', e => {
+    const b = e.target.closest('[data-n]'); if(!b) return;
+    nota = +b.dataset.n;
+    $('#sp').querySelectorAll('button').forEach((x,i) => { x.querySelector('svg').setAttribute('fill', i < nota ? '#FFB020' : '#D4DBE6'); x.setAttribute('aria-checked', i + 1 === nota); });
+    $('#spl').textContent = labels[nota];
+  });
+  const erro = m => { $('#rvMsg').textContent = m; $('#rvF').classList.add('err'); toast(m); };
+  $('#rvF').addEventListener('input', () => { $('#rvF').classList.remove('err'); $('#rvMsg').textContent = ''; });
+  $('#sp').addEventListener('click', () => { $('#rvF').classList.remove('err'); $('#rvMsg').textContent = ''; });
+  $('#rvSend').addEventListener('click', async () => {
+    const nome = $('#rvNome').value.trim().replace(/\s+/g, ' '), servico = $('#rvServ').value, comentario = $('#rvTxt').value.trim();
+    if(!nota) return erro('Escolha de 1 a 5 estrelas.');
+    if(!servico) return erro('Escolha qual serviço foi feito.');
+    if(nome.length < 2) return erro('Escreva seu nome (pode ser só o primeiro).');
+    if($('#rvSite').value) return closeSheet();
+    const ult = +(lsGet('riviera_av_ultimo') || 0);
+    if(Date.now() - ult < 10 * 60 * 1000) return erro('Você acabou de enviar uma avaliação. Aguarde alguns minutos para enviar outra.');
+    const btn = $('#rvSend'); btn.disabled = true; btn.textContent = 'Enviando…';
+    try {
+      await enviarPub({nome, servico, nota, comentario, pedido:normId($('#rvPed').value.trim()).slice(0, 20)});
+      lsSet('riviera_av_ultimo', Date.now());
+      closeSheet(); toast('Obrigado! Sua avaliação aparece no site depois da conferência ⭐');
+    } catch(e){ btn.disabled = false; btn.textContent = 'Enviar avaliação'; erro('Não consegui enviar. Confira a internet e tente de novo.'); }
+  });
+}
+
 /* --- Acompanhar pedido --- */
 function renderMine(){
   const m = mine().filter(id => orders().some(o => o.id === id)).slice(0,6);
@@ -1704,7 +1786,7 @@ $('#track').addEventListener('click', e => {
   const t = e.target.closest('[data-track]');
   if(t){ $('#trackId').value = t.dataset.track; renderTrack(t.dataset.track); return; }
   const r = e.target.closest('[data-review]');
-  if(r){ const o = orders().find(x => x.id === r.dataset.review); if(o) openReview(o); }
+  if(r){ const o = orders().find(x => x.id === r.dataset.review); if(o){ if(ONLINE){ const nm = o.nome.trim().split(/\s+/); openReviewPublic({sub:o.sub, pedido:o.id, nome:nm[0] + (nm[1] ? ' ' + nm[1][0] + '.' : '')}); } else openReview(o); } }
 });
 
 /* ============================================================
