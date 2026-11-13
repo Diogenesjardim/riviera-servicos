@@ -1547,11 +1547,11 @@ function showSuccess(o, msg){
 /* --- Avaliações públicas (Supabase) ---
    Cole aqui a Project URL e a chave "anon public" do Supabase.
    Com as duas preenchidas, as avaliações ficam online e todo mundo vê. Vazias = modo demonstração. */
-const SB_URL = '';
-const SB_KEY = '';
+const SB_URL = 'https://rbsxpwhnrietksbkwdhc.supabase.co';
+const SB_KEY = 'sb_publishable_7uLok3k8KxNMcOllJCEUbw_RWgxxq2N';
 const ONLINE = !!(SB_URL && SB_KEY);
 let PUB = null, pubErro = false, rvTodas = false;
-const sbHead = () => ({apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY});
+const sbHead = () => (SB_KEY.startsWith('eyJ') ? {apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY} : {apikey:SB_KEY});
 async function carregarPub(){
   try {
     const r = await fetch(`${SB_URL}/rest/v1/avaliacoes?select=id,criado_em,nome,servico,nota,comentario&order=criado_em.desc&limit=300`, {headers:sbHead()});
