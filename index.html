@@ -304,6 +304,18 @@ footer p{margin-top:12px;max-width:520px}
 .soon-tag{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;background:#FFE7D3;color:#B24A05;border-radius:999px;padding:2px 7px;vertical-align:middle;line-height:1.4}
 .tab[aria-selected="true"] .soon-tag{background:rgba(255,255,255,.2);color:#fff}
 .soon{padding:26px 0 40px;display:grid;gap:18px}
+.success-ic.warn{background:#FDECEC;color:#D0353A;font-size:44px;font-weight:900;line-height:1}
+.send-state{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px auto 0;width:max-content;max-width:92%;font-weight:800;font-size:15px;border-radius:999px;padding:8px 16px}
+.send-state.pend{background:#FDECEC;color:#C0353A}
+.send-state.ok{background:#E6F6EE;color:#14814A}
+.send-state i{width:10px;height:10px;border-radius:50%;background:currentColor;flex:none}
+.send-warn{background:#FDECEC;color:#C0353A;border-radius:14px;padding:12px 14px;font-weight:700;font-size:15px;margin:10px 20px 0;text-align:center}
+.login-card{max-width:460px;margin:26px auto 40px;background:#fff;border:1px solid #EDF1F7;border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.login-card h2{margin:4px 0 6px}
+.login-card .field{margin-top:12px}
+.admin-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:14px 0 4px;font-size:14px;color:var(--muted)}
+.o-alert{background:#FFF4E5;color:#9A4A00;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700;margin-top:8px}
+.foot-admin{display:inline-block;margin-top:12px;color:#8FA3C6;font-size:13.5px;text-decoration:underline;text-underline-offset:3px}
 .soon-card{background:#fff;border:1px solid #EDF1F7;border-radius:22px;padding:22px;box-shadow:var(--shadow)}
 .soon-card h2{margin:6px 0 6px}
 .soon-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
@@ -777,6 +789,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <div class="wa-list"><a href="https://wa.me/5511967353508" target="_blank" rel="noopener">💬 (11) 96735-3508</a><a href="https://wa.me/5511958529823" target="_blank" rel="noopener">💬 (11) 95852-9823</a></div>
       <p class="ios-tip" style="margin-top:14px">📲 <b>Use como aplicativo:</b> no iPhone, abra no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.</p>
       <p style="font-size:13.5px;color:#8FA3C6">Imagens ilustrativas. Pedidos e pagamentos combinados pelo WhatsApp.</p>
+      <a class="foot-admin" href="#empresa">🔒 Área da empresa</a>
     </div>
   </footer>
 
@@ -891,7 +904,9 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       </div>
     </div>
   </section>
-  <div class="container">
+  <div class="container" id="adminLogin" hidden></div>
+  <div class="container" id="adminDash">
+    <div class="admin-bar" id="adminBar" hidden></div>
     <div class="stats" id="stats"></div>
     <div class="fin" id="fin"></div>
     <div class="seg" role="group" aria-label="Visualização">
@@ -1259,7 +1274,7 @@ const VIEWS = ['morador','compras','aluguel','empresa'];
 let currentView = 'morador';
 function route(){
   const hv = location.hash.slice(1);
-  const v = VIEWS.includes(hv) && hv !== 'empresa' ? hv : 'morador';
+  const v = VIEWS.includes(hv) ? hv : 'morador';
   currentView = v;
   VIEWS.forEach(x => { $('#view-' + x).hidden = x !== v; });
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.view === v));
@@ -1320,18 +1335,22 @@ let lastFocus = null;
 function openSheet(html){
   lastFocus = document.activeElement;
   $('#toast').classList.remove('show');
+  sheetGuard = null;
   sheet.innerHTML = '<div class="sheet-grab"></div>' + html;
   overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false');
   document.body.style.overflow = 'hidden';
   setTimeout(() => { const f = sheet.querySelector('[data-autofocus]') || sheet.querySelector('button,a'); f && f.focus({preventScroll:true}); }, 60);
 }
+let sheetGuard = null;
+function tryCloseSheet(){ if(sheetGuard && !sheetGuard()) return; closeSheet(); }
 function closeSheet(){
+  sheetGuard = null;
   overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true');
   document.body.style.overflow = '';
   lastFocus && lastFocus.focus && lastFocus.focus({preventScroll:true});
 }
-overlay.addEventListener('click', e => { if(e.target === overlay || e.target.closest('[data-close]')) closeSheet(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && overlay.classList.contains('open')) closeSheet(); });
+overlay.addEventListener('click', e => { if(e.target === overlay || e.target.closest('[data-close]')) tryCloseSheet(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && overlay.classList.contains('open')) tryCloseSheet(); });
 
 function openCategory(id){
   const c = catById(id);
@@ -1487,7 +1506,7 @@ function buildMessage(o){
   ].filter(l => l !== null).join('\n');
 }
 
-$('#quoteForm').addEventListener('submit', e => {
+$('#quoteForm').addEventListener('submit', async e => {
   e.preventDefault();
   const nome = $('#f-nome').value.trim();
   const telD = digits(tel.value);
@@ -1516,34 +1535,61 @@ $('#quoteForm').addEventListener('submit', e => {
     return;
   }
   const list = orders();
-  const next = Math.max(1000, ...list.map(o => parseInt(String(o.id).replace(/\D/g,''),10) || 0)) + 1;
   const [cat, sub] = serv.split('|');
-  const o = {id:'RS-' + next, nome, tel:telD, cat, sub, status:'novo', criado:new Date().toISOString(), quando, setor, desc, valor:null, agenda:null};
+  let id = null, salvo = false;
+  if(ONLINE){
+    const btn = e.target.querySelector('[type=submit]'), t0 = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Registrando pedido…';
+    try{ id = await sbRpc('criar_pedido', {p_nome:nome, p_tel:telD, p_cat:cat, p_sub:sub, p_quando:quando, p_setor:setor, p_desc:desc}); salvo = !!id; }
+    catch(err){ id = null; }
+    btn.disabled = false; btn.innerHTML = t0;
+  }
+  if(!id){ const next = Math.max(1000, ...list.map(o => parseInt(String(o.id).replace(/\D/g,''),10) || 0)) + 1; id = 'RS-' + next; }
+  const o = {id, nome, tel:telD, cat, sub, status:'novo', criado:new Date().toISOString(), quando, setor, desc, valor:null, agenda:null, salvo};
   list.unshift(o); save();
   mine().unshift(o.id); lsSet(MINE_KEY, MINE); renderMine();
   lsSet(CLIENT_KEY, {nome, tel:telD, setor});
   const msg = buildMessage(o);
-  showSuccess(o, msg);
+  showSuccess(o, msg, salvo);
   e.target.reset(); dateEl.hidden = true;
 });
 
-function showSuccess(o, msg){
+function showSuccess(o, msg, salvo){
   openSheet(`
-    <div class="success">
-      <div class="success-ic">${ic('check',40,'#17A75B',3)}</div>
-      <h3 id="sheetTitle">Pedido ${esc(o.id)} registrado!</h3>
-      <p>Agora é só abrir o WhatsApp e tocar em <b>Enviar</b>. A mensagem já está pronta.</p>
+    <div class="success" id="sucBox">
+      <div class="success-ic warn" id="sucIc">!</div>
+      <h3 id="sheetTitle">Falta enviar no WhatsApp</h3>
+      <p id="sucTxt">Seu pedido <b>${esc(o.id)}</b> só chega até nós quando você tocar em <b>Enviar</b> no WhatsApp.</p>
+      <div class="send-state pend" id="sucState"><i></i>Ainda não enviado</div>
     </div>
+    <div id="sucWarn"></div>
     <div class="bubble-lbl">Prévia da mensagem</div>
     <div class="bubble" id="msgPreview">${esc(msg)}</div>
     <div class="sheet-actions">
-      <a class="btn btn-green btn-block" data-autofocus href="${waLink(WA_NUMBERS[0].num, msg)}" target="_blank" rel="noopener">${ic('chat',24,'#fff',2.3)} Enviar no WhatsApp</a>
-      <a class="btn btn-wa2 btn-block" href="${waLink(WA_NUMBERS[1].num, msg)}" target="_blank" rel="noopener">${ic('chat',22,'#17A75B',2.3)} Enviar para o 2º número</a>
+      <a class="btn btn-green btn-block" data-wasend data-autofocus href="${waLink(WA_NUMBERS[0].num, msg)}" target="_blank" rel="noopener">${ic('chat',24,'#fff',2.3)} Enviar no WhatsApp</a>
+      <a class="btn btn-wa2 btn-block" data-wasend href="${waLink(WA_NUMBERS[1].num, msg)}" target="_blank" rel="noopener">${ic('chat',22,'#17A75B',2.3)} Enviar para o 2º número</a>
       <p class="tiny" style="display:block;text-align:center">Atendimento 1: ${WA_NUMBERS[0].label}<br>Atendimento 2: ${WA_NUMBERS[1].label}<br>Se não responderem em alguns minutos, envie também para o outro número.</p>
       <button class="btn btn-line btn-block" type="button" id="copyMsg">${ic('copy',20,'#102B57',2.3)} Copiar mensagem</button>
       <button class="btn btn-ghost btn-block" type="button" data-close>Fechar</button>
     </div>
     <div class="sheet-pad"><p class="tiny">${ic('clock',16,'#5B6880',2.2)}<span>Seu pedido <b>${esc(o.id)}</b> é confirmado pelo WhatsApp. Se precisar, é só citar esse número na conversa.</span></p></div>`);
+  let enviado = false, avisado = false;
+  sheetGuard = () => {
+    if(enviado || avisado) return true;
+    avisado = true;
+    $('#sucWarn').innerHTML = '<div class="send-warn">⚠️ Você ainda não enviou o pedido! Toque em <b>Enviar no WhatsApp</b>. Para sair mesmo assim, toque em Fechar de novo.</div>';
+    $('#sucWarn').scrollIntoView({block:'center', behavior:'smooth'});
+    return false;
+  };
+  document.querySelectorAll('#sheet [data-wasend]').forEach(a => a.addEventListener('click', () => {
+    if(!enviado && salvo){ sbRpc('marcar_enviado', {p_id:o.id}).catch(() => {}); }
+    enviado = true;
+    $('#sucIc').className = 'success-ic'; $('#sucIc').innerHTML = ic('check',40,'#17A75B',3);
+    $('#sheetTitle').textContent = 'WhatsApp aberto com seu pedido!';
+    $('#sucTxt').innerHTML = `Confira se a mensagem do pedido <b>${esc(o.id)}</b> apareceu na conversa. Se ela ficou só escrita, toque na setinha <b>Enviar ➤</b> lá no WhatsApp.`;
+    $('#sucState').className = 'send-state ok'; $('#sucState').innerHTML = '<i></i>Enviado para o WhatsApp';
+    $('#sucWarn').innerHTML = '';
+  }));
   $('#copyMsg').addEventListener('click', async () => {
     try{ await navigator.clipboard.writeText(msg); toast('Mensagem copiada'); }
     catch(err){
@@ -1564,7 +1610,12 @@ const SB_URL = 'https://rbsxpwhnrietksbkwdhc.supabase.co';
 const SB_KEY = 'sb_publishable_7uLok3k8KxNMcOllJCEUbw_RWgxxq2N';
 const ONLINE = !!(SB_URL && SB_KEY);
 let PUB = null, pubErro = false, rvTodas = false;
-const sbHead = () => (SB_KEY.startsWith('eyJ') ? {apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY} : {apikey:SB_KEY});
+const sbHead = tok => tok ? {apikey:SB_KEY, Authorization:'Bearer ' + tok} : (SB_KEY.startsWith('eyJ') ? {apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY} : {apikey:SB_KEY});
+async function sbRpc(nome, corpo, tok){
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/${nome}`, {method:'POST', headers:{...sbHead(tok), 'Content-Type':'application/json'}, body:JSON.stringify(corpo || {})});
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+  const t = await r.text(); return t ? JSON.parse(t) : null;
+}
 async function carregarPub(){
   try {
     const r = await fetch(`${SB_URL}/rest/v1/avaliacoes?select=id,criado_em,nome,servico,nota,comentario&order=criado_em.desc&limit=300`, {headers:sbHead()});
@@ -2293,8 +2344,93 @@ $('#sugAdmin').addEventListener('click', e => {
 renderShop(); renderShopBar();
 
 /* ============================================================
-   EMPRESA — painel
+   EMPRESA — painel (login + pedidos no Supabase)
    ============================================================ */
+const SES_KEY = 'riviera_admin_sessao_v1';
+let SES = lsGet(SES_KEY), ADMIN = null, adminErro = '', adminCarregando = false;
+async function authReq(tipo, corpo){
+  const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=${tipo}`, {method:'POST', headers:{apikey:SB_KEY, 'Content-Type':'application/json'}, body:JSON.stringify(corpo)});
+  const j = await r.json().catch(() => ({}));
+  if(!r.ok){ const er = new Error(j.error_description || j.msg || ('HTTP ' + r.status)); er.status = r.status; throw er; }
+  SES = {access:j.access_token, refresh:j.refresh_token, exp:Date.now() + (j.expires_in || 3600) * 1000 - 60000, email:(j.user && j.user.email) || ''};
+  lsSet(SES_KEY, SES); return SES;
+}
+function sairAdmin(){ SES = null; ADMIN = null; adminErro = ''; try{ localStorage.removeItem(SES_KEY); }catch(e){} }
+async function tokenAdmin(){
+  if(!SES) return null;
+  if(Date.now() < SES.exp) return SES.access;
+  try{ await authReq('refresh_token', {refresh_token:SES.refresh}); return SES.access; }catch(e){ sairAdmin(); return null; }
+}
+async function adminFetch(caminho, opts = {}){
+  const faz = tok => fetch(`${SB_URL}/rest/v1/${caminho}`, {...opts, headers:{...sbHead(tok), 'Content-Type':'application/json', ...(opts.headers || {})}});
+  let tok = await tokenAdmin(); if(!tok){ const er = new Error('login'); er.login = true; throw er; }
+  let r = await faz(tok);
+  if(r.status === 401){ SES.exp = 0; tok = await tokenAdmin(); if(!tok){ const er = new Error('login'); er.login = true; throw er; } r = await faz(tok); }
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+  const t = await r.text(); return t ? JSON.parse(t) : null;
+}
+const doBanco = p => ({id:p.id, tipo:'servico', nome:p.nome, tel:p.tel, cat:p.cat, sub:p.sub, status:p.status, criado:p.criado_em, quando:p.quando,
+  setor:p.setor || '', desc:p.descricao, valor:p.valor == null ? null : Number(p.valor), agenda:p.agenda_data ? {data:p.agenda_data, hora:p.agenda_hora || '08:00'} : null, enviado:!!p.enviado_whatsapp});
+async function carregarAdmin(){
+  adminCarregando = true; adminErro = '';
+  try{
+    const ok = await adminFetch('rpc/is_admin', {method:'POST', body:'{}'});
+    if(!ok){ adminErro = 'acesso'; ADMIN = null; }
+    else ADMIN = (await adminFetch('pedidos?select=*&order=criado_em.desc&limit=1000')).map(doBanco);
+  }catch(e){ if(!e.login) adminErro = 'rede'; ADMIN = null; }
+  adminCarregando = false; renderAdmin();
+}
+async function persist(o){
+  if(!ONLINE){ save(); return; }
+  try{
+    await adminFetch(`pedidos?id=eq.${encodeURIComponent(o.id)}`, {method:'PATCH', headers:{Prefer:'return=minimal'},
+      body:JSON.stringify({status:o.status, valor:o.valor, agenda_data:o.agenda ? o.agenda.data : null, agenda_hora:o.agenda ? o.agenda.hora : null, atualizado_em:new Date().toISOString()})});
+  }catch(e){ toast(e.login ? 'Sessão expirada. Entre de novo.' : 'Não consegui salvar. Confira a internet.'); carregarAdmin(); }
+}
+async function apagarPedido(o){
+  if(!ONLINE){ ORDERS = orders().filter(x => x.id !== o.id); save(); return; }
+  ADMIN = ADMIN.filter(x => x.id !== o.id);
+  try{ await adminFetch(`pedidos?id=eq.${encodeURIComponent(o.id)}`, {method:'DELETE', headers:{Prefer:'return=minimal'}}); }
+  catch(e){ toast('Não consegui excluir. Confira a internet.'); carregarAdmin(); }
+}
+const aList = () => ONLINE ? (ADMIN || []) : orders();
+function telaAdmin(){
+  const box = $('#adminLogin');
+  $('#adminDash').hidden = true; box.hidden = false;
+  if(!SES){
+    box.innerHTML = `<div class="login-card"><span class="kicker">🔒 Área da empresa</span><h2>Entrar</h2>
+      <p class="sec-sub" style="margin:0">Só para a equipe da Riviera Serviços.</p>
+      <form id="loginForm" autocomplete="on" novalidate>
+        <div class="field"><label for="lgEmail">E-mail</label><input class="input" id="lgEmail" type="email" autocomplete="username" inputmode="email" autocapitalize="off"></div>
+        <div class="field"><label for="lgSenha">Senha</label><input class="input" id="lgSenha" type="password" autocomplete="current-password"></div>
+        <div id="lgMsg" style="color:#D0353A;font-weight:700;margin-top:10px"></div>
+        <button class="btn btn-orange btn-block" type="submit" style="margin-top:14px">Entrar</button>
+      </form>
+      <a class="btn btn-ghost btn-block" href="#morador" style="margin-top:10px">Voltar ao site</a></div>`;
+    $('#loginForm').addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const email = $('#lgEmail').value.trim(), senha = $('#lgSenha').value, btn = ev.target.querySelector('[type=submit]');
+      if(!email || !senha){ $('#lgMsg').textContent = 'Preencha e-mail e senha.'; return; }
+      btn.disabled = true; btn.textContent = 'Entrando…';
+      try{ await authReq('password', {email, password:senha}); ADMIN = null; carregarAdmin(); }
+      catch(e){ btn.disabled = false; btn.textContent = 'Entrar'; $('#lgMsg').textContent = e.status === 400 ? 'E-mail ou senha incorretos.' : 'Não consegui entrar. Confira a internet.'; }
+    });
+    return;
+  }
+  if(adminErro === 'acesso'){
+    box.innerHTML = `<div class="login-card"><h2>Sem acesso</h2><p class="sec-sub">O e-mail <b>${esc(SES.email)}</b> não tem permissão para a área da empresa.</p>
+      <button class="btn btn-orange btn-block" type="button" id="lgSair">Entrar com outro e-mail</button></div>`;
+  } else if(adminErro === 'rede'){
+    box.innerHTML = `<div class="login-card"><h2>Ops!</h2><p class="sec-sub">Não consegui carregar os pedidos. Confira a internet.</p>
+      <button class="btn btn-orange btn-block" type="button" id="lgTentar">Tentar de novo</button><button class="btn btn-ghost btn-block" type="button" id="lgSair" style="margin-top:10px">Sair</button></div>`;
+  } else {
+    box.innerHTML = `<div class="login-card"><p class="sec-sub" style="text-align:center;margin:0">Carregando pedidos…</p></div>`;
+    if(!adminCarregando) carregarAdmin();
+  }
+  const s = $('#lgSair'); if(s) s.addEventListener('click', () => { sairAdmin(); renderAdmin(); });
+  const t = $('#lgTentar'); if(t) t.addEventListener('click', () => { adminErro = ''; renderAdmin(); });
+}
+
 let aFilter = 'todos', aQuery = '', aTab = 'pedidos', aType = 'todos';
 
 const CAT_EMOJI = {jardinagem:'🌿', limpeza:'🧹', piscinas:'🏊', eletrica:'⚡', hidraulica:'🚰', pintura:'🎨', reformas:'🧱', outros:'🛠️', aluguel:'🏗️', compras:'🛒'};
@@ -2331,7 +2467,7 @@ function replyFor(o){
   if(o.status === 'concluido') return {label:'Pedir avaliação no WhatsApp', text: join([
     ...head, rentO ? 'Equipamentos devolvidos, aluguel *concluído*! ✅' : isShop(o) ? 'Seu pedido foi *entregue*! ✅' : 'Seu serviço foi *concluído*! ✅', '', ...base, '',
     'Obrigado pela confiança! 🙏', '',
-    `⭐ Avalie o atendimento no nosso site, em *Acompanhar pedido*, com o número *${o.id}*.`,
+    `⭐ Avalie o atendimento no nosso site: ${location.origin + location.pathname} (toque em *Avaliar um serviço*).`,
     'Sua opinião ajuda muito!'])};
   return {label:'Conversar no WhatsApp', text: join([
     ...head, 'Recebemos seu pedido e já estamos cuidando dele. 👍', '', ...base, '',
@@ -2340,7 +2476,20 @@ function replyFor(o){
 }
 
 function renderAdmin(){
-  const list = orders();
+  if(ONLINE){
+    if(!SES || ADMIN === null){ telaAdmin(); return; }
+    $('#adminLogin').hidden = true; $('#adminDash').hidden = false;
+    $('#adminBar').hidden = false;
+    $('#adminBar').innerHTML = `<span>Conectado como <b>${esc(SES.email)}</b></span><span style="display:flex;gap:8px"><button class="btn btn-line" type="button" id="abAtualizar" style="min-height:42px">↻ Atualizar</button><button class="btn btn-ghost" type="button" id="abSair" style="min-height:42px">Sair</button></span>`;
+    $('#abAtualizar').onclick = () => { ADMIN = null; renderAdmin(); };
+    $('#abSair').onclick = () => { sairAdmin(); renderAdmin(); toast('Você saiu da área da empresa'); };
+    const ab = document.querySelector('[data-atab="sugestoes"]'); if(ab) ab.hidden = true;
+    if(aTab === 'sugestoes') aTab = 'pedidos';
+    $('#resetBtn').hidden = true; const sim = document.querySelector('.admin-foot a[href="#morador"]'); if(sim) sim.hidden = true;
+    document.querySelector('#view-empresa .eyebrow').textContent = 'Painel da empresa';
+    $('#storageNote').innerHTML = 'Pedidos salvos no sistema e vistos em qualquer aparelho. Só quem tem login entra aqui.';
+  }
+  const list = aList();
   const count = k => list.filter(o => o.status === k).length;
   const tiles = [
     ['todos','Total de pedidos', list.length, '#102B57', '#E8EEF8', 'inbox'],
@@ -2356,11 +2505,12 @@ function renderAdmin(){
     </button>`).join('');
 
   const sum = st => list.filter(o => st.includes(o.status) && o.valor != null).reduce((a,o) => a + o.valor, 0);
-  const r = reviews();
+  const r = ONLINE ? (PUB || []) : reviews();
+  if(ONLINE && PUB === null) carregarPub();
   $('#fin').innerHTML = `
     <div class="fin-t"><span class="s-ic" style="background:#E9F0FD">${ic('file',22,'#2F6FDE',2.3)}</span><div><strong>${BRL(sum(['orcamento','agendado']))}</strong><span>Previsto (orçados e agendados)</span></div></div>
     <div class="fin-t"><span class="s-ic" style="background:#E6F6EE">${ic('check',22,'#17A75B',2.6)}</span><div><strong>${BRL(sum(['concluido']))}</strong><span>Valor de serviços concluídos</span></div></div>
-    <div class="fin-t"><span class="s-ic" style="background:#FFF6E0">${ic('star',22,'#E89B00',2.3)}</span><div><strong>${r.length ? fmt1(avgRating()) + ' ★' : '—'}</strong><span>Avaliação média (${r.length} avaliaç${r.length === 1 ? 'ão' : 'ões'})</span></div></div>`;
+    <div class="fin-t"><span class="s-ic" style="background:#FFF6E0">${ic('star',22,'#E89B00',2.3)}</span><div><strong>${r.length ? fmt1(r.reduce((a,x) => a + x.nota, 0) / r.length) + ' ★' : '—'}</strong><span>Avaliação média (${r.length} avaliaç${r.length === 1 ? 'ão' : 'ões'})</span></div></div>`;
 
   document.querySelectorAll('[data-atab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.atab === aTab));
   $('#tabPedidos').hidden = aTab !== 'pedidos';
@@ -2369,12 +2519,12 @@ function renderAdmin(){
   $('#sgCount').textContent = sugs().filter(s => s.status === 'nova').length;
   const agCount = list.filter(o => o.status === 'agendado' && !isShop(o)).length;
   $('#agCount').textContent = agCount;
-  if(!storageOK) $('#storageNote').innerHTML = 'Este navegador bloqueou o armazenamento local: os pedidos ficam só enquanto a página estiver aberta e <b>não são sincronizados</b> entre dispositivos.';
+  if(!storageOK && !ONLINE) $('#storageNote').innerHTML = 'Este navegador bloqueou o armazenamento local: os pedidos ficam só enquanto a página estiver aberta e <b>não são sincronizados</b> entre dispositivos.';
   aTab === 'pedidos' ? renderOrders(tiles) : aTab === 'agenda' ? renderAgenda() : renderSugAdmin();
 }
 
 function renderOrders(tiles){
-  const list = orders();
+  const list = aList();
   $('#listTitle').textContent = aFilter === 'todos' ? 'Todas as solicitações' : tiles.find(t => t[0] === aFilter)[1];
   const q = norm(aQuery.trim());
   const nT = t => list.filter(o => (o.tipo || 'servico') === t).length;
@@ -2384,12 +2534,13 @@ function renderOrders(tiles){
     (!q || norm(o.nome + ' ' + o.sub + ' ' + catById(o.cat).name + ' ' + o.id).includes(q)));
 
   $('#orders').innerHTML = shown.length ? shown.map(o => {
-    const c = catById(o.cat), st = STATUS[o.status], rep = replyFor(o), rv = reviewFor(o.id);
+    const c = catById(o.cat), st = STATUS[o.status], rep = replyFor(o), rv = ONLINE ? null : reviewFor(o.id);
     return `
     <article class="order" data-id="${esc(o.id)}">
       <div class="o-top"><span class="o-id">${esc(o.id)} • ${fmtDate(o.criado)}</span>
         <span class="pill" style="background:${st.soft};color:${st.color}"><i></i>${stLabel(o, o.status)}</span></div>
       <div class="o-name">${esc(o.nome)}${o.demo ? '<span class="fake">fictício</span>' : ''}</div>
+      ${ONLINE && !o.enviado && o.status === 'novo' ? '<div class="o-alert">⚠️ O cliente não abriu o WhatsApp. Chame você pelo botão verde.</div>' : ''}
       <div class="o-svc"><span class="ri" ${isRent(o) ? 'style="background:#FFF1E7"' : ''}>${ic(c.icon,19,isRent(o) ? '#E8650E' : '#102B57')}</span>${isRent(o) ? 'Aluguel de equipamentos' : isShop(o) ? 'Compras rápidas' : `${esc(c.name)} — ${esc(o.sub)}`}</div>
       <div class="o-meta">
         ${isRent(o)
@@ -2420,7 +2571,7 @@ function renderOrders(tiles){
 
 function renderAgenda(){
   const entries = [];
-  orders().filter(o => o.status === 'agendado' && !isShop(o)).forEach(o => {
+  aList().filter(o => o.status === 'agendado' && !isShop(o)).forEach(o => {
     entries.push({o, data:o.agenda ? o.agenda.data : null, hora:o.agenda ? o.agenda.hora : '--:--', tag:isRent(o) ? (o.entrega ? 'Entrega' : 'Retirada') : null});
     if(isRent(o) && o.agenda) entries.push({o, data:addDays(o.agenda.data, o.dias), hora:o.agenda.hora, tag:o.entrega ? 'Recolher' : 'Devolução', ret:true});
   });
@@ -2452,7 +2603,7 @@ function renderAgenda(){
 function setStatus(o, k){
   if(k === 'agendado' && !isShop(o)){ openSchedule(o); return; }
   if(o.status === k) return;
-  o.status = k; o.atualizado = new Date().toISOString(); save(); renderAdmin();
+  o.status = k; o.atualizado = new Date().toISOString(); renderAdmin(); persist(o);
   toast(`${o.id} → ${stLabel(o, k)}`);
 }
 function openValor(o){
@@ -2472,11 +2623,11 @@ function openValor(o){
     const v = parseBRL($('#vIn').value);
     if(v == null || v <= 0){ $('#vF').classList.add('err'); return; }
     o.valor = v; o.estimado = false; if(o.status === 'novo') o.status = 'orcamento';
-    save(); closeSheet(); renderAdmin(); toast(`Valor salvo: ${BRL(v)}`);
+    persist(o); closeSheet(); renderAdmin(); toast(`Valor salvo: ${BRL(v)}`);
   };
   $('#vSave').addEventListener('click', saveV);
   $('#vIn').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); saveV(); } });
-  const cl = $('#vClear'); if(cl) cl.addEventListener('click', () => { o.valor = null; o.estimado = false; save(); closeSheet(); renderAdmin(); toast('Valor removido'); });
+  const cl = $('#vClear'); if(cl) cl.addEventListener('click', () => { o.valor = null; o.estimado = false; persist(o); closeSheet(); renderAdmin(); toast('Valor removido'); });
 }
 function openSchedule(o){
   const tm = new Date(); tm.setDate(tm.getDate() + 1);
@@ -2491,7 +2642,7 @@ function openSchedule(o){
         <div class="slots" id="slots">${slots.map(s => `<button type="button" data-h="${s}" aria-pressed="${s === h0}">${s}</button>`).join('')}</div>
         <input class="input" id="sH" type="time" value="${h0}" style="margin-top:10px" aria-label="Outro horário">
       </div>
-      <p class="tiny" style="margin-top:10px">O cliente pode acompanhar a data pelo número do pedido no site.</p>
+      <p class="tiny" style="margin-top:10px">Depois, toque em “Confirmar horário no WhatsApp” para avisar o cliente.</p>
     </div>
     <div class="sheet-actions"><button class="btn btn-orange" type="button" id="sSave">${ic('cal',20,'#fff',2.3)} Confirmar agendamento</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
   $('#slots').addEventListener('click', e => {
@@ -2504,12 +2655,12 @@ function openSchedule(o){
     const d = $('#sD').value, h = $('#sH').value;
     if(!d || !h){ toast('Escolha dia e horário'); return; }
     o.agenda = {data:d, hora:h}; o.status = 'agendado'; o.atualizado = new Date().toISOString();
-    save(); closeSheet(); renderAdmin(); toast(`Agendado: ${dayLabel(d)} às ${h}`);
+    persist(o); closeSheet(); renderAdmin(); toast(`Agendado: ${dayLabel(d)} às ${h}`);
   });
 }
 function orderAction(e){
   const card = e.target.closest('[data-id]'); if(!card) return;
-  const o = orders().find(x => x.id === card.dataset.id); if(!o) return;
+  const o = aList().find(x => x.id === card.dataset.id); if(!o) return;
   const sb = e.target.closest('[data-status]');
   if(sb){ setStatus(o, sb.dataset.status); return; }
   if(e.target.closest('[data-valor]')){ openValor(o); return; }
@@ -2517,10 +2668,10 @@ function orderAction(e){
   if(e.target.closest('[data-del]')){
     openSheet(`<div class="sheet-head"><div><h3 id="sheetTitle">Excluir pedido ${esc(o.id)}?</h3><p>${esc(o.nome)} — ${esc(o.sub)}</p></div>
       <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
-      <div class="confirm"><p>Esta ação remove o pedido deste navegador.</p></div>
+      <div class="confirm"><p>Esta ação apaga o pedido de vez.</p></div>
       <div class="sheet-actions"><button class="btn btn-orange" type="button" id="confirmDel" data-autofocus>Sim, excluir</button><button class="btn btn-ghost" type="button" data-close>Cancelar</button></div>`);
     $('#confirmDel').addEventListener('click', () => {
-      ORDERS = orders().filter(x => x.id !== o.id); save(); closeSheet(); renderAdmin(); toast('Pedido excluído');
+      apagarPedido(o); closeSheet(); renderAdmin(); toast('Pedido excluído');
     });
   }
 }
