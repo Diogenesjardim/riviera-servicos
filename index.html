@@ -2355,7 +2355,7 @@ async function authReq(tipo, corpo){
   SES = {access:j.access_token, refresh:j.refresh_token, exp:Date.now() + (j.expires_in || 3600) * 1000 - 60000, email:(j.user && j.user.email) || ''};
   lsSet(SES_KEY, SES); linkAdmin(); return SES;
 }
-function linkAdmin(){ const a = document.querySelector('.foot-admin'); if(a) a.hidden = !SES; }
+function linkAdmin(){ const a = document.querySelector('.foot-admin'); if(a) a.hidden = !(SES || lsGet('riviera_admin_visitou')); }
 function sairAdmin(){ SES = null; ADMIN = null; adminErro = ''; try{ localStorage.removeItem(SES_KEY); }catch(e){} linkAdmin(); }
 async function tokenAdmin(){
   if(!SES) return null;
@@ -2396,6 +2396,7 @@ async function apagarPedido(o){
 }
 const aList = () => ONLINE ? (ADMIN || []) : orders();
 function telaAdmin(){
+  lsSet('riviera_admin_visitou', 1); linkAdmin();
   const box = $('#adminLogin');
   $('#adminDash').hidden = true; box.hidden = false;
   if(!SES){
