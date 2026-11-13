@@ -315,6 +315,16 @@ footer p{margin-top:12px;max-width:520px}
 .login-card h2{margin:4px 0 6px}
 .login-card .field{margin-top:12px}
 .admin-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:14px 0 4px;font-size:14px;color:var(--muted)}
+.fotos-adm{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+@media(min-width:760px){.fotos-adm{grid-template-columns:repeat(4,1fr)}}
+.fotos-adm figure{margin:0;border-radius:14px;overflow:hidden;background:#fff;border:1px solid #EDF1F7;box-shadow:var(--shadow)}
+.fotos-adm img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.fotos-adm figcaption{padding:8px 10px;font-size:13px;display:flex;justify-content:space-between;gap:6px;align-items:center}
+.fotos-adm figcaption b{display:block;font-size:13px;color:var(--ink)}
+.fotos-adm .del{border:0;background:#FDECEC;color:#C0353A;border-radius:10px;width:38px;height:38px;flex:none;font-size:17px}
+.foto-prev{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;margin-top:10px;display:block}
+.g-item.g-real{cursor:zoom-in}
+.foto-grande{width:100%;max-height:70vh;object-fit:contain;border-radius:14px;background:#0B1F42;display:block}
 .o-alert{background:#FFF4E5;color:#9A4A00;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700;margin-top:8px}
 .foot-admin{display:inline-block;margin-top:12px;color:#8FA3C6;font-size:13.5px;text-decoration:underline;text-underline-offset:3px}
 .soon-card{background:#fff;border:1px solid #EDF1F7;border-radius:22px;padding:22px;box-shadow:var(--shadow)}
@@ -917,6 +927,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
     <div class="seg" role="group" aria-label="Visualização">
       <button type="button" data-atab="pedidos" aria-pressed="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/></svg> Pedidos</button>
       <button type="button" data-atab="agenda" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg> Agenda <span class="cnt" id="agCount">0</span></button>
+      <button type="button" data-atab="fotos" aria-pressed="false" hidden>📷 Fotos</button>
       <button type="button" data-atab="sugestoes" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg> Sugestões <span class="cnt" id="sgCount">0</span></button>
     </div>
     <div id="tabPedidos">
@@ -935,6 +946,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <div class="toolbar"><h2>Serviços agendados</h2></div>
       <div id="agenda"></div>
     </div>
+    <div id="tabFotos" hidden></div>
     <div id="tabSug" hidden>
       <div class="toolbar"><h2>Sugestões dos moradores</h2></div>
       <p class="tiny" style="margin:-6px 0 14px">Mais votadas primeiro. Marque “Vamos vender” para mostrar “Em breve” aos moradores.</p>
@@ -1427,8 +1439,20 @@ const GALLERY = [
   {cat:'jardinagem', title:'Canteiro revitalizado com flores',   scene:'jardimDepois', illustrative:true}
 ];
 const GCATS = [['todos','Todos'],['jardinagem','Jardinagem'],['pintura','Pintura'],['limpeza','Limpeza'],['reformas','Reformas']];
-let gFilter = 'todos';
+let gFilter = 'todos', FOTOS = null;
+const fotoUrl = c => `${SB_URL}/storage/v1/object/public/fotos/${c.split('/').map(encodeURIComponent).join('/')}`;
+async function carregarFotos(){
+  if(!ONLINE) return;
+  try{
+    const r = await fetch(`${SB_URL}/rest/v1/fotos?select=id,cat,legenda,caminho,criado_em&order=criado_em.desc&limit=200`, {headers:sbHead()});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    FOTOS = await r.json();
+  }catch(e){ FOTOS = FOTOS || []; }
+  renderGallery();
+}
 function renderGallery(){
+  if(FOTOS && FOTOS.length) return renderFotosReais();
+  const sub = document.querySelector('#trabalhos .sec-sub'); if(sub) sub.textContent = 'Imagens ilustrativas. Em breve, fotos reais de serviços feitos no condomínio.';
   $('#gChips').innerHTML = GCATS.map(([id,l]) => `<button class="chip" type="button" data-g="${id}" aria-pressed="${gFilter===id}">${l}</button>`).join('');
   const items = GALLERY.filter(g => gFilter === 'todos' || g.cat === gFilter);
   $('#gallery').innerHTML = items.map(g => `
@@ -1437,6 +1461,23 @@ function renderGallery(){
       <figcaption><small>${esc(catById(g.cat).name)}</small><b>${esc(g.title)}</b></figcaption></figure>`).join('')
     + `<div class="g-ph">${ic('plus',28,'#9AA9BF',2.4)}<b>Espaço para fotos reais</b>Os trabalhos feitos no condomínio vão aparecer aqui.</div>`;
 }
+function renderFotosReais(){
+  const sub = document.querySelector('#trabalhos .sec-sub'); if(sub) sub.textContent = 'Fotos reais de serviços feitos aqui no condomínio.';
+  const cats = [...new Set(FOTOS.map(f => f.cat))];
+  if(gFilter !== 'todos' && !cats.includes(gFilter)) gFilter = 'todos';
+  $('#gChips').innerHTML = [['todos','Todos'], ...cats.map(c => [c, catById(c).name])].map(([id,l]) => `<button class="chip" type="button" data-g="${id}" aria-pressed="${gFilter===id}">${esc(l)}</button>`).join('');
+  $('#gallery').innerHTML = FOTOS.filter(f => gFilter === 'todos' || f.cat === gFilter).map(f => `
+    <figure class="g-item g-real" data-foto="${esc(f.id)}"><div class="g-art"><img src="${esc(fotoUrl(f.caminho))}" alt="${esc(f.legenda || catById(f.cat).name)}" loading="lazy"></div>
+      <figcaption><small>${esc(catById(f.cat).name)}</small><b>${esc(f.legenda || 'Serviço realizado')}</b></figcaption></figure>`).join('');
+}
+$('#gallery').addEventListener('click', e => {
+  const g = e.target.closest('[data-foto]'); if(!g || !FOTOS) return;
+  const f = FOTOS.find(x => x.id === g.dataset.foto); if(!f) return;
+  openSheet(`<div class="sheet-head"><div><h3 id="sheetTitle">${esc(f.legenda || 'Serviço realizado')}</h3><p>${esc(catById(f.cat).name)}</p></div>
+    <button class="x" data-close aria-label="Fechar">${ic('x',22,'#102B57',2.5)}</button></div>
+    <div class="sheet-pad"><img class="foto-grande" src="${esc(fotoUrl(f.caminho))}" alt="${esc(f.legenda || '')}"></div>
+    <div class="sheet-actions"><button class="btn btn-ghost btn-block" type="button" data-close>Fechar</button></div>`);
+});
 $('#gChips').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if(b){ gFilter = b.dataset.g; renderGallery(); } });
 renderGallery();
 
@@ -2400,6 +2441,76 @@ async function apagarPedido(o){
   catch(e){ toast('Não consegui excluir. Confira a internet.'); carregarAdmin(); }
 }
 const aList = () => ONLINE ? (ADMIN || []) : orders();
+function comprimirFoto(file){
+  return new Promise((ok, falha) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const max = 1600, k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      c.toBlob(b => b ? ok(b) : falha(new Error('foto')), 'image/jpeg', 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); falha(new Error('foto')); };
+    img.src = url;
+  });
+}
+async function storageReq(caminho, opts){
+  const tok = await tokenAdmin(); if(!tok){ const er = new Error('login'); er.login = true; throw er; }
+  const r = await fetch(`${SB_URL}/storage/v1/object/fotos/${caminho.split('/').map(encodeURIComponent).join('/')}`, {...opts, headers:{apikey:SB_KEY, Authorization:'Bearer ' + tok, ...(opts.headers || {})}});
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+}
+function renderFotosAdmin(){
+  const box = $('#tabFotos');
+  const opts = CATS.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  box.innerHTML = `<div class="toolbar"><h2>Fotos dos trabalhos</h2></div>
+    <p class="tiny" style="margin:-6px 0 12px">As fotos aparecem em “Nossos trabalhos” para todos os moradores. Peça autorização ao cliente e evite rostos e número da casa.</p>
+    <div class="soon-card" style="padding:18px">
+      <form id="fotoForm" novalidate>
+        <div class="field"><label for="ftArq">Foto</label><input class="input" id="ftArq" type="file" accept="image/*"></div>
+        <img id="ftPrev" class="foto-prev" alt="" hidden>
+        <div class="field" style="margin-top:12px"><label for="ftCat">Serviço</label><select class="input" id="ftCat">${opts}</select></div>
+        <div class="field" style="margin-top:12px"><label for="ftLeg">Legenda <small>(opcional)</small></label><input class="input" id="ftLeg" maxlength="120" placeholder="Ex.: Pintura da fachada, Quadra C"></div>
+        <div id="ftMsg" style="color:#D0353A;font-weight:700;margin-top:10px"></div>
+        <button class="btn btn-orange btn-block" type="submit" style="margin-top:12px">📷 Publicar foto</button>
+      </form>
+    </div>
+    <div class="fotos-adm" id="ftLista">${FOTOS === null ? '<p class="tiny">Carregando…</p>' : FOTOS.length ? FOTOS.map(f => `
+      <figure><img src="${esc(fotoUrl(f.caminho))}" alt="" loading="lazy"><figcaption><span><b>${esc(f.legenda || 'Sem legenda')}</b>${esc(catById(f.cat).name)}</span>
+        <button class="del" type="button" data-delfoto="${esc(f.id)}" aria-label="Apagar foto">🗑️</button></figcaption></figure>`).join('') : '<p class="tiny">Nenhuma foto ainda. Publique a primeira!</p>'}</div>`;
+  if(FOTOS === null) carregarFotos().then(() => { if(aTab === 'fotos') renderFotosAdmin(); });
+  $('#ftArq').addEventListener('change', e => {
+    const f = e.target.files[0], pv = $('#ftPrev');
+    if(f){ pv.src = URL.createObjectURL(f); pv.hidden = false; } else pv.hidden = true;
+  });
+  $('#fotoForm').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const f = $('#ftArq').files[0], cat = $('#ftCat').value, legenda = $('#ftLeg').value.trim(), btn = ev.target.querySelector('[type=submit]');
+    if(!f){ $('#ftMsg').textContent = 'Escolha uma foto.'; return; }
+    if(!/^image\//.test(f.type) && !/\.(jpe?g|png|heic|webp)$/i.test(f.name)){ $('#ftMsg').textContent = 'Esse arquivo não é uma foto.'; return; }
+    btn.disabled = true; btn.textContent = 'Enviando foto…'; $('#ftMsg').textContent = '';
+    const caminho = `${cat}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+    try{
+      const blob = await comprimirFoto(f);
+      await storageReq(caminho, {method:'POST', headers:{'Content-Type':'image/jpeg', 'x-upsert':'false'}, body:blob});
+      await adminFetch('fotos', {method:'POST', headers:{Prefer:'return=minimal'}, body:JSON.stringify({cat, legenda, caminho})});
+      toast('📷 Foto publicada!'); FOTOS = null; await carregarFotos(); renderFotosAdmin();
+    }catch(e){
+      btn.disabled = false; btn.textContent = '📷 Publicar foto';
+      $('#ftMsg').textContent = e.message === 'foto' ? 'Não consegui abrir essa foto. Tente outra (JPG ou PNG).' : e.login ? 'Sessão expirada. Entre de novo.' : 'Não consegui enviar. Confira a internet e tente de novo.';
+    }
+  });
+  $('#ftLista').addEventListener('click', async e => {
+    const b = e.target.closest('[data-delfoto]'); if(!b) return;
+    const f = FOTOS.find(x => x.id === b.dataset.delfoto); if(!f) return;
+    if(!confirm('Apagar esta foto do site?')) return;
+    b.disabled = true;
+    try{
+      await adminFetch(`fotos?id=eq.${encodeURIComponent(f.id)}`, {method:'DELETE', headers:{Prefer:'return=minimal'}});
+      storageReq(f.caminho, {method:'DELETE'}).catch(() => {});
+      FOTOS = FOTOS.filter(x => x.id !== f.id); renderGallery(); renderFotosAdmin(); toast('Foto apagada');
+    }catch(err){ b.disabled = false; toast('Não consegui apagar. Confira a internet.'); }
+  });
+}
 function telaAdmin(){
   lsSet('riviera_admin_visitou', 1); linkAdmin();
   const box = $('#adminLogin');
@@ -2495,6 +2606,7 @@ function renderAdmin(){
     $('#abAtualizar').onclick = () => { ADMIN = null; renderAdmin(); };
     $('#abSair').onclick = () => { sairAdmin(); renderAdmin(); toast('Você saiu da área da empresa'); };
     const ab = document.querySelector('[data-atab="sugestoes"]'); if(ab) ab.hidden = true;
+    const af = document.querySelector('[data-atab="fotos"]'); if(af) af.hidden = false;
     if(aTab === 'sugestoes') aTab = 'pedidos';
     $('#resetBtn').hidden = true; const sim = document.querySelector('.admin-foot a[href="#morador"]'); if(sim) sim.hidden = true;
     document.querySelector('#view-empresa .eyebrow').textContent = 'Painel da empresa';
@@ -2527,11 +2639,12 @@ function renderAdmin(){
   $('#tabPedidos').hidden = aTab !== 'pedidos';
   $('#tabAgenda').hidden = aTab !== 'agenda';
   $('#tabSug').hidden = aTab !== 'sugestoes';
+  $('#tabFotos').hidden = aTab !== 'fotos';
   $('#sgCount').textContent = sugs().filter(s => s.status === 'nova').length;
   const agCount = list.filter(o => o.status === 'agendado' && !isShop(o)).length;
   $('#agCount').textContent = agCount;
   if(!storageOK && !ONLINE) $('#storageNote').innerHTML = 'Este navegador bloqueou o armazenamento local: os pedidos ficam só enquanto a página estiver aberta e <b>não são sincronizados</b> entre dispositivos.';
-  aTab === 'pedidos' ? renderOrders(tiles) : aTab === 'agenda' ? renderAgenda() : renderSugAdmin();
+  aTab === 'pedidos' ? renderOrders(tiles) : aTab === 'agenda' ? renderAgenda() : aTab === 'fotos' ? renderFotosAdmin() : renderSugAdmin();
 }
 
 function renderOrders(tiles){
@@ -2708,6 +2821,7 @@ $('#resetBtn').addEventListener('click', () => {
 orders();
 route();
 linkAdmin();
+carregarFotos();
 /* Link de avaliação vindo do WhatsApp: ?avaliar=RS-1003&servico=...&nome=... */
 (function(){
   const q = new URLSearchParams(location.search);
