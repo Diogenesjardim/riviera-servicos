@@ -2435,6 +2435,10 @@ let aFilter = 'todos', aQuery = '', aTab = 'pedidos', aType = 'todos';
 
 const CAT_EMOJI = {jardinagem:'🌿', limpeza:'🧹', piscinas:'🏊', eletrica:'⚡', hidraulica:'🚰', pintura:'🎨', reformas:'🧱', outros:'🛠️', aluguel:'🏗️', compras:'🛒'};
 function dataLonga(s){ const t = fromYmd(s).toLocaleDateString('pt-BR',{weekday:'long', day:'2-digit', month:'2-digit'}); return t.charAt(0).toUpperCase() + t.slice(1); }
+function linkAvaliar(o){
+  const nm = String(o.nome || '').trim().split(/\s+/), curto = nm[0] + (nm[1] ? ' ' + nm[1][0] + '.' : '');
+  return location.origin + location.pathname + '?avaliar=' + encodeURIComponent(o.id) + '&servico=' + encodeURIComponent(o.sub || '') + '&nome=' + encodeURIComponent(curto);
+}
 function replyFor(o){
   const n = o.nome.trim().split(/\s+/)[0], c = catById(o.cat), em = CAT_EMOJI[o.cat] || '🛠️';
   const head = [`Olá, *${n}*! 👋`, `Aqui é da *Riviera Serviços* 🏡`, ''];
@@ -2467,7 +2471,7 @@ function replyFor(o){
   if(o.status === 'concluido') return {label:'Pedir avaliação no WhatsApp', text: join([
     ...head, rentO ? 'Equipamentos devolvidos, aluguel *concluído*! ✅' : isShop(o) ? 'Seu pedido foi *entregue*! ✅' : 'Seu serviço foi *concluído*! ✅', '', ...base, '',
     'Obrigado pela confiança! 🙏', '',
-    `⭐ Avalie o atendimento no nosso site: ${location.origin + location.pathname} (toque em *Avaliar um serviço*).`,
+    `⭐ Avalie em 1 toque: ${linkAvaliar(o)}`,
     'Sua opinião ajuda muito!'])};
   return {label:'Conversar no WhatsApp', text: join([
     ...head, 'Recebemos seu pedido e já estamos cuidando dele. 👍', '', ...base, '',
@@ -2696,6 +2700,18 @@ $('#resetBtn').addEventListener('click', () => {
 /* ---------- Início ---------- */
 orders();
 route();
+/* Link de avaliação vindo do WhatsApp: ?avaliar=RS-1003&servico=...&nome=... */
+(function(){
+  const q = new URLSearchParams(location.search);
+  if(!q.has('avaliar')) return;
+  const pre = {pedido:q.get('avaliar') || '', sub:q.get('servico') || '', nome:q.get('nome') || ''};
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+  if(currentView !== 'morador') goTo('morador');
+  setTimeout(() => {
+    scrollToId('avaliacoes');
+    setTimeout(() => { ONLINE ? openReviewPublic(pre) : askOrderForReview(); }, 450);
+  }, 250);
+})();
 </script>
 </body>
 </html>
