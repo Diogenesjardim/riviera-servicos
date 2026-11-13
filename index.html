@@ -82,6 +82,8 @@ svg{display:block}
 
 /* ---------- Search ---------- */
 .search-wrap{position:relative;z-index:5;margin-top:28px;transform:translateY(34px)}
+@supports (overflow:clip){.hero{overflow-x:clip;overflow-y:visible}}
+.hero + section, .hero ~ section.block.first{position:relative;z-index:1}
 .search{background:#fff;border-radius:22px;box-shadow:0 24px 50px -20px rgba(16,43,87,.45),0 2px 8px rgba(16,43,87,.08);padding:8px;display:flex;align-items:center;gap:6px;border:1px solid var(--line)}
 .search svg.ic{margin-left:12px;flex:0 0 auto}
 .search input{flex:1;min-width:0;border:0;outline:0;height:56px;font-size:17px;padding:0 6px;background:transparent;color:var(--ink)}
@@ -91,7 +93,9 @@ svg{display:block}
 .result{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;border-radius:12px}
 .result:hover,.result:focus{background:var(--bg-2);outline:0}
 .result .ri{width:40px;height:40px;border-radius:12px;background:var(--navy-soft);display:grid;place-items:center;flex:0 0 auto}
-.result b{display:block;font-size:16px}
+.results{color:var(--ink)}
+.result{color:var(--ink)}
+.result b{display:block;font-size:16px;color:var(--navy)}
 .result small{color:var(--muted);font-size:13.5px}
 .result-empty{padding:16px;color:var(--muted);font-size:15px}
 .result-empty button{color:var(--orange-2);font-weight:800;text-decoration:underline;margin-top:6px}
