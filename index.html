@@ -297,6 +297,19 @@ footer p{margin-top:12px;max-width:520px}
 .avatar{width:40px;height:40px;border-radius:50%;background:var(--orange-soft);color:var(--orange-2);font-weight:800;display:grid;place-items:center;flex:0 0 auto}
 .rv-foot b{display:block;font-size:15px}.rv-foot small{color:var(--muted);font-size:13px}
 .rv-more{grid-column:1 / -1}
+.soon-tag{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;background:#FFE7D3;color:#B24A05;border-radius:999px;padding:2px 7px;vertical-align:middle;line-height:1.4}
+.tab[aria-selected="true"] .soon-tag{background:rgba(255,255,255,.2);color:#fff}
+.soon{padding:26px 0 40px;display:grid;gap:18px}
+.soon-card{background:#fff;border:1px solid #EDF1F7;border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+.soon-card h2{margin:6px 0 6px}
+.soon-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.soon-chips span{background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;font-weight:600;color:var(--navy)}
+.soon-card .field{margin-top:12px}
+.soon-ok{background:#E8F7EF;color:#14814A;border-radius:14px;padding:14px;font-weight:700;margin-top:12px}
+.soon-wa{background:linear-gradient(135deg,#102B57,#1C3F7A);color:#fff;border-radius:22px;padding:22px}
+.soon-wa p{color:#C9D6E8;margin:6px 0 14px}
+form[data-soon] [data-msg]{color:#D0353A;font-weight:700;font-size:14px;margin-top:8px}
+form[data-soon] [data-msg]:empty{display:none}
 .rv-load{color:var(--muted);text-align:center;padding:18px 8px}
 .hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
 .tag-ex{font-size:11px;font-weight:800;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-left:auto;white-space:nowrap}
@@ -503,7 +516,6 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
         <span class="logo-sub">Santa Cristina III</span>
       </span>
     </a>
-    <span class="demo-chip"><span class="long">Versão de </span>demonstração</span>
     <nav class="tabs" role="tablist" aria-label="Escolha a área">
       <button class="tab" role="tab" id="tab-morador" data-view="morador" aria-selected="true">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
@@ -511,15 +523,11 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       </button>
       <button class="tab" role="tab" id="tab-compras" data-view="compras" aria-selected="false">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
-        Comprar
+        <span>Comprar<span class="soon-tag">em breve</span></span>
       </button>
       <button class="tab" role="tab" id="tab-aluguel" data-view="aluguel" aria-selected="false">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18v2H3z"/><path d="M5 18v-3a7 7 0 0 1 14 0v3"/><path d="M12 8V5M9 9.5L8 7M15 9.5L16 7"/></svg>
-        Alugar
-      </button>
-      <button class="tab" role="tab" id="tab-empresa" data-view="empresa" aria-selected="false">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7M3 13h18"/></svg>
-        <span class="tl-full">Área da empresa</span><span class="tl-short">Empresa</span>
+        <span>Alugar<span class="soon-tag">em breve</span></span>
       </button>
     </nav>
   </div>
@@ -544,7 +552,6 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
             </a>
             <a href="#servicos" class="btn btn-glass" data-scroll="servicos">Ver serviços</a>
           </div>
-          <a href="#acompanhar" class="hero-track" data-scroll="acompanhar">Já fez um pedido? <b>Acompanhe aqui →</b></a>
         </div>
         <div class="hero-art" id="heroArt">
           <span class="hero-float"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17A75B" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><span>Orçamento sem compromisso<small>Resposta pelo WhatsApp</small></span></span>
@@ -575,13 +582,13 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
         </a>
         <a class="qk qk-cp" href="#compras" data-goto="compras">
           <span class="qk-ic">🛒</span>
-          <span class="qk-tx"><b>Compras rápidas</b><small>Lâmpada, pilha, resistência de chuveiro e mais</small></span>
-          <span class="qk-go">Ver itens →</span>
+          <span class="qk-tx"><b>Compras rápidas <span class="soon-tag">em breve</span></b><small>Lâmpada, pilha, resistência de chuveiro e mais</small></span>
+          <span class="qk-go">Quero ser avisado →</span>
         </a>
         <a class="qk qk-al" href="#aluguel" data-goto="aluguel">
           <span class="qk-ic">🏗️</span>
-          <span class="qk-tx"><b>Aluguel de equipamentos</b><small>Andaime, betoneira, tapume e mais</small></span>
-          <span class="qk-go">Ver equipamentos →</span>
+          <span class="qk-tx"><b>Aluguel de equipamentos <span class="soon-tag">em breve</span></b><small>Andaime, betoneira, tapume e mais</small></span>
+          <span class="qk-go">Quero ser avisado →</span>
         </a>
       </div>
     </div>
@@ -648,7 +655,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <div class="sec-head"><div>
         <span class="kicker">Portfólio</span>
         <h2>Nossos trabalhos</h2>
-        <p class="sec-sub">Nesta demonstração, as imagens são ilustrações. Em breve, fotos reais de serviços feitos no condomínio.</p>
+        <p class="sec-sub">Imagens ilustrativas. Em breve, fotos reais de serviços feitos no condomínio.</p>
       </div></div>
       <div class="chips" id="gChips" role="group" aria-label="Filtrar trabalhos"></div>
       <div class="gallery" id="gallery"></div>
@@ -733,16 +740,16 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <h2>Perguntas frequentes</h2>
       <div class="faq">
         <details><summary>O orçamento é pago?</summary><p>Não. O orçamento é sem compromisso: você só paga se aprovar o valor.</p></details>
-        <details><summary>Como faço o pagamento?</summary><p>Pagamento combinado pelo WhatsApp, na entrega ou ao final do serviço. Nesta versão o site não recebe pagamentos.</p></details>
+        <details><summary>Como faço o pagamento?</summary><p>Pagamento combinado pelo WhatsApp, na entrega ou ao final do serviço. O site não recebe pagamentos.</p></details>
         <details><summary>Vocês entregam fora do horário comercial?</summary><p>Sempre que possível, sim. Ao fazer o pedido, confirmamos pelo WhatsApp em quanto tempo conseguimos entregar.</p></details>
-        <details><summary>Como funciona o aluguel de equipamentos?</summary><p>Você escolhe os itens, a data e quantos dias. Entregamos na sua casa e buscamos no fim do período. O valor final é confirmado no WhatsApp.</p></details>
-        <details><summary>Preciso criar conta ou senha?</summary><p>Não. É só preencher nome e WhatsApp no pedido. Guarde o número do pedido para acompanhar.</p></details>
-        <details><summary>Não achei o que preciso. E agora?</summary><p>Peça um “Serviço personalizado” ou sugira um item na aba Comprar. Os itens mais pedidos entram na lista.</p></details>
+        <details><summary>Quando começam as compras rápidas e o aluguel?</summary><p>Em breve! Nas abas Comprar e Alugar você pode pedir para ser avisado e sugerir o que gostaria de encontrar. Se precisar de algo agora, chame no WhatsApp.</p></details>
+        <details><summary>Preciso criar conta ou senha?</summary><p>Não. É só preencher nome e WhatsApp no pedido. Todo o atendimento é feito pelo WhatsApp.</p></details>
+        <details><summary>Não achei o que preciso. E agora?</summary><p>Peça um “Serviço personalizado” ou chame no WhatsApp que a gente tenta ajudar.</p></details>
       </div>
     </div>
   </section>
 
-  <section class="block" id="acompanhar">
+  <section class="block" id="acompanhar" hidden>
     <div class="container">
       <div class="track" id="track">
         <span class="kicker">Acompanhar pedido</span>
@@ -765,7 +772,7 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
       <p>Serviços residenciais, compras rápidas e aluguel de equipamentos para moradores do condomínio Riviera de Santa Cristina III.</p>
       <div class="wa-list"><a href="https://wa.me/5511967353508" target="_blank" rel="noopener">💬 (11) 96735-3508</a><a href="https://wa.me/5511958529823" target="_blank" rel="noopener">💬 (11) 95852-9823</a></div>
       <p class="ios-tip" style="margin-top:14px">📲 <b>Use como aplicativo:</b> no iPhone, abra no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.</p>
-      <p style="font-size:13.5px;color:#8FA3C6">Protótipo de demonstração. Imagens ilustrativas. Sem pagamentos ou login nesta versão.</p>
+      <p style="font-size:13.5px;color:#8FA3C6">Imagens ilustrativas. Pedidos e pagamentos combinados pelo WhatsApp.</p>
     </div>
   </footer>
 
@@ -778,13 +785,14 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
 <main id="view-compras" hidden>
   <section class="admin-hero rent-hero shop-hero">
     <div class="container">
-      <span class="eyebrow">🛒 Compras rápidas</span>
+      <span class="eyebrow">🛒 Compras rápidas • em breve</span>
       <h1>Precisou de algo <em>agora?</em></h1>
       <p>Itens do dia a dia para resolver na hora, sem sair do condomínio. A gente leva até sua casa.</p>
       <div class="rent-perks"><span>🛵 Entrega no condomínio</span><span>🌙 Para quando as lojas estão fechadas</span><span>💬 Pedido pelo WhatsApp</span></div>
     </div>
   </section>
-  <div class="container">
+  <div class="container" id="soon-compras"></div>
+  <div class="container" hidden>
     <section class="rent-list">
       <div class="chips shop-chips" id="shopChips" role="group" aria-label="Filtrar produtos"></div>
       <div class="sp-grid" id="shopGrid"></div>
@@ -813,10 +821,10 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
   <footer>
     <div class="container">
       <span class="logo-text">Riviera <span style="color:#FF781F">Serviços</span></span>
-      <p style="font-size:13.5px;color:#8FA3C6">Protótipo de demonstração. Preços de exemplo. Sem pagamentos ou login nesta versão.</p>
+      <p style="font-size:13.5px;color:#8FA3C6">Em breve no Riviera Serviços. Fale com a gente pelo WhatsApp.</p>
     </div>
   </footer>
-  <div class="cartbar" id="shopBar" hidden>
+  <div class="cartbar" id="shopBar" hidden style="display:none!important">
     <span class="cb-ic">🛒</span><div id="sbInfo"></div>
     <button class="btn btn-orange" type="button" data-shopcheckout>Ver pedido</button>
   </div>
@@ -826,13 +834,14 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
 <main id="view-aluguel" hidden>
   <section class="admin-hero rent-hero">
     <div class="container">
-      <span class="eyebrow">🏗️ Aluguel de equipamentos</span>
+      <span class="eyebrow">🏗️ Aluguel de equipamentos • em breve</span>
       <h1>Vai reformar? <em>Alugue aqui mesmo.</em></h1>
-      <p>Escolha os itens, a quantidade e por quantos dias. Entregamos e buscamos dentro do condomínio.</p>
+      <p>Equipamentos para obra e reforma, com entrega e retirada dentro do condomínio. Peça para ser avisado no lançamento.</p>
       <div class="rent-perks"><span>🚚 Entrega e retirada</span><span>📅 Diária, semana ou mês</span><span>💬 Confirmação pelo WhatsApp</span></div>
     </div>
   </section>
-  <div class="container">
+  <div class="container" id="soon-aluguel"></div>
+  <div class="container" hidden>
     <section class="rent-list" id="equipamentos">
       <div class="eq-grid" id="eqGrid"></div>
       <p class="note">Preços de exemplo, por dia. Desenhos ilustrativos.</p>
@@ -855,10 +864,10 @@ body.has-cart .toast{bottom:calc(170px + var(--safe-b))}
   <footer>
     <div class="container">
       <span class="logo-text">Riviera <span style="color:#FF781F">Serviços</span></span>
-      <p style="font-size:13.5px;color:#8FA3C6">Protótipo de demonstração. Preços de exemplo. Sem pagamentos ou login nesta versão.</p>
+      <p style="font-size:13.5px;color:#8FA3C6">Em breve no Riviera Serviços. Fale com a gente pelo WhatsApp.</p>
     </div>
   </footer>
-  <div class="cartbar" id="cartBar" hidden>
+  <div class="cartbar" id="cartBar" hidden style="display:none!important">
     <span class="cb-ic">🏗️</span><div id="cbInfo"></div>
     <button class="btn btn-orange" type="button" data-checkout>Continuar</button>
   </div>
@@ -1246,13 +1255,13 @@ const VIEWS = ['morador','compras','aluguel','empresa'];
 let currentView = 'morador';
 function route(){
   const hv = location.hash.slice(1);
-  const v = VIEWS.includes(hv) ? hv : 'morador';
+  const v = VIEWS.includes(hv) && hv !== 'empresa' ? hv : 'morador';
   currentView = v;
   VIEWS.forEach(x => { $('#view-' + x).hidden = x !== v; });
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.view === v));
   if(v === 'empresa') renderAdmin();
-  else if(v === 'aluguel') { renderRentCards(); }
-  else if(v === 'compras') { renderShop(); renderSug(); }
+  else if(v === 'aluguel') { renderSoon('aluguel'); }
+  else if(v === 'compras') { renderSoon('compras'); }
   else { renderReviews(); renderMine(); if(trackedId) renderTrack(trackedId); }
   renderCartBar(); renderShopBar();
 }
@@ -1530,7 +1539,7 @@ function showSuccess(o, msg){
       <button class="btn btn-line btn-block" type="button" id="copyMsg">${ic('copy',20,'#102B57',2.3)} Copiar mensagem</button>
       <button class="btn btn-ghost btn-block" type="button" data-close>Fechar</button>
     </div>
-    <div class="sheet-pad"><p class="tiny">${ic('clock',16,'#5B6880',2.2)}<span>Guarde o número <b>${esc(o.id)}</b> para acompanhar o pedido em “Acompanhar pedido”.</span></p></div>`);
+    <div class="sheet-pad"><p class="tiny">${ic('clock',16,'#5B6880',2.2)}<span>Seu pedido <b>${esc(o.id)}</b> é confirmado pelo WhatsApp. Se precisar, é só citar esse número na conversa.</span></p></div>`);
   $('#copyMsg').addEventListener('click', async () => {
     try{ await navigator.clipboard.writeText(msg); toast('Mensagem copiada'); }
     catch(err){
@@ -1733,6 +1742,79 @@ function openReviewPublic(pre){
     } catch(e){ btn.disabled = false; btn.textContent = 'Enviar avaliação'; erro('Não consegui enviar. Confira a internet e tente de novo.'); }
   });
 }
+
+/* --- Compras e Aluguel: "Em breve" --- */
+const SOON = {
+  compras:{titulo:'Compras rápidas chegando!', texto:'Itens do dia a dia entregues na sua casa, dentro do condomínio, inclusive quando as lojas estão fechadas.',
+    itens:['💡 Lâmpadas e pilhas','🚿 Resistência de chuveiro','🧽 Produtos de limpeza','🧊 Gelo e carvão','🔧 Itens de emergência'],
+    sug:'O que você gostaria de comprar aqui?', ph:'Ex.: ração, água 20 L, gás…', wa:'Olá, Riviera Serviços! Preciso de um item agora:'},
+  aluguel:{titulo:'Aluguel de equipamentos chegando!', texto:'Equipamentos para obra e reforma com entrega e retirada dentro do condomínio. Por dia, semana ou mês.',
+    itens:['🏗️ Andaimes','🌀 Betoneira','🪜 Escadas','🧱 Tapumes','🛠️ Furadeira e martelete','🛒 Carrinho de mão'],
+    sug:'Qual equipamento você precisa?', ph:'Ex.: andaime para pintura de fachada', wa:'Olá, Riviera Serviços! Preciso alugar um equipamento:'}
+};
+const soonFeito = t => !!lsGet('riviera_aviso_' + t);
+function renderSoon(t){
+  const c = SOON[t], box = $('#soon-' + t); if(!box) return;
+  box.innerHTML = `<div class="soon">
+    <div class="soon-card"><span class="kicker">Em breve</span><h2>${c.titulo}</h2><p class="sec-sub" style="margin:0">${c.texto}</p>
+      <div class="soon-chips">${c.itens.map(x => `<span>${x}</span>`).join('')}</div></div>
+    <div class="soon-card" id="avisoBox-${t}"><span class="kicker">🔔 Quero ser avisado</span><h2>Avisamos quando lançar</h2>
+      ${soonFeito(t) ? '<div class="soon-ok">✅ Combinado! Você está na lista e vamos avisar no lançamento.</div>' : `
+      <form data-soon="aviso" data-tipo="${t}" autocomplete="off" novalidate>
+        <div class="field"><label>Seu nome</label><input class="input" name="nome" maxlength="60" placeholder="Ex.: Maria Souza"></div>
+        <div class="field"><label>Quadra e casa</label><input class="input" name="casa" maxlength="40" placeholder="Ex.: Quadra E, casa 21"></div>
+        <div class="field"><label>WhatsApp <small>(opcional)</small></label><input class="input" name="whatsapp" type="tel" inputmode="tel" maxlength="20" placeholder="(11) 90000-0000"></div>
+        <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="msg" data-msg></div>
+        <button class="btn btn-orange btn-block" type="submit" style="margin-top:14px">🔔 Quero ser avisado</button>
+      </form>`}</div>
+    <div class="soon-card"><span class="kicker">💡 Sugestões</span><h2>${c.sug}</h2><p class="sec-sub" style="margin:0">Os mais pedidos entram primeiro na lista.</p>
+      <form data-soon="sug" data-tipo="${t}" autocomplete="off" novalidate>
+        <div class="field"><label>Item</label><input class="input" name="item" maxlength="80" placeholder="${c.ph}"></div>
+        <div class="field"><label>Para quê? <small>(opcional)</small></label><input class="input" name="motivo" maxlength="300" placeholder="Ex.: sempre acaba no fim de semana"></div>
+        <div class="field"><label>Seu nome <small>(opcional)</small></label><input class="input" name="nome" maxlength="60"></div>
+        <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="msg" data-msg></div>
+        <button class="btn btn-ghost btn-block" type="submit" style="margin-top:14px">💡 Enviar sugestão</button>
+      </form></div>
+    <div class="soon-wa"><b style="font-size:19px">Precisa de algo agora?</b><p>Chame no WhatsApp. Mesmo antes do lançamento, a gente tenta ajudar.</p>
+      <a class="btn btn-green btn-block" href="${waLink(WA_NUMBER, c.wa)}" target="_blank" rel="noopener">${ic('chat',22,'#fff',2.3)} Falar no WhatsApp</a></div>
+  </div>`;
+}
+async function sbInserir(tabela, dados){
+  const r = await fetch(`${SB_URL}/rest/v1/${tabela}`, {method:'POST', headers:{...sbHead(), 'Content-Type':'application/json', Prefer:'return=minimal'}, body:JSON.stringify(dados)});
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+}
+document.addEventListener('submit', async e => {
+  const f = e.target.closest('form[data-soon]'); if(!f) return;
+  e.preventDefault();
+  const tipo = f.dataset.tipo, kind = f.dataset.soon, msgEl = f.querySelector('[data-msg]');
+  const campo = n => f.querySelector(`[name="${n}"]`), E = {site:campo('site'), nome:campo('nome'), casa:campo('casa'), whatsapp:campo('whatsapp'), item:campo('item'), motivo:campo('motivo')};
+  const erro = m => { msgEl.textContent = m; f.classList.add('err'); toast(m); };
+  f.classList.remove('err'); msgEl.textContent = '';
+  if(E.site.value) return;
+  let tabela, dados;
+  if(kind === 'aviso'){
+    const nome = E.nome.value.trim().replace(/\s+/g,' '), casa = E.casa.value.trim(), w = digits(E.whatsapp.value);
+    if(nome.length < 2) return erro('Escreva seu nome.');
+    if(casa.length < 2) return erro('Escreva a quadra e a casa.');
+    if(w && (w.length < 10 || w.length > 11)) return erro('WhatsApp inválido. Use DDD + número.');
+    tabela = 'interessados'; dados = {nome, casa, whatsapp:w, interesse:tipo};
+  } else {
+    const item = E.item.value.trim();
+    if(item.length < 2) return erro('Escreva o item.');
+    const ult = +(lsGet('riviera_sug_ultimo') || 0);
+    if(Date.now() - ult < 60 * 1000) return erro('Aguarde um minutinho para mandar outra sugestão.');
+    tabela = 'sugestoes'; dados = {tipo, item, motivo:E.motivo.value.trim(), nome:E.nome.value.trim()};
+  }
+  if(!ONLINE){ window.open(waLink(WA_NUMBER, kind === 'aviso' ? `Quero ser avisado do lançamento (${tipo}). Nome: ${dados.nome}, ${dados.casa}` : `Sugestão (${tipo}): ${dados.item}`), '_blank'); return; }
+  const btn = f.querySelector('button[type=submit]'), txt = btn.textContent; btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    await sbInserir(tabela, dados);
+    if(kind === 'aviso'){ lsSet('riviera_aviso_' + tipo, Date.now()); renderSoon(tipo); toast('Combinado! Vamos te avisar 🔔'); }
+    else { lsSet('riviera_sug_ultimo', Date.now()); f.reset(); btn.disabled = false; btn.textContent = txt; toast('Obrigado pela sugestão! 💡'); }
+  } catch(err){ btn.disabled = false; btn.textContent = txt; erro('Não consegui enviar. Confira a internet e tente de novo.'); }
+});
 
 /* --- Acompanhar pedido --- */
 function renderMine(){
